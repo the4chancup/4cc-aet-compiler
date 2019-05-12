@@ -13,8 +13,8 @@ if exist settings.txt (
   call settings
   rename settings.bat settings.txt
 ) else (
-  set dualcpk_mode=0
-  set cpk_name=4cc_80_test
+  set multicpk_mode=0
+  set cpk_name=4cc_80_testpatch
   set move_cpks=1
   set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
   set admin_mode=0
@@ -22,14 +22,19 @@ if exist settings.txt (
 )
 
 REM - Create folders just in case
-if not %dualcpk_mode%==0 (
+if not %multicpk_mode%==0 (
 
-  md ".\patches_contents\Faces" 2>nul
-  md ".\patches_contents\Uniform" 2>nul
+  set faces_foldername=Facescpk
+  set uniform_foldername=Uniformcpk
+  set bins_foldername=Binscpk
+
+  md ".\patches_contents\%faces_foldername%" 2>nul
+  md ".\patches_contents\%uniform_foldername%" 2>nul
+  md ".\patches_contents\%bins_foldername%" 2>nul
 
 ) else (
   
-  md ".\patches_contents\Root" 2>nul
+  md ".\patches_contents\Singlecpk" 2>nul
 )
 
 
@@ -78,45 +83,63 @@ if not defined all_in_one (
 @echo - 
 
 
-if not %dualcpk_mode%==0 (
+if not %multicpk_mode%==0 (
   
   REM - Make sure that the folders are not empty to avoid cpkmakec errors
-  >nul 2>nul dir /a-d /s ".\patches_contents\Faces\*" && (echo ->nul) || (type nul >".\patches_contents\Faces\placeholder")
-  >nul 2>nul dir /a-d /s ".\patches_contents\Uniform\*" && (echo ->nul) || (type nul >".\patches_contents\Uniform\placeholder")
+  >nul 2>nul dir /a-d /s ".\patches_contents\%faces_foldername%\*" && (echo ->nul) || (type nul >".\patches_contents\%faces_foldername%\placeholder")
+  >nul 2>nul dir /a-d /s ".\patches_contents\%uniform_foldername%\*" && (echo ->nul) || (type nul >".\patches_contents\%uniform_foldername%\placeholder")
+  if %bins_updating%==1 (
+    >nul 2>nul dir /a-d /s ".\patches_contents\%bins_foldername%\*" && (echo ->nul) || (type nul >".\patches_contents\%bins_foldername%\placeholder")
+  )
 
 
   REM - Make the Faces patch
   @echo - Making the Faces patch
 
   if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\Faces" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
+    .\Engines\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
   ) else (
-    .\Engines\cpkmakec ".\patches_contents\Faces" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
+    .\Engines\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
   )
 
-  REM - Make the Uniform patch (kits, boots, gloves, logos, etc.)
+  REM - Make the Uniform patch (kits, logos, portraits, boots, gloves, etc.)
   @echo - 
   @echo - Making the Uniform patch
 
   if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\Uniform" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
+    .\Engines\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
   ) else (
-    .\Engines\cpkmakec ".\patches_contents\Uniform" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
+    .\Engines\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
   )
+  
+  if %bins_updating%==1 (
+  
+    REM - Make the Bins patch (unicolor, teamcolor)
+    @echo - 
+    @echo - Making the Bins patch
+
+    if %compression%==1 (
+      .\Engines\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
+    ) else (
+      .\Engines\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
+    )
+  
+  )
+  
 
 ) else (
 
   REM - Make sure that the folder is not empty to avoid cpkmakec errors
-  >nul 2>nul dir /a-d /s ".\patches_contents\Root\*" && (echo ->nul) || (type nul >".\patches_contents\Root\placeholder")
+  >nul 2>nul dir /a-d /s ".\patches_contents\Singlecpk\*" && (echo ->nul) || (type nul >".\patches_contents\Singlecpk\placeholder")
 
 
   REM - Make the single cpk patch
   @echo - Making the patch
 
   if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\Root" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
+    .\Engines\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
   ) else (
-    .\Engines\cpkmakec ".\patches_contents\Root" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
+    .\Engines\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
   )
 
 )
@@ -133,40 +156,75 @@ if %move_cpks%==1 (
   @echo - Moving the cpks
   @echo -
 
-  if not %dualcpk_mode%==0 (
+  if not %multicpk_mode%==0 (
   
-    REM - Copy the cpks to the PES' download folder
-    copy ".\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
-    copy ".\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
-
-    REM - Delete the cpks in the script's folder
-    del ".\%faces_cpk_name%.cpk"
-    del ".\%uniform_cpk_name%.cpk"
+    REM - Remove the cpks from the download folder if present
+    if exist %pes_download_folder_location%\"%faces_cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%faces_cpk_name%.cpk"
+    )
+    if exist %pes_download_folder_location%\"%uniform_cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%uniform_cpk_name%.cpk"
+    )
+    if %bins_updating%==1 (
+      if exist %pes_download_folder_location%\"%bins_cpk_name%.cpk" (
+        del %pes_download_folder_location%\"%bins_cpk_name%.cpk"
+      )
+    )
+    
+    REM - Move the cpks to the PES' download folder
+    move ".\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
+    move ".\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
+    if %bins_updating%==1 (
+      move ".\%bins_cpk_name%.cpk" %pes_download_folder_location% >nul
+    )
     
   ) else (
   
-    REM - Copy the cpk to the PES' download folder
-    copy ".\%cpk_name%.cpk" %pes_download_folder_location% >nul
-
-    REM - Delete the cpk in the script's folder
-    del ".\%cpk_name%.cpk"
+    REM - Remove the cpk from the download folder if present
+    if exist %pes_download_folder_location%\"%cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%cpk_name%.cpk"
+    )
   
+    REM - Move the cpk to the PES' download folder
+    move ".\%cpk_name%.cpk" %pes_download_folder_location% >nul
+
   )
   
   
-  REM - If DpFileList Updating is enabled (DISABLED, NEEDS UPDATING)
-  if 0==1 (
+  REM - If DpFileList Updating is enabled
+  if %dpfl_updating%==1 (
+  
+    @echo -
+    @echo - DpFileList editing is enabled
+    @echo -
     
     REM - Get a temporary copy of the dpfl from the downloads folder
     copy %pes_download_folder_location%\DpFileList.bin .\Engines >nul
     
-    REM - Update it
-    call .\Engines\dpfl_update
     
-    REM - And copy it back if it was edited
-    if not errorlevel 1 (
-      copy .\Engines\DpFileList.bin %pes_download_folder_location% >nul
+    REM - Update it
+    if not %multicpk_mode%==0 (
+      
+      if %bins_updating%==1 (
+        set cpk_name=%bins_cpk_name%
+        call .\Engines\dpfl_update
+      )
+      
+      set cpk_name=%faces_cpk_name%
+      call .\Engines\dpfl_update
+      
+      set cpk_name=%uniform_cpk_name%
+      call .\Engines\dpfl_update
+      
+    ) else (
+    
+      call .\Engines\dpfl_update
     )
+
+    
+    REM - And copy it back
+    copy .\Engines\DpFileList.bin %pes_download_folder_location% >nul
+    
     del .\Engines\DpFileList.bin
   )
 )

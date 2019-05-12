@@ -44,8 +44,7 @@ if defined error (
     
     @echo - 
     @echo - !team!'s manager needs to get memed on (no txt file^)
-    @echo - This export will be discarded to prevent conflicts,
-    @echo - unless you choose to input the team's ID now
+    @echo - This export will be discarded to prevent conflicts
     @echo - 
     @echo - Stopping the script and fixing the export is recommended
     @echo - 
@@ -85,7 +84,7 @@ if not defined error (
   )
   
   
-  REM - Get the team's ID from the txt file
+  REM - Get the team's name from the txt file
   set error=1
   set stop=
   
@@ -93,36 +92,32 @@ if not defined error (
     
     if not defined stop (
       
-      if "%%X"=="ID:" (
+      if /i "%%X"=="Team:" (
         
-        set error=
         set stop=1
-        set /a id=%%Y
+        set name=%%Y
       )
       
       if "%%Y"=="" (
         
-        set error=
         set stop=1
-        set /a id=%%X
-      )
-      
-      REM - Also check that the team ID is in the range 701-892
-      if !id! LSS 701 (
-        
-        set error=1
-        set stop=
-      )
-      if !id! GTR 892 (
-        
-        set error=1
-        set stop=
+        set name=%%X
       )
       
     )
   )
   
-  REM - If there's no usable team ID
+  REM - Search for the team ID in the list of team names
+  for /f "tokens=1,* skip=1 usebackq" %%U in (".\teams_list.txt") do (
+    if defined error (
+      if /i "!name!"=="%%V" (
+        set teamid=%%U
+        set error=
+      )
+    )
+  )
+  
+  REM - If no team ID was found
   if defined error (
 
     REM - Skip the whole export
@@ -133,69 +128,30 @@ if not defined error (
     )
     
     @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (missing or unusable team ID^) - Export discarded >> memelist.txt
+    @echo - !team!'s manager needs to get memed on (unusable team name^) - Export discarded >> memelist.txt
     set memelist=1
     
     @echo -
-    @echo - !team!'s manager needs to get memed on (missing or unusable team ID^)
+    @echo - !team!'s manager needs to get memed on (unusable team name^)
     @echo - (txt files in the unsupported unicode format can cause this too^)
     @echo - This export will be discarded to prevent conflicts
-    @echo - Stopping the script and fixing it is recommended
-    @echo -
-    
-    if not %pause_when_wrong%==0 (
-      pause
-    )
-  )
-  
-)
-
-
-REM - If the id was found and is in range, continue
-if not defined error (
-  
-  REM - Check that the team ID doesn't conflict with another team's
-  for /f "tokens=1-2 usebackq" %%V in (".\Engines\teamlist.txt") do (
-    if not defined error (
-      if "%%W"=="!id!" (
-        set error=1
-        set conflictteam=%%V
-      )
-    )
-  )
-
-  REM - If the team ID is in conflict
-  if defined error (
-    
-    REM - Skip the whole export
-    if not %pass_through%==1 (
-      rd /S /Q ".\extracted_exports\!foldername!"
-    ) else (
-      set error=
-    )
-    
-    @echo - >> memelist.txt
-    @echo - The IDs of !conflictteam! and !team! are in conflict (ID: !id!^) - !team!'s export discarded >> memelist.txt
-    set memelist=1
-    
-    @echo -
-    @echo - The IDs of !conflictteam! and !team! are in conflict (ID: !id!^)
-    @echo - !team!'s export will be discarded
-    @echo - Stopping the script and fixing the conflict is recommended
-    @echo -
+    @echo - Adding the team name to the teams_list file and restarting the script
+    @echo - is recommended
+    @echo - 
     
     if not %pause_when_wrong%==0 (
       pause
     )
     
-  REM - If the id is not in conflict
   ) else (
-
-    REM - Add the team ID to the list
-    @echo !team! !id! >> .\Engines\teamlist.txt
+  
+    @echo (ID: !teamid!^)
   )
+  
 )
 
+
+REM - If the id was found, continue
 
 REM - Soft checks start here -
 REM - These checks don't discard the whole export, only parts of it
@@ -275,15 +231,11 @@ if not defined error (
       set facewrong=
       
       set facename=%%C
-      set faceid=!facename:~0,5!
       
-      
-      REM - Check that the first three characters are the Team ID
-      if not "!faceid:~0,3!"=="!id!" set facewrong=1
-      
+
       REM - Check that the player number is within the 01-23 range
-      if "!faceid:~3,2!" LSS "01" set facewrong=1
-      if "!faceid:~3,2!" GTR "23" set facewrong=1
+      if "!facename:~3,2!" LSS "01" set facewrong=1
+      if "!facename:~3,2!" GTR "23" set facewrong=1
       
       
       if not defined facewrong (
@@ -292,6 +244,8 @@ if not defined error (
 
         REM - If the folder is in legacy format check the internal face folders too
         if exist ".\extracted_exports\!foldername!\Faces\!facename!\common" (
+        
+          set faceid=!facename:~0,5!
           
           if exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face.xml" (
             set facewrong=
@@ -302,7 +256,7 @@ if not defined error (
           
           if not defined facewrong (
             
-            REM - And simplify the folder              
+            REM - And simplify the folder
             for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!"') do (
               
               move ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\%%D" ".\extracted_exports\!foldername!\Faces\!facename!" >nul
@@ -324,6 +278,7 @@ if not defined error (
         )
         
       )
+      
       
       REM - If the face folder has something wrong
       if defined facewrong (
@@ -372,7 +327,7 @@ if not defined error (
   
   ) else (
   
-    REM - If it exists but is empty, delete it
+    REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Faces" (
       rd /S /Q ".\extracted_exports\!foldername!\Faces" >nul
     )
@@ -382,47 +337,43 @@ if not defined error (
 
 if not defined error (
 
-  REM - If a Kit Configs folder exists and is not empty, check that the team id of the kit config folder and the kit config files is correct
+  REM - If a Kit Configs folder exists and is not empty, check that the amount of kit config files is correct
   set checkconfig=
   >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Kit Configs\*" && (set checkconfig=1) || (echo ->nul)
   
   if defined checkconfig (
   
     set configerror=
-
-    if not exist ".\extracted_exports\!foldername!\Kit Configs\!id!\" (
     
-      set configerror=1
-    
-    ) else (
-    
-      set configs=0
-    
-      REM - For every kit config file
-      for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Configs\!id!"') do (
-        
-        set /a configs+=1
-        
-        set configwrong=
-        set configname=%%C
-        
-        
-        REM - Check that its name starts with the team id
-        if /i not "!configname:~0,3!"=="!id!" set configwrong=1
-        
-        REM - Check the DEF part
-        if /i not "!configname:~3,5!"=="_DEF_" set configwrong=1
-        
-        REM - Check the realUni part
-        if /i not "!configname:~-12!"=="_realUni.bin" set configwrong=1
-        
-        
-        if defined configwrong (
-          echo bad
-          set configerror=1
-        )
-        
+    REM - Look for a folder inside Kit Configs containing the kit config files
+    for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Kit Configs" 2^>nul') do (
+      
+      REM - If a folder was found move its contents to the root folder
+      for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Kit Configs\%%C"') do (
+      
+        move ".\extracted_exports\!foldername!\Kit Configs\%%C\%%D" ".\extracted_exports\!foldername!\Kit Configs" >nul
       )
+      
+      REM - And delete the now empty folder
+      rd /S /Q ".\extracted_exports\!foldername!\Kit Configs\%%C"
+    )
+    
+    set configs=0
+  
+    REM - For every kit config file
+    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Configs"') do (
+      
+      set /a configs+=1
+      
+      set configname=%%C
+      
+      
+      REM - Check the DEF part of the name
+      if /i not "!configname:~3,5!"=="_DEF_" set configerror=1
+      
+      REM - Check the realUni part
+      if /i not "!configname:~-12!"=="_realUni.bin" set configerror=1
+      
     )
     
     REM - If something's wrong
@@ -439,7 +390,7 @@ if not defined error (
       
       @echo -
       @echo - !team!'s manager needs to get memed on (wrong kit config names^)
-      @echo - The Kit Configs folder will be discarded to prevent conflicts
+      @echo - The Kit Configs folder will be discarded since it's unusable
       @echo - Stopping the script and fixing it is recommended
       @echo -
       
@@ -479,7 +430,7 @@ if not defined error (
     @echo - !team!'s export doesn't have any Kit Configs - Warning >> memelist.txt
     set memelist=1
     
-    REM - If it exists but is empty, delete it
+    REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Kit Configs" (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Configs" >nul
     )
@@ -505,13 +456,19 @@ if not defined error (
       set texturename=%%C
       
       
-      REM - Check that its name starts with u0
-      if /i not "!texturename:~0,2!"=="u0" set texturewrong=1
+      REM - Check that its name starts with u
+      if /i not "!texturename:~0,1!"=="u" set texturewrong=1
       
-      REM - Check that its team id is correct
-      if /i not "!texturename:~2,3!"=="!id!" set texturewrong=1
+      if not defined texturewrong (
       
+        set texturewrong=1
       
+        REM - Check that its name has p or g in the correct position
+        if /i "!texturename:~5,1!"=="p" set texturewrong=
+        if /i "!texturename:~5,1!"=="g" set texturewrong=
+      )
+      
+    
       REM - If the texture is named wrongly
       if defined texturewrong (
         
@@ -543,7 +500,7 @@ if not defined error (
     REM - If the team has bad kit textures close the previously opened message
     if defined textureerror (
 
-      @echo - The kit textures mentioned above will be discarded to avoid conflicts
+      @echo - The kit textures mentioned above will be discarded since they're unusable
       @echo - Stopping the script and fixing them is recommended
       @echo -
       
@@ -559,9 +516,155 @@ if not defined error (
     @echo - !team!'s export doesn't have any Kit Textures - Warning >> memelist.txt
     set memelist=1
     
-    REM - If it exists but is empty, delete it
+    REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Kit Textures" (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Textures" >nul
+    )
+  )
+)
+
+
+if not defined error (
+
+  REM - If a Logo folder exists and is not empty, check that the three logo images' filenames are correct
+  set checklogo=
+  >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Logo\*" && (set checklogo=1) || (echo ->nul)
+  
+  if defined checklogo (
+    
+    set logoerror=
+    
+    set logocount=0
+    set logocountplus=0
+
+    REM - For every image
+    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Logo"') do (
+      
+      set logowrong=
+      set logoname=%%C
+      set /a logocount+=1
+      
+      
+      REM - Check that its name starts with emblem_
+      if /i not "!logoname:~0,7!"=="emblem_" set logowrong=1
+      
+      
+      REM - Check the suffix and increase the plus counter if present and correct
+      if /i "!logoname:~11!"=="_r.png" set /a logocountplus+=1
+      if /i "!logoname:~11!"=="_r_l.png" set /a logocountplus+=1
+      if /i "!logoname:~11!"=="_r_ll.png" set /a logocountplus+=1
+      
+      
+      if defined logowrong (
+        set logoerror=1
+      )
+    
+    )
+    
+    REM - Check that there are three total images, each with a correct suffix
+    if not "!logocount!"=="3" set logoerror=1
+    if not "!logocountplus!"=="3" set logoerror=1
+    
+    REM - If something's wrong
+    if defined logoerror (
+    
+      REM - Skip the whole Logo folder
+      if not %pass_through%==1 (
+        rd /S /Q ".\extracted_exports\!foldername!\Logo"
+      )
+      
+      @echo - >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (wrong logo filenames^) - Logo folder discarded >> memelist.txt
+      set memelist=1
+      
+      @echo -
+      @echo - !team!'s manager needs to get memed on (wrong logo filenames^)
+      @echo - The Logo folder will be discarded since it's unusable
+      @echo - Stopping the script and fixing it is recommended
+      @echo -
+      
+      if not %pause_when_wrong%==0 (
+        pause
+      )
+    )
+
+  ) else (
+  
+    REM - If the folder exists but is empty, delete it
+    if exist ".\extracted_exports\!foldername!\Logo" (
+      rd /S /Q ".\extracted_exports\!foldername!\Logo" >nul
+    )
+  )
+)
+
+
+if not defined error (
+
+  REM - If a Portraits folder exists and is not empty, check that the portraits' filenames are correct
+  set checkportraits=
+  >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Portraits\*" && (set checkportraits=1) || (echo ->nul)
+  
+  if defined checkportraits (
+    
+    set portraiterror=
+
+    REM - For every portrait
+    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Portraits"') do (
+      
+      set portraitwrong=
+      set portraitname=%%C
+      
+      
+      REM - Check that the player number is within the 01-23 range
+      if "!portraitname:~-6,2!" LSS "01" set portraitwrong=1
+      if "!portraitname:~-6,2!" GTR "23" set portraitwrong=1
+      
+    
+      REM - If the portrait is named wrongly
+      if defined portraitwrong (
+        
+        REM - Warn about the team having bad portrait names
+        if not defined portraiterror (
+          
+          set portraiterror=1
+          
+          @echo - >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (wrong portrait names^) >> memelist.txt
+          set memelist=1
+          
+          @echo -
+          @echo - !team!'s manager needs to get memed on (wrong portrait names^)
+        ) 
+        
+        REM - And skip it
+        if not %pass_through%==1 (
+          del /F /Q ".\extracted_exports\!foldername!\Portraits\!portraitname!"
+        )
+        
+        @echo - The portrait !portraitname! is wrong - File discarded >> memelist.txt
+        
+        @echo - The portrait !portraitname! is wrong
+      )
+    
+    )
+    
+    REM - If the team has bad portraits close the previously opened message
+    if defined portraiterror (
+
+      @echo - The portraits mentioned above will be discarded since they're unusable
+      @echo - Stopping the script and fixing them is recommended
+      @echo -
+      
+      if not %pause_when_wrong%==0 (
+        pause
+      )      
+    )
+
+  ) else (
+  
+    REM - If the folder exists but is empty, delete it
+    if exist ".\extracted_exports\!foldername!\Portraits" (
+      rd /S /Q ".\extracted_exports\!foldername!\Portraits" >nul
     )
   )
 )
@@ -636,7 +739,7 @@ if not defined error (
   
   ) else (
   
-    REM - If it exists but is empty, delete it
+    REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Boots" (
       rd /S /Q ".\extracted_exports\!foldername!\Boots" >nul
     )
@@ -713,7 +816,7 @@ if not defined error (
     
   ) else (
   
-    REM - If it exists but is empty, delete it
+    REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Gloves" (
       rd /S /Q ".\extracted_exports\!foldername!\Gloves" >nul
     )
@@ -723,76 +826,14 @@ if not defined error (
 
 if not defined error (
 
-  REM - If a Logo folder exists and is not empty, check that the three logo images' filenames are correct
-  set checklogo=
-  >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Logo\*" && (set checklogo=1) || (echo ->nul)
+  REM - If a Other folder exists and is empty, delete it
+  if exist ".\extracted_exports\!foldername!\Other" (
   
-  if defined checklogo (
+    set keepother=
+    >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Other\*" && (set keepother=1) || (echo ->nul)
     
-    set logoerror=
-    
-    set logocount=0
-    set logocountplus=0
-
-    REM - For every image
-    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Logo"') do (
-      
-      set logowrong=
-      set logoname=%%C
-      set /a logocount+=1
-      
-      
-      REM - Check that its name starts with emblem
-      if /i not "!logoname:~0,8!"=="emblem_0" set logowrong=1
-      
-      REM - Check that its team id is correct
-      if /i not "!logoname:~8,3!"=="!id!" set logowrong=1
-      
-      
-      REM - Check the suffix and increase the plus counter if present and correct
-      if /i "!logoname:~-6!"=="_r.png" set /a logocountplus+=1
-      if /i "!logoname:~-8!"=="_r_l.png" set /a logocountplus+=1
-      if /i "!logoname:~-9!"=="_r_ll.png" set /a logocountplus+=1
-      
-      
-      if defined logowrong (
-        set logoerror=1
-      )
-    
-    )
-    
-    REM - Check that there are three total images, each with a correct suffix
-    if not "!logocount!"=="3" set logoerror=1
-    if not "!logocountplus!"=="3" set logoerror=1
-    
-    REM - If something's wrong
-    if defined logoerror (
-    
-      REM - Skip the whole Logo folder
-      if not %pass_through%==1 (
-        rd /S /Q ".\extracted_exports\!foldername!\Logo"
-      )
-      
-      @echo - >> memelist.txt
-      @echo - !team!'s manager needs to get memed on (wrong logo filenames^) - Logo folder discarded >> memelist.txt
-      set memelist=1
-      
-      @echo -
-      @echo - !team!'s manager needs to get memed on (wrong logo filenames^)
-      @echo - The Logo folder will be discarded because unusable
-      @echo - Stopping the script and fixing it is recommended
-      @echo -
-      
-      if not %pause_when_wrong%==0 (
-        pause
-      )
-    )
-
-  ) else (
-  
-    REM - If it exists but is empty, delete it
-    if exist ".\extracted_exports\!foldername!\Logo" (
-      rd /S /Q ".\extracted_exports\!foldername!\Logo" >nul
+    if not defined keepother (
+      rd /S /Q ".\extracted_exports\!foldername!\Other" >nul
     )
   )
 )

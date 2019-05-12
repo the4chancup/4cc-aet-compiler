@@ -63,53 +63,36 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
       
       REM - If we just started output the team name or ID to screen
       if not defined team_printed (
+        
         if not "%%B"=="" (
           set team=%%B
         ) else (
           set team=%%A
         )
         
-        @echo - !team!
-        set team_printed=1
-      )
-      
-      REM - If we haven't found the team ID yet
-      if not defined id_found (
-      
-        REM - Look for the team ID
-        if /i "%%A"=="ID:" (
-          
-          REM - We can move on if found
-          set id_found=1
-          
-          set id_orig=%%B
-          set /a id=%%B-701
-          
-          REM - Check that the team ID is in the range 701-892
-          if %%B LSS 701 set stop=1
-          if %%B GTR 892 set stop=1
+        REM - Search for the team ID in the list of team names
+        for /f "tokens=1,* skip=1 usebackq" %%U in (".\teams_list.txt") do (
+          if not defined id_found (
+            if /i "!team!"=="%%V" (
+              
+              set teamid=%%U
+              set /a id=!teamid!-701
+              set id_found=1
+            )
+          )
         )
         
-        REM - If the txt file only has the ID in it
-        if "%%B"=="" (
-          
-          REM - We can move on if found
-          set id_found=1
-          
-          set id_orig=%%A
-          set /a id=%%A-701
-          
-          REM - But only if the team ID is in the range 701-892, otherwise keep looking
-          if %%A LSS 701 set id_found=
-          if %%A GTR 892 set id_found=
-        )
+        @echo - !team! (ID: !teamid!^)
+        set team_printed=1
       )
       
       REM - If the team ID is set, continue
       if defined id_found (
-      
+        
+        set test=%%A%%B
+        
         REM - If we've reached the team color section
-        if /i %%A==Team (
+        if /i "!test:~0,7!"=="TeamCol" (
           
           REM - Start looking for kit colors
           set team_found=1
@@ -124,7 +107,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
         )
       
         REM - If we've reached the kit color section
-        if /i %%A==Kit (
+        if /i "!test:~0,6!"=="KitCol" (
           
           REM - Start looking for kit colors
           set kits_found=1
@@ -146,14 +129,14 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
         )
         
         REM - If we've reached the end
-        if /i %%A==Player (
+        if /i "!test:~0,6!"=="Player" (
           
           REM - Stop looking for stuff in the file
           set stop=1
         )
         
         REM - If we've reached the end
-        if /i %%A==Other (
+        if /i "!test:~0,5!"=="Other" (
           
           REM - Stop looking for stuff in the file
           set stop=1
@@ -173,10 +156,13 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           REM - Check if the entry is proper and in range
           if defined hexcoded (
             
-            set byte=!check:~1,1!
-            
-            if !byte! LSS 0 set ok=
-            if !byte! GTR F set ok=
+            for /l %%O in (1 1 6) do (
+              
+              set byte=!check:~%%O,1!
+              
+              if !byte! LSS 0 set ok=
+              if !byte! GTR F set ok=
+            )
             
           ) else (
           
@@ -248,10 +234,13 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           REM - Check if the entry is proper and in range
           if defined hexcoded (
             
-            set byte=!check:~1,1!
-            
-            if !byte! LSS 0 set ok=
-            if !byte! GTR F set ok=
+            for /l %%O in (1 1 6) do (
+              
+              set byte=!check:~%%O,1!
+              
+              if !byte! LSS 0 set ok=
+              if !byte! GTR F set ok=
+            )
             
           ) else (
           
@@ -349,30 +338,34 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
   REM - When the file is over, if there were kit entries
   if defined kits_found (
     
-    if !kits! GEQ 10 set kits=a
+    if !kits! GEQ 10 (
+      set kits_hex=a
+    ) else (
+      set kits_hex=!kits!
+    )
     
     REM - Write the number of kits to the UniColor file
-    .\Engines\hexed ".\other_stuff\Bin Files\UniColor.bin" -e !position! 0!kits!
+    .\Engines\hexed ".\other_stuff\Bin Files\UniColor.bin" -e !position! 0!kits_hex!
     
     
-    if exist ".\extracted_exports\Kit Configs\!id_orig!\" (
+    if exist ".\extracted_exports\Kit Configs\!teamid!\" (
 
       REM - Check that the amount of kits found is equal to the aomunt of kit config files
-      set kits_configs=0
+      set kit_configs=0
       
-      for /f "tokens=*" %%O in ('dir /a:-d /b ".\extracted_exports\Kit Configs\!id_orig!" 2^>nul') do (
+      for /f "tokens=*" %%O in ('dir /a:-d /b ".\extracted_exports\Kit Configs\!teamid!" 2^>nul') do (
         
-        set /a kits_configs+=1
+        set /a kit_configs+=1
       )
       
-      if not "!kits_configs!"=="!kits!" (
+      if not "!kit_configs!"=="!kits!" (
       
         @echo - Warning -
         @echo -
         if defined team (
           @echo - The amount of !team!'s kit color entries is not
         ) else (
-          @echo - The amount of !id_orig!'s kit color entries is not
+          @echo - The amount of !teamid!'s kit color entries is not
         )
         @echo - equal to the amount of kit config files
         @echo - Stopping the script and fixing it is recommended

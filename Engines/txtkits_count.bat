@@ -33,10 +33,13 @@ for /f "tokens=1-10 usebackq" %%A in (".\extracted_exports\!foldername!\!txtname
         REM - Check if the entry is proper and in range
         if defined hexcoded (
         
-          set byte=!check:~1,1!
+          for /l %%O in (1 1 6) do (
+              
+            set byte=!check:~%%O,1!
             
-          if !byte! LSS 0 set ok=
-          if !byte! GTR F set ok=
+            if !byte! LSS 0 set ok=
+            if !byte! GTR F set ok=
+          )
           
         ) else (
         

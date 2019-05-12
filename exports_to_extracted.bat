@@ -19,65 +19,12 @@ if exist settings.txt (
   set move_cpks=1
   set admin_mode=0
   set pause_when_wrong=1
-  set full_patch=0
+  set compression=0
   set pass_through=0
 )
 
 REM - If all_in_one mode is enabled
 if defined all_in_one (
-
-  if not defined full_patch (
-    set full_patch=0
-  )
-
-  REM - If Full patch mode is enabled
-  if %full_patch%==1 (
-    
-    REM - Check the existance of the default_contents folder
-    if not exist ".\default_contents" (
-      
-      @echo - 
-      @echo - 
-      @echo - default_contents folder not found
-      @echo - Please get it and and copy it to the script's
-      @echo - folder or disable Full Patch mode in the settings
-      @echo - 
-      @echo - 
-      @echo - Do you want to exit or disable Full Patch mode and continue?
-      @echo - X^) Exit
-      @echo - C^) Continue
-      @echo - 
-      
-      choice /c XC /m "- Choice: " /n
-      set choice=!errorlevel!
-      
-      if "!choice!"=="1" (
-        
-        EXIT /b
-        
-      ) else (
-      
-        REM - Disable Full Patch mode
-        set full_patch=0
-        
-        for /f "tokens=* usebackq" %%R IN (".\settings.txt") do (
-          
-          set line=%%R
-          
-          if "!line:~0,14!"=="set full_patch" (
-            @echo set full_patch=>> settings_temp.txt
-          ) else (
-            @echo %%R>> settings_temp.txt
-          )
-        )
-        
-        del .\settings.txt
-        
-        rename .\settings_temp.txt settings.txt
-      )
-      
-    )
-  )
   
   REM - If move_cpks mode is enabled
   if %move_cpks%==1 (
@@ -124,17 +71,17 @@ md ".\exports_to_add" 2>nul
 md ".\extracted_exports\Faces" 2>nul
 md ".\extracted_exports\Kit Configs" 2>nul
 md ".\extracted_exports\Kit Textures" 2>nul
+md ".\extracted_exports\Logo" 2>nul
+md ".\extracted_exports\Portraits" 2>nul
 md ".\extracted_exports\Boots" 2>nul
 md ".\extracted_exports\Gloves" 2>nul
-md ".\extracted_exports\Logo" 2>nul
 md ".\extracted_exports\Other" 2>nul
 
 REM - Clear the flag for writing to file
 set memelist=
 
 REM - Reset the files
-@echo Team ID > .\Engines\teamlist.txt
-@echo --- 4cc AET compiler simplified - List of problems --- > memelist.txt
+@echo --- 4cc AET compiler id-less - List of problems --- > memelist.txt
 @echo --- 4cc txt notes compilation --- > teamnotes.txt
 
 @echo - 
@@ -150,8 +97,6 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - Get the team's name
   for /f "delims=+-_.:,;* " %%Z in ("%%A") do set team=%%Z
   
-  set team_clean=!team!
-  
   REM - Convert it to full lowercase
   for %%T in ("!team!") do (
     for /f "delims=~" %%U in ('echo %%T^> ~%%T ^& dir /L /B ~%%T') do (
@@ -160,6 +105,8 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     )
   )
   
+  set team_clean=!team!
+  
   REM - Add slashes (or brackets)
   if not "!team!"=="s4s" (
     set team=/!team!/
@@ -167,7 +114,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     set team=[!team!]
   )
   
-  @echo - !team!
+  <nul set /p =- !team! 
   
   REM - Look for a dot near the end of the name
   REM - If there's a dot, mark as archive and remove the extension

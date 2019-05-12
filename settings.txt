@@ -7,7 +7,7 @@
 :: - Cpk Name -
 :: Write the package names you want without quotes (e.g. 4cc, vg lel)
 :: The maximum name length you can set here is 28 characters. Spaces are fine.
-set cpk_name=4cc_80_test
+set cpk_name=4cc_80_testpatch
 :: 
 :: 
 :: - Move Cpks -
@@ -19,7 +19,7 @@ set move_cpks=1
 :: 
 :: - PES' Download Folder Path -
 :: Set the path to PES' download folder (Only used if move_cpks is enabled).
-set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
+set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2017\download"
 :: 
 :: 
 :: - DpFileList Updating -
@@ -33,23 +33,25 @@ set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 20
 set dpfl_updating=1
 :: 
 :: 
-:: - Pause when Wrong -
-:: This setting is for pausing the script every time an export with wrong folders is found.
-:: Even if disabled, a line with the team's name is added to the memelist.txt file, so that
-:: you can meme on its manager (and fix the problem). Also, the export will be discarded.
-:: With this setting you can stop the script and fix the export before restarting it.
-:: Disable it if you want to leave your pc running unattended without ever stopping.
-:: Default: 1
-set pause_when_wrong=1
-:: 
-:: 
 :: - Bins Updating -
-:: This setting is usually only needed by aesthetics helpers.
 :: If enabled, the UniColor and TeamColor files in the other_stuff folder will be automatically
 :: updated with entries taken from the teams' txt files. These files will then be copied to the
 :: patches_contents folder and end up in the final patch.
+:: Updating the bins should only be disabled if your team has the same amount of kits as in
+:: previous seasons.
 :: Default: 1
 set bins_updating=1
+:: 
+:: 
+:: - Multi Cpk Mode -
+:: This setting is usually only needed by aesthetics helpers.
+:: Multi cpk mode creates various cpks, one with the face files, another one with the kits, boots,
+:: gloves, logos and portraits, and a third one with the unicolor and teamcolor files.
+:: You can set their names here (The previous name will be ignored)
+set multicpk_mode=0
+set faces_cpk_name=4cc_70_testfaces
+set uniform_cpk_name=4cc_75_testuniform
+set bins_cpk_name=4cc_09_testbins
 :: 
 :: 
 :: - Compression Level -
@@ -72,24 +74,14 @@ set bins_updating=1
 set compression=0
 :: 
 :: 
-:: - Dual Cpk Mode -
-:: This setting is usually only needed by aesthetics helpers.
-:: Dual cpk mode creates a two cpks, one with the face files and another one with the kits, boots,
-:: gloves, logos and other stuff.
-:: You can set their names here (The previous name will be ignored)
-set dualcpk_mode=0
-set faces_cpk_name=4cc_70_testfaces
-set uniform_cpk_name=4cc_75_testuniform
-:: 
-:: 
-:: - Full Patch Mode -
-:: This setting is usually only needed by aesthetics helpers.
-:: Full patch mode creates a _uniform cpk which includes all the default bin files and the 
-:: boots, gloves, thumbnails and other stuff, needed for it to completely replace the default
-:: 4cc_uniform cpk. It also copies the bin files again from the other_stuff folder.
-:: This mode requires the default_contents folder to be present in the script's folder.
-:: Default: 0
-set full_patch=0
+:: - Pause when Wrong -
+:: This setting is for pausing the script every time an export with wrong folders is found.
+:: Even if disabled, a line with the team's name is added to the memelist.txt file, so that
+:: you can meme on its manager (and fix the problem). Also, the export will be discarded.
+:: With this setting you can stop the script and fix the export before restarting it.
+:: Disable it if you want to leave your pc running unattended without ever stopping.
+:: Default: 1
+set pause_when_wrong=1
 :: 
 :: 
 :: - Pass-through Mode -
@@ -103,7 +95,7 @@ set pass_through=0
 :: 
 :: 
 :: - Forced Admin Mode -
-:: [Important] This setting is for forcing the request of admin permissions.
+:: This setting is for forcing the request of admin permissions.
 :: The script checks automatically if you need admin permissions or not depending on your
 :: pes install folder, but if despite that the script fails to move the cpks enable this.
 :: (If move_cpks is disabled, admin permissions won't be asked in any case.)
