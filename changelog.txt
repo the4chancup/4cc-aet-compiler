@@ -1,3 +1,24 @@
+12/10/17 - Version 3.8
+- Implemented removal of leftover kit enties in the unicolor bin.
+
+
+19/9/17 - Version 3.7
+- Updated the cpkmaker libraries
+- Removed the other_stuff folder and moved its contents to the root folder
+
+
+9/9/17 - Version 3.6
+- Added order numbers to the script files
+- Added support for zlibbed kit configs
+- Added a check for the right type of file on kit textures (no more pngs renamed to dds)
+- Improved the error messages
+- Updated the readme
+
+
+10/8/17 - Version 3.5
+- Added support for the Common folder
+
+
 1/3/17 - Version 3.3
 - Added ini files to the exclusion list of the export extractor
 
@@ -45,5 +66,5 @@ there's no need to zlib everything again when rerunning the script.
 texture. The zlibbing method is still recommended if compression is needed, though.
 
 
-25/10/16 - Version 1
+25/10/16 - Version 1.0
 - Initial support for the new simplified export format.

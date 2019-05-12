@@ -15,4 +15,10 @@ set all_in_one=1
 @echo - 
 
 REM - Invoke the first part of the process
-.\exports_to_extracted
+call .\1_exports_to_extracted
+
+REM - Invoke the second part of the process
+call .\2_extracted_to_content
+
+REM - Invoke the third part of the process
+call .\3_content_to_patches

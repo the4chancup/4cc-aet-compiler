@@ -1,8 +1,8 @@
 REM - Request for admin permissions
 
-REM - Check and store the all_in_one mode in a temp file
+REM - Check for the all_in_one mode and make a blank temp file if enabled
 if defined all_in_one (
-  @echo set all_in_one=1 > .\Engines\temp.bat
+  type nul > .\temp
 )
 
 
@@ -33,14 +33,14 @@ set admin_enabled=1
 
 
 REM - Load the all_in_one mode and delete the temp file
-if exist .\temp.bat (
-  call .\temp.bat
-  del .\temp.bat
+if exist .\temp (
+  set all_in_one=1
+  del .\temp
 )
  
 REM - Invoke the relevant part of the process
 if defined all_in_one (
-  ..\exports_to_extracted
+  ..\1_exports_to_extracted
 ) else (
-  ..\content_to_patches
+  ..\3_content_to_patches
 )

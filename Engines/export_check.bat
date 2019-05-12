@@ -46,7 +46,7 @@ if defined error (
     @echo - !team!'s manager needs to get memed on (no txt file^)
     @echo - This export will be discarded to prevent conflicts
     @echo - 
-    @echo - Stopping the script and fixing the export is recommended
+    @echo - Closing the script's window and fixing the export is recommended
     @echo - 
     
     pause
@@ -172,6 +172,14 @@ if not defined error (
         REM - Try to fix it, but warn about it later
         set nestederror=1
         
+        REM - Unless it's the Other or Common folders
+        if /i "%%E"=="Other" set nestederror=
+        if /i "%%E"=="Common" set nestederror=
+        
+      )
+        
+      if defined nestederror (
+      
         REM - Make a temporary folder
         md ".\extracted_exports\Temp"
         
@@ -229,51 +237,76 @@ if not defined error (
     for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Faces"') do (
       
       set facewrong=
+      set facewrong_num=
+      set facewrong_id2=
+      set facewrong_noxml=
+      set facewrong_edithairxml=
       
       set facename=%%C
       
 
       REM - Check that the player number is within the 01-23 range
-      if "!facename:~3,2!" LSS "01" set facewrong=1
-      if "!facename:~3,2!" GTR "23" set facewrong=1
+      if "!facename:~3,2!" LSS "01" (
+        set facewrong=1
+        set facewrong_num=1
+      )
+      if "!facename:~3,2!" GTR "23" (
+        set facewrong=1
+        set facewrong_num=1
+      )
       
       
       if not defined facewrong (
         
-        set facewrong=1
-
-        REM - If the folder is in legacy format check the internal face folders too
+        REM - If the folder is in legacy format
         if exist ".\extracted_exports\!foldername!\Faces\!facename!\common" (
         
           set faceid=!facename:~0,5!
           
-          if exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face.xml" (
-            set facewrong=
-          )
-          if exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face_edithair.xml" (
-            set facewrong=
+          REM - Check that the internal folder has the proper id
+          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!" (
+            set facewrong=1
+            set facewrong_id2=1
           )
           
           if not defined facewrong (
-            
-            REM - And simplify the folder
-            for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!"') do (
-              
-              move ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\%%D" ".\extracted_exports\!foldername!\Faces\!facename!" >nul
+          
+            REM - Check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
+            if not exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face.xml" (
+              set facewrong=1
+              set facewrong_noxml=1
+            )
+            if exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face_edithair.xml" (
+              set facewrong=1
+              set facewrong_edithairxml=1
+              set facewrong_noxml=
             )
             
-            REM - Delete the now empty structure of folders
-            rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!\common"
+            if not defined facewrong (
+              
+              REM - And simplify the folder
+              for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!"') do (
+                
+                move ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\%%D" ".\extracted_exports\!foldername!\Faces\!facename!" >nul
+              )
+              
+              REM - Delete the now empty structure of folders
+              rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!\common"
+            )
+            
           )
         
         ) else (
         
-          REM - Otherwise just check that the folder has the essential face.xml or face_edithair.xml file
-          if exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
-            set facewrong=
+          REM - Otherwise just check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
+          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
+            set facewrong=1
+            set facewrong_noxml=1
           )
           if exist ".\extracted_exports\!foldername!\Faces\!facename!\face_edithair.xml" (
-            set facewrong=
+            set facewrong=1
+            set facewrong_edithairxml=1
+            set facewrong_noxml=
           )
         )
         
@@ -289,11 +322,11 @@ if not defined error (
           set faceserror=1
           
           @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong face folder names^) >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (bad face folders^) >> memelist.txt
           set memelist=1
           
           @echo -
-          @echo - !team!'s manager needs to get memed on (wrong face folder names^)
+          @echo - !team!'s manager needs to get memed on (bad face folders^)
         ) 
         
         REM - And skip the face folder
@@ -301,9 +334,32 @@ if not defined error (
           rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!"
         )
         
-        @echo - The face folder !facename! is wrong - Folder discarded >> memelist.txt
+        REM - Give an error depending on the particular problem
+        if defined facewrong_num (
+          @echo - The face folder !facename! is bad >> memelist.txt
+          @echo (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
+          @echo - The face folder !facename! is bad
+          @echo (player number !facename:~3,2! out of the 01-23 range^)
+        )
+        if defined facewrong_id2 (
+          @echo - The face folder !facename! is bad >> memelist.txt
+          @echo (wrong player id in the internal face folder^) - Folder discarded >> memelist.txt
+          @echo - The face folder !facename! is bad
+          @echo (wrong player id in the internal face folder^)
+        )
+        if defined facewrong_noxml (
+          @echo - The face folder !facename! is bad >> memelist.txt
+          @echo (no face.xml file inside^) - Folder discarded >> memelist.txt
+          @echo - The face folder !facename! is bad
+          @echo (no face.xml file inside^)
+        )
+        if defined facewrong_edithairxml (
+          @echo - The face folder !facename! is bad >> memelist.txt
+          @echo (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
+          @echo - The face folder !facename! is bad
+          @echo (unsupported edithair face folder, needs updating^)
+        )
         
-        @echo - The face folder !facename! is wrong
       )
     
     )
@@ -311,8 +367,8 @@ if not defined error (
     REM - If the team has bad face folders close the previously opened message
     if defined faceserror (
 
-      @echo - The face folders mentioned above will be discarded to prevent conflicts
-      @echo - Stopping the script and fixing them is recommended
+      @echo - The face folders mentioned above will be discarded to avoid problems
+      @echo - Closing the script's window and fixing them is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -391,7 +447,7 @@ if not defined error (
       @echo -
       @echo - !team!'s manager needs to get memed on (wrong kit config names^)
       @echo - The Kit Configs folder will be discarded since it's unusable
-      @echo - Stopping the script and fixing it is recommended
+      @echo - Closing the script's window and fixing it is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -413,7 +469,7 @@ if not defined error (
         @echo - 
         @echo - The amount of !team!'s kit color entries is not
         @echo - equal to the amount of kit config files
-        @echo - Stopping the script and fixing it is recommended
+        @echo - Closing the script's window and fixing it is recommended
         @echo - 
         
         if not %pause_when_wrong%==0 (
@@ -441,72 +497,154 @@ if not defined error (
 
 if not defined error (
 
-  REM - If a Kit Textures folder exists and is not empty, check that the kit textures' filenames are correct
+  REM - If a Kit Textures folder exists and is not empty, check that the kit textures' filenames and type are correct
   set checktexture=
   >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Kit Textures\*" && (set checktexture=1) || (echo ->nul)
   
   if defined checktexture (
     
-    set textureerror=
-
+    set texturecrash=
+    
     REM - For every texture
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
       
-      set texturewrong=
-      set texturename=%%C
+      if not defined texturecrash (
       
-      
-      REM - Check that its name starts with u
-      if /i not "!texturename:~0,1!"=="u" set texturewrong=1
-      
-      if not defined texturewrong (
-      
-        set texturewrong=1
-      
-        REM - Check that its name has p or g in the correct position
-        if /i "!texturename:~5,1!"=="p" set texturewrong=
-        if /i "!texturename:~5,1!"=="g" set texturewrong=
-      )
-      
-    
-      REM - If the texture is named wrongly
-      if defined texturewrong (
+        set texturename=%%C
         
-        REM - Warn about the team having bad texture names
-        if not defined textureerror (
+        set zlibbed=
+      
+        REM - Check if it is zlibbed
+        for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\%%C" -d 3 5`) do (
           
-          set textureerror=1
-          
-          @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong kit texture names^) >> memelist.txt
-          set memelist=1
-          
-          @echo -
-          @echo - !team!'s manager needs to get memed on (wrong kit texture names^)
-        ) 
-        
-        REM - And skip it
-        if not %pass_through%==1 (
-          del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!texturename!"
+          REM - If the file has the WESYS label it's zlibbed
+          if "%%E%%F%%G%%H%%I"=="5745535953" (
+            
+            set zlibbed=1
+          )
         )
         
-        @echo - The kit texture !texturename! is wrong - File discarded >> memelist.txt
+        REM - If the file is zlibbed
+        if defined zlibbed (
         
-        @echo - The kit texture !texturename! is wrong
+          REM - Unzlib it
+          .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
+          
+          REM - Set the unzlibbed file as file to check
+          set texturename=%%C.unzlib
+        )
+        
+        
+        REM - Check if it is a dds
+        for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!texturename!" -d 0 3`) do (
+          
+          REM - If the file doesn't start with DDS it's bad
+          if not "%%E%%F%%G"=="444453" (
+            
+            set texturecrash=1
+            set texturename=%%C
+          )
+        )
+        
+        
+        if defined zlibbed (
+        
+          REM - Delete the extra unzlibbed file
+          del ".\extracted_exports\!foldername!\Kit Textures\%%C.unzlib" >nul
+        )
+        
       )
-    
     )
     
-    REM - If the team has bad kit textures close the previously opened message
-    if defined textureerror (
-
-      @echo - The kit textures mentioned above will be discarded since they're unusable
-      @echo - Stopping the script and fixing them is recommended
+    REM - If the folder has a non-dds texture
+    if defined texturecrash (
+    
+      REM - Skip the whole Kit Textures folder
+      if not %pass_through%==1 (
+        rd /S /Q ".\extracted_exports\!foldername!\Kit Textures"
+      )
+      
+      @echo - >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (non-dds kit textures^) - Kit Textures discarded >> memelist.txt
+      set memelist=1
+      
+      @echo -
+      @echo - !team!'s manager needs to get memed on (non-dds kit textures^)
+      @echo - This is usually caused by png textures renamed to dds instead of saved as dds
+      @echo - First game-crashing texture found: !texturename!
+      @echo - The Kit Textures folder will be discarded since it's unusable
+      @echo - Closing the script's window and fixing it is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
         pause
-      )      
+      )
+    
+    
+    ) else (
+    
+      set textureerror=
+
+      REM - For every texture
+      for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
+        
+        set texturewrong=
+        set texturename=%%C
+        
+        
+        REM - Check that its name starts with u
+        if not "!texturename:~0,1!"=="u" set texturewrong=1
+        
+        if not defined texturewrong (
+        
+          set texturewrong=1
+        
+          REM - Check that its name has p or g in the correct position
+          if /i "!texturename:~5,1!"=="p" set texturewrong=
+          if /i "!texturename:~5,1!"=="g" set texturewrong=
+        )
+        
+      
+        REM - If the texture is named wrongly
+        if defined texturewrong (
+          
+          REM - Warn about the team having bad texture names
+          if not defined textureerror (
+            
+            set textureerror=1
+            
+            @echo - >> memelist.txt
+            @echo - !team!'s manager needs to get memed on (wrong kit texture names^) >> memelist.txt
+            set memelist=1
+            
+            @echo -
+            @echo - !team!'s manager needs to get memed on (wrong kit texture names^)
+          ) 
+          
+          REM - And skip it
+          if not %pass_through%==1 (
+            del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!texturename!"
+          )
+          
+          @echo - The kit texture !texturename! is wrong - File discarded >> memelist.txt
+          
+          @echo - The kit texture !texturename! is wrong
+        )
+      
+      )
+      
+      REM - If the team has bad kit textures close the previously opened message
+      if defined textureerror (
+
+        @echo - The kit textures mentioned above will be discarded since they're unusable
+        @echo - Closing the script's window and fixing them is recommended
+        @echo -
+        
+        if not %pause_when_wrong%==0 (
+          pause
+        )      
+      )
+      
     )
 
   ) else (
@@ -580,7 +718,7 @@ if not defined error (
       @echo -
       @echo - !team!'s manager needs to get memed on (wrong logo filenames^)
       @echo - The Logo folder will be discarded since it's unusable
-      @echo - Stopping the script and fixing it is recommended
+      @echo - Closing the script's window and fixing it is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -614,6 +752,9 @@ if not defined error (
       set portraitwrong=
       set portraitname=%%C
       
+      
+      REM - Check that its name starts with player_
+      if not "!portraitname:~0,7!"=="player_" set portraitwrong=1
       
       REM - Check that the player number is within the 01-23 range
       if "!portraitname:~-6,2!" LSS "01" set portraitwrong=1
@@ -652,7 +793,7 @@ if not defined error (
     if defined portraiterror (
 
       @echo - The portraits mentioned above will be discarded since they're unusable
-      @echo - Stopping the script and fixing them is recommended
+      @echo - Closing the script's window and fixing them is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -729,7 +870,7 @@ if not defined error (
     if defined bootserror (
 
       @echo - The boots folders mentioned above will be discarded since they're unusable
-      @echo - Stopping the script and fixing them is recommended
+      @echo - Closing the script's window and fixing them is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -806,7 +947,7 @@ if not defined error (
     if defined gloveserror (
 
       @echo - The glove folders mentioned above will be discarded since they're unusable
-      @echo - Stopping the script and fixing them is recommended
+      @echo - Closing the script's window and fixing them is recommended
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -819,6 +960,21 @@ if not defined error (
     REM - If the folder exists but is empty, delete it
     if exist ".\extracted_exports\!foldername!\Gloves" (
       rd /S /Q ".\extracted_exports\!foldername!\Gloves" >nul
+    )
+  )
+)
+
+
+if not defined error (
+
+  REM - If a Common folder exists and is empty, delete it
+  if exist ".\extracted_exports\!foldername!\Common" (
+  
+    set keepcommon=
+    >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set keepcommon=1) || (echo ->nul)
+    
+    if not defined keepcommon (
+      rd /S /Q ".\extracted_exports\!foldername!\Common" >nul
     )
   )
 )

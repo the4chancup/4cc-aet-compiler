@@ -9,9 +9,9 @@ cd /D "%~dp0"
 
 REM - Load the settings
 if exist settings.txt (
-  rename settings.txt settings.bat
+  rename settings.txt settings.cmd
   call settings
-  rename settings.bat settings.txt
+  rename settings.cmd settings.txt
 ) else (
   set multicpk_mode=0
   set cpk_name=4cc_80_testpatch
@@ -58,7 +58,7 @@ if not defined all_in_one (
       
       notepad .\settings.txt
       
-      .\content_to_patches
+      .\3_content_to_patches
     )
     
     REM - Check if admin mode is needed
@@ -153,7 +153,7 @@ if %move_cpks%==1 (
   @echo -
   @echo - Move Cpks mode is enabled
   @echo -
-  @echo - Moving the cpks
+  @echo - Moving the cpks to the download folder
   @echo -
 
   if not %multicpk_mode%==0 (
@@ -240,6 +240,7 @@ if %move_cpks%==1 (
 
 
 if defined all_in_one (
+
   REM - Reset the all_in_one mode flag
   set all_in_one=
   

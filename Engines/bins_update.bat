@@ -1,4 +1,3 @@
-@echo off
 ::=========================================================================
 ::BEGIN DEFINITION OF THE MACRO FOR CONVERTING TO HEXADECIMAL
 ::
@@ -52,11 +51,8 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
   set gk=0
   
   
-  REM - The kit icon numbers are not in the txt files, so until they're added we'll use this for everything
-  set icon=03
-  
   REM - For every line
-  for /f "tokens=1-10 usebackq" %%A in (".\extracted_exports\%%Z") do (
+  for /f "tokens=1-12 usebackq" %%A in (".\extracted_exports\%%Z") do (
     
     REM - Unless the relevant stuff is over
     if not defined stop (
@@ -114,7 +110,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           set team_found=
           
           REM - Write the team color entries to the TeamColor file
-          .\Engines\hexed ".\other_stuff\Bin Files\TeamColor.bin" -e !position! !hex!
+          .\Engines\hexed ".\Bin Files\TeamColor.bin" -e !position! !hex!
           
           REM - Clear the buffer
           set hex=
@@ -137,6 +133,20 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
         
         REM - If we've reached the end
         if /i "!test:~0,5!"=="Other" (
+          
+          REM - Check how many kit entries must be left blank
+          set /a kits_blank=10-!kits!
+          set hex=FF 00 00 00 00 00 00 00
+          
+          for /l %%T in (1,1,!kits_blank!) do (
+          
+            REM - Write a blank kit color entry to the UniColor file  
+            .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position_kit! !hex!
+            
+            REM - Set the position of the next kit
+            set /a position_kit=0x!position_kit!+8
+            %macro_Call% ("position_kit position_kit") %macro.Num2Hex%
+          )
           
           REM - Stop looking for stuff in the file
           set stop=1
@@ -258,6 +268,9 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
               REM - Get the second value
               set check2=%%F
               
+              REM - Get the custom icon value
+              set checkicon=%%H
+              
               REM - Get the kit's colors directly
               set kits_r1=!check:~1,2!
               set kits_g1=!check:~3,2!
@@ -276,6 +289,9 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
               set kits_r2=%%H
               set kits_g2=%%I
               set kits_b2=%%J
+              
+              REM - Get the custom icon value
+              set checkicon=%%L
               
               REM - Remove any leading zeros
               for /l %%Y in (1,1,2) do (
@@ -304,6 +320,26 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
               set "kits_b2=!kits_b2:~-2!"              
             )
             
+            REM - Check if the custom icon number exists and is in range
+            set okicon=1
+            
+            if !checkicon! LSS 0 set okicon=
+            if !checkicon! GTR 23 set okicon=
+            if not defined checkicon set okicon=
+            
+            if defined okicon (
+            
+              if "!checkicon:~-2,1!"=="0" (
+                set checkicon=!checkicon:~-1!
+              )
+
+              set icon=!checkicon!
+            
+            ) else (
+            
+              set icon=3
+            )
+            
             REM - Prepare the kit's type
             if not %%C==GK: (
               
@@ -317,9 +353,9 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
             )
             
             
-            REM - Write the number the kit color entry to the UniColor file
+            REM - Write the kit color entry to the UniColor file
             set hex=!type! !icon! !kits_r1! !kits_g1! !kits_b1! !kits_r2! !kits_g2! !kits_b2!
-            .\Engines\hexed ".\other_stuff\Bin Files\UniColor.bin" -e !position_kit! !hex!
+            .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position_kit! !hex!
             
 
             REM - Raise the kits counter
@@ -345,7 +381,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
     )
     
     REM - Write the number of kits to the UniColor file
-    .\Engines\hexed ".\other_stuff\Bin Files\UniColor.bin" -e !position! 0!kits_hex!
+    .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position! 0!kits_hex!
     
     
     if exist ".\extracted_exports\Kit Configs\!teamid!\" (

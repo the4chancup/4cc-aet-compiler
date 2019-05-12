@@ -12,9 +12,9 @@ set script_folder=%~dp0
 
 REM - Load the settings
 if exist settings.txt (
-  rename settings.txt settings.bat
+  rename settings.txt settings.cmd
   call settings
-  rename settings.bat settings.txt
+  rename settings.cmd settings.txt
 ) else (
   set move_cpks=1
   set admin_mode=0
@@ -43,7 +43,7 @@ if defined all_in_one (
       
       notepad .\settings.txt
       
-      .\exports_to_extracted
+      .\1_exports_to_extracted
     )
     
     REM - Check if admin mode is needed
@@ -68,14 +68,7 @@ if defined all_in_one (
 
 REM - Create folders just in case
 md ".\exports_to_add" 2>nul
-md ".\extracted_exports\Faces" 2>nul
-md ".\extracted_exports\Kit Configs" 2>nul
-md ".\extracted_exports\Kit Textures" 2>nul
-md ".\extracted_exports\Logo" 2>nul
-md ".\extracted_exports\Portraits" 2>nul
-md ".\extracted_exports\Boots" 2>nul
-md ".\extracted_exports\Gloves" 2>nul
-md ".\extracted_exports\Other" 2>nul
+md ".\extracted_exports" 2>nul
 
 REM - Clear the flag for writing to file
 set memelist=
@@ -181,10 +174,13 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     
     
     REM - Delete the now empty export folder
-    rd /S /Q ".\extracted_exports\!foldername!"
+    rd /S /Q ".\extracted_exports\!foldername!" >nul
   )
 )
 
+if exist ".\Engines\stored_zlibbed" (
+  rd /S /Q ".\Engines\stored_zlibbed" >nul
+)
 
 
 set other=
@@ -238,7 +234,9 @@ if defined all_in_one (
 
   if defined warn (
 
-    @echo - After that you can continue and leave the pc unattended
+    if defined other (
+      @echo - After that you can continue and leave the pc unattended
+    )
   
     if not %pause_when_wrong%==0 (
       pause
@@ -253,21 +251,23 @@ if defined all_in_one (
     timeout /t 5
   )
   
-  .\extracted_to_content
-  
-)
-
-@echo - 
-@echo - 
-@echo - 4cc aet compiler by Shakes
-@echo - 
-@echo - 
-
-if defined warn (
-  
-  timeout /t 30
   
 ) else (
-  
-  timeout /t 20
+
+  @echo - 
+  @echo - 
+  @echo - 4cc aet compiler by Shakes
+  @echo - 
+  @echo - 
+
+  if defined warn (
+    
+    timeout /t 30
+    
+  ) else (
+    
+    timeout /t 20
+  )
+
 )
+

@@ -1,5 +1,5 @@
 REM - Edit and move the contents of the export to the root of extracted_exports
-@echo off
+
 ::=========================================================================
 ::BEGIN DEFINITION OF THE MACRO FOR CONVERTING TO HEXADECIMAL
 ::
@@ -50,6 +50,11 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For each face folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
@@ -76,7 +81,12 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
-    REM - Delete the folder if already present
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
+    REM - Delete the team folder if already present
     if exist ".\extracted_exports\Kit Configs\!teamid!" (
       rd /S /Q ".\extracted_exports\Kit Configs\!teamid!"
     )
@@ -102,7 +112,32 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     REM - For every kit config file
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B"') do (
       
-      set name=%%C
+      set zlibbed=
+    
+      REM - Check if it is zlibbed
+      for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\%%B\%%C" -d 3 5`) do (
+        
+        REM - If the file has the WESYS label it's zlibbed
+        if "%%E%%F%%G%%H%%I"=="5745535953" (
+          
+          set zlibbed=1
+        )
+      )
+      
+      REM - If the file is zlibbed
+      if defined zlibbed (
+      
+        REM - Unzlib it
+        .\Engines\zlibtool ".\extracted_exports\!foldername!\%%B\%%C" -d >nul
+        
+        REM - Delete the original file
+        del ".\extracted_exports\!foldername!\%%B\%%C" >nul
+        
+        REM - And change the unzlibbed file's extension
+        rename ".\extracted_exports\!foldername!\%%B\%%C.unzlib" "%%C" >nul
+
+      )
+      
       
       REM - Edit the texture names inside the config file so that they point to the proper textures
       for /l %%O in (0 1 4) do (
@@ -116,8 +151,8 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           set char=%%Y
         )
         
-        REM - If the line is not empty write the proper texture name
-        if not !char!==00 (
+        REM - If the line begins with u write the proper texture name
+        if !char!==75 (
         
           .\Engines\hexed ".\extracted_exports\!foldername!\%%B\%%C" -e !position_hex! !texname_hexspc!
         )
@@ -125,13 +160,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       )
       
       
-      REM - Replace the dummy team ID with the actual one
+      REM - Replace the dummy team ID in the filename with the actual one
       set name=%%C
       set name=!teamid!!name:~3!
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
       
-      REM - And move the kit config file
+      REM - And move the file
       move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B\!teamid!" >nul
     )
     
@@ -143,16 +178,21 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For every kit texture file
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
-      REM - Replace the dummy team ID with the actual one
+      REM - Replace the dummy team ID in the filename with the actual one
       set name=%%C
       set name=u0!teamid!!name:~5!
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
       
-      REM - And move the kit texture file
+      REM - And move the file
       move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
     )
     
@@ -164,16 +204,21 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For every logo file
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
-      REM - Replace the dummy team ID with the actual one
+      REM - Replace the dummy team ID in the filename with the actual one
       set name=%%C
       set name=emblem_0!teamid!!name:~11!
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
       
-      REM - And move the kit texture file
+      REM - And move the file
       move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
     )
     
@@ -185,16 +230,21 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For every portrait file
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
-      REM - Replace the dummy team ID with the actual one
+      REM - Replace the dummy team ID in the filename with the actual one
       set name=%%C
       set name=player_!teamid!!name:~10!
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
       
-      REM - And move the kit texture file
+      REM - And move the file
       move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
     )
     
@@ -206,6 +256,11 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For each boots folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
@@ -214,7 +269,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         rd /S /Q ".\extracted_exports\%%B\%%C"
       )
       
-      REM - And move the boots folder
+      REM - And move the folder
       move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B" >nul
     )
   
@@ -226,6 +281,11 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
     REM - For each gloves folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
@@ -234,8 +294,40 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         rd /S /Q ".\extracted_exports\%%B\%%C"
       )
       
-      REM - And move the gloves folder
+      REM - And move the folder
       move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B" >nul
+    )
+    
+  )
+  
+  
+  REM - Common folder
+  if /i "%%B"=="Common" (
+  
+    set unknown=
+    
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
+    REM - First check that it isn't empty
+    set movecommon=
+    >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set movecommon=1) || (echo ->nul)
+  
+    if defined movecommon (
+    
+      REM - Make a team folder with the team name after deleting it if already present
+      if exist ".\extracted_exports\%%B\!team_clean!\" (
+        rd /S /Q ".\extracted_exports\%%B\!team_clean!"
+      )
+      md ".\extracted_exports\%%B\!team_clean!" 2>nul
+    
+      REM - Move everything to that folder
+      for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+        
+        move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!team_clean!" >nul
+      )
     )
     
   )
@@ -245,6 +337,11 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   if /i "%%B"=="Other" (
   
     set unknown=
+    
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
     
     REM - First check that it isn't empty
     set moveother=
@@ -293,6 +390,7 @@ if defined unknownexists (
     if /i "%%B"=="Portraits" set unknown=
     if /i "%%B"=="Boots" set unknown=
     if /i "%%B"=="Gloves" set unknown=
+    if /i "%%B"=="Common" set unknown=
     if /i "%%B"=="Other" set unknown=
     
     REM - If the folder was found
