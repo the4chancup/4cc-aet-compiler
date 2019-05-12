@@ -187,8 +187,8 @@ admin_check file. Enable Force admin mode in the settings file and try again.
 
 
 
-Tool and readme by Shakes
+Tool by Shakes
 
 Special thanks to Tomato for feature ideas
 
-Last updated: 18/1/2017 (v3.1)
+Last updated: 1/3/2017 (v3.3)

@@ -140,12 +140,12 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   if defined archive (
   
     REM - If marked as archive, extract the export to that folder
-    .\Engines\7z.exe x ".\exports_to_add\%%A" -aoa -o".\extracted_exports\!foldername!" -xr^^!*.db >nul
+    .\Engines\7z.exe x ".\exports_to_add\%%A" -aoa -o".\extracted_exports\!foldername!" -xr^^!*.db -xr^^!*.ini >nul
   
   ) else (
     
     REM - If the export was in a folder just copy it
-    robocopy ".\exports_to_add\!foldername!" ".\extracted_exports\!foldername!" /e /is /xf *.db >nul
+    robocopy ".\exports_to_add\!foldername!" ".\extracted_exports\!foldername!" /e /is /xf *.db *.ini >nul
   )
   
   
