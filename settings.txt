@@ -3,11 +3,16 @@
 :: Lines starting with :: are comment lines and will be ignored by the script.
 :: 1 means enabled, 0 means disabled. No spaces allowed next to the equal sign.
 :: 
-::
+:: 
+:: - Fox Mode -
+:: Enable this to make the compiler accept exports with files for PES18/19 instead of PES16/17
+set fox_mode=1
+:: 
+:: 
 :: - Cpk Name -
 :: Write the package names you want without quotes (e.g. 4cc, vg lel)
 :: The maximum name length you can set here is 28 characters. Spaces are fine.
-set cpk_name=4cc_80_testpatch
+set cpk_name=4cc_test
 :: 
 :: 
 :: - Move Cpks -
@@ -19,7 +24,7 @@ set move_cpks=1
 :: 
 :: - PES' Download Folder Path -
 :: Set the path to PES' download folder (Only used if move_cpks is enabled).
-set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2017\download"
+set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2018\download"
 :: 
 :: 
 :: - DpFileList Updating -
@@ -40,7 +45,7 @@ set dpfl_updating=1
 :: Updating the bins should only be disabled if your team has the same amount of kits as in
 :: previous seasons.
 :: Default: 1
-set bins_updating=1
+set bins_updating=0
 :: 
 :: 
 :: - Multi Cpk Mode -
@@ -49,9 +54,9 @@ set bins_updating=1
 :: gloves, logos and portraits, and a third one with the unicolor and teamcolor files.
 :: You can set their names here (The previous name will be ignored)
 set multicpk_mode=0
-set faces_cpk_name=4cc_70_testfaces
-set uniform_cpk_name=4cc_75_testuniform
-set bins_cpk_name=4cc_09_testbins
+set faces_cpk_name=4cc_40_faces
+set uniform_cpk_name=4cc_45_uniform
+set bins_cpk_name=4cc_08_bins
 :: 
 :: 
 :: - Compression Level -
@@ -72,7 +77,7 @@ set bins_cpk_name=4cc_09_testbins
 :: storage_zlibbed folder when compiling new versions is required when using this setting.
 :: . In short, use level 1 if you just want a simple compression, and use level 2 if you know
 :: exactly what you're doing.
-:: Default: 0
+:: Default: 0 :: Accepted values: 0 - 1 - 2
 set compression=0
 :: 
 :: 

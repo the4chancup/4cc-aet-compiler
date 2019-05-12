@@ -1,5 +1,10 @@
+30/04/19 - Version 3.9 (Fox preview)
+- Implemented packing of faces in pes18 format
+- Added support for portraits in face folders
+
+
 12/10/17 - Version 3.8
-- Implemented removal of leftover kit enties in the unicolor bin.
+- Implemented removal of leftover kit entries in the unicolor bin.
 
 
 19/9/17 - Version 3.7

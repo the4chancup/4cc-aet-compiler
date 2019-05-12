@@ -258,47 +258,9 @@ if not defined error (
       
       if not defined facewrong (
         
-        REM - If the folder is in legacy format
-        if exist ".\extracted_exports\!foldername!\Faces\!facename!\common" (
-        
-          set faceid=!facename:~0,5!
+        if not defined fox_mode (
           
-          REM - Check that the internal folder has the proper id
-          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!" (
-            set facewrong=1
-            set facewrong_id2=1
-          )
-          
-          if not defined facewrong (
-          
-            REM - Check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
-            if not exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face.xml" (
-              set facewrong=1
-              set facewrong_noxml=1
-            )
-            if exist ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\face_edithair.xml" (
-              set facewrong=1
-              set facewrong_edithairxml=1
-              set facewrong_noxml=
-            )
-            
-            if not defined facewrong (
-              
-              REM - And simplify the folder
-              for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!"') do (
-                
-                move ".\extracted_exports\!foldername!\Faces\!facename!\common\character0\model\character\face\real\!faceid!\%%D" ".\extracted_exports\!foldername!\Faces\!facename!" >nul
-              )
-              
-              REM - Delete the now empty structure of folders
-              rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!\common"
-            )
-            
-          )
-        
-        ) else (
-        
-          REM - Otherwise just check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
+          REM - Check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
           if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
             set facewrong=1
             set facewrong_noxml=1
@@ -308,6 +270,15 @@ if not defined error (
             set facewrong_edithairxml=1
             set facewrong_noxml=
           )
+          
+        ) else (
+          
+          REM - Check that the folder has the essential face.fpk.xml file
+          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.fpk.xml" (
+            set facewrong=1
+            set facewrong_nofpkxml=1
+          )
+          
         )
         
       )
@@ -337,26 +308,26 @@ if not defined error (
         REM - Give an error depending on the particular problem
         if defined facewrong_num (
           @echo - The face folder !facename! is bad >> memelist.txt
-          @echo (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
           @echo - The face folder !facename! is bad
+          @echo (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
           @echo (player number !facename:~3,2! out of the 01-23 range^)
         )
-        if defined facewrong_id2 (
+        if defined facewrong_nofpkxml (
           @echo - The face folder !facename! is bad >> memelist.txt
-          @echo (wrong player id in the internal face folder^) - Folder discarded >> memelist.txt
           @echo - The face folder !facename! is bad
-          @echo (wrong player id in the internal face folder^)
+          @echo (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
+          @echo (no face.fpk.xml file inside^)
         )
         if defined facewrong_noxml (
           @echo - The face folder !facename! is bad >> memelist.txt
-          @echo (no face.xml file inside^) - Folder discarded >> memelist.txt
           @echo - The face folder !facename! is bad
+          @echo (no face.xml file inside^) - Folder discarded >> memelist.txt
           @echo (no face.xml file inside^)
         )
         if defined facewrong_edithairxml (
           @echo - The face folder !facename! is bad >> memelist.txt
-          @echo (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
           @echo - The face folder !facename! is bad
+          @echo (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
           @echo (unsupported edithair face folder, needs updating^)
         )
         

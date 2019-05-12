@@ -61,52 +61,6 @@ if %bins_updating%==1 (
 )
 
 
-
-REM - If there's a Faces folder, pack its folders
-if exist ".\extracted_exports\Faces" (
-
-  @echo - 
-  @echo - Packing the face folders into cpks
-  
-  REM - Create a "real" folder if needed
-  if not exist ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real" (
-    md ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real" 2>nul
-  )
-
-  REM - For every face folder
-  for /f "tokens=*" %%A in ('dir /a:d /b ".\extracted_exports\Faces" 2^>nul') do (
-    
-    set facename=%%A
-    set faceid=!facename:~0,5!
-
-    REM - Rename it to the player id
-    rename ".\extracted_exports\Faces\%%A" "!faceid!" >nul
-    
-    REM - Make a properly structured temp folder
-    md ".\faces_in_folders\!faceid!\common\character0\model\character\face\real"
-    
-    REM - Move the face folder to the temp folder
-    move ".\extracted_exports\Faces\!faceid!" ".\faces_in_folders\!faceid!\common\character0\model\character\face\real" >nul
-    
-    REM - Make a cpk and put it in the Faces folder
-    @echo - %%A
-    
-    if %compression%==1 (
-      .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask -forcecompress >nul
-    ) else (
-      .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask >nul
-    )
-    
-    rd /S /Q ".\faces_in_folders\!faceid!" >nul
-  )
-  
-  REM . Then delete the main folder and temp folder
-  rd /S /Q ".\extracted_exports\Faces" >nul
-  rd /S /Q ".\faces_in_folders" >nul
-
-)
-
-
 set kitmess=
 set othmess=
 
@@ -208,14 +162,14 @@ if exist ".\extracted_exports\Portraits" (
   )
   
   REM - Create a "player" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\render\symbol\player" (
-    md ".\patches_contents\%uniform_foldername%\common\render\symbol\player" 2>nul
+  if not exist ".\patches_contents\%faces_foldername%\common\render\symbol\player" (
+    md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
   )
   
-  REM - Move the portraits to the Uniform folder
+  REM - Move the portraits to the Faces folder
   for /f %%A in ('dir /b ".\extracted_exports\Portraits" 2^>nul') do (
     
-    move ".\extracted_exports\Portraits\%%A" ".\patches_contents\%uniform_foldername%\common\render\symbol\player" >nul
+    move ".\extracted_exports\Portraits\%%A" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
   )
 
   REM . Then delete the main folder
@@ -318,6 +272,12 @@ if exist ".\extracted_exports\Common" (
 )
 
 
+REM - If there's a Faces folder, pack its folders
+if exist ".\extracted_exports\Faces" (
+  call .\Engines\faces_pack
+)
+
+
 
 del cpkmaker.out.csv 2>nul
 
@@ -327,7 +287,7 @@ if defined all_in_one (
 
   @echo - 
   @echo - 
-  @echo - Patch content folders compiled
+  @echo - Patch contents folders compiled
   @echo - 
   
   

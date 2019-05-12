@@ -10,7 +10,7 @@ set all_in_one=1
 
 @echo - 
 @echo - 
-@echo - 4cc aet compiler - Full mode
+@echo - 4cc aet compiler - All-in-one mode
 @echo - 
 @echo - 
 
@@ -18,7 +18,7 @@ REM - Invoke the first part of the process
 call .\1_exports_to_extracted
 
 REM - Invoke the second part of the process
-call .\2_extracted_to_content
+call .\2_extracted_to_contents
 
 REM - Invoke the third part of the process
-call .\3_content_to_patches
+call .\3_contents_to_patches

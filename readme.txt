@@ -93,7 +93,7 @@ Use this script by itself if you just want to check the exports for correctness
 and/or prepare the extracted_exports folder for the next step.
 
 
--- 2_extracted_to_content --
+-- 2_extracted_to_contents --
 
 This script makes a cpk for each of the folders in the Faces folder inside
 the extracted_exports folder and stores it in the Singlecpk or Facescpk folder
@@ -120,7 +120,7 @@ Use this script by itself when you want to prepare the patches_contents folder
 with multiple exports in different moments before packing the final cpk(s).
 
 
--- 3_content_to_patches --
+-- 3_contents_to_patches --
 
 This script takes the contents of the folder(s) in the patches_contents folder
 and packs them into a cpk(s), whose name(s) can be changed in the settings file.
@@ -221,6 +221,6 @@ and try again.
 
 Tool by Shakes
 
-Special thanks to Tomato for feature ideas
+Special thanks to Tomato for ideas and some of the engines used by this compiler
 
-Last updated: 12/10/2017 (v3.8)
+Last updated: 30/04/2017 (v3.9)
