@@ -167,13 +167,16 @@ set pause=
 
 
 if defined memelist (
+
   set warn=1
+  
   @echo - (Some problems were found, check the memelist.txt file for details^)
   
 )
 
 REM - If there's something in the Other folder
 if defined other (
+
   set warn=1
 
   @echo - 
@@ -182,6 +185,7 @@ if defined other (
   @echo - Please open it and check its contents, unless you have already done
   @echo - this previously for these exports
   @echo - 
+  
 )
 
 if not defined warn (
@@ -198,8 +202,13 @@ if defined all_in_one (
     )
   
     if not %pause_when_wrong%==0 (
+      
+      @echo - 
+      
       pause
+      
     ) else (
+    
       @echo - Pause mode has been disabled
       @echo - If you need to pause this countdown press Ctrl-C
       @echo - You can then resume the script by pressing N, then Enter
@@ -209,7 +218,6 @@ if defined all_in_one (
   ) else (
     timeout /t 5
   )
-  
   
 ) else (
 

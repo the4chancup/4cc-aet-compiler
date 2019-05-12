@@ -332,6 +332,9 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
               if "!checkicon:~-2,1!"=="0" (
                 set checkicon=!checkicon:~-1!
               )
+              
+              REM - Convert to hex
+              %macro_Call% ("checkicon checkicon") %macro.Num2Hex%
 
               set icon=!checkicon!
             

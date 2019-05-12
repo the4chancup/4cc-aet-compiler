@@ -228,4 +228,4 @@ and try again.
 
 Tool by Shakes
 
-Special thanks to Tomato for feature ideas
+Special thanks to Tomato for ideas and for the python engines used by this compiler

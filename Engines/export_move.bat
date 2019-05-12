@@ -71,14 +71,14 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
           REM - Level 1 - Just the hair_high fmdl
           if exist ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !faceid!
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !faceid! >nul
           )
         )
         if %fmdl_id_editing%==2 (
           
           REM - Level 2 - Every fmdl
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !faceid!
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !faceid! >nul
           )
         )
         
@@ -88,7 +88,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if defined dds_present (
           
           REM - Convert the dds textures to ftex
-          call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\!foldername!\%%B\%%C"
+          call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\!foldername!\%%B\%%C" >nul
           
           REM - And delete them
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
@@ -149,6 +149,33 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     REM - For every kit config file
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B"') do (
       
+      set zlibbed=
+    
+      REM - Check if it is zlibbed
+      for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\%%B\%%C" -d 3 5`) do (
+        
+        REM - If the file has the WESYS label it's zlibbed
+        if "%%E%%F%%G%%H%%I"=="5745535953" (
+          
+          set zlibbed=1
+        )
+      )
+      
+      REM - If the file is zlibbed
+      if defined zlibbed (
+      
+        REM - Unzlib it
+        .\Engines\zlibtool ".\extracted_exports\!foldername!\%%B\%%C" -d >nul
+        
+        REM - Delete the original file
+        del ".\extracted_exports\!foldername!\%%B\%%C" >nul
+        
+        REM - And change the unzlibbed file's extension
+        rename ".\extracted_exports\!foldername!\%%B\%%C.unzlib" "%%C" >nul
+
+      )
+      
+      
       REM - Edit the texture names inside the config file so that they point to the proper textures
       for /l %%O in (0 1 4) do (
       
@@ -203,7 +230,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       if defined dds_present (
         
         REM - Convert the dds textures to ftex
-        call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B" ".\extracted_exports\!foldername!\%%B"
+        call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B" ".\extracted_exports\!foldername!\%%B" >nul
         
         REM - And delete them
         for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B\*.dds"') do (
@@ -337,28 +364,42 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
-    REM - Create the main folder if not present
-    if not exist ".\extracted_exports\%%B" (
-      md ".\extracted_exports\%%B" 2>nul
-    )
-    
-    REM - First check that it isn't empty
-    set movecommon=
-    >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set movecommon=1) || (echo ->nul)
-  
-    if defined movecommon (
-    
-      REM - Make a team folder with the team name after deleting it if already present
-      if exist ".\extracted_exports\%%B\!team_clean!\" (
-        rd /S /Q ".\extracted_exports\%%B\!team_clean!"
+    if defined fox_mode (
+      
+      echo -
+      echo - The Common folder is not supported in Fox Mode. It will be removed.
+      echo -
+      
+      if not %pause_when_wrong%==0 (
+        pause
       )
-      md ".\extracted_exports\%%B\!team_clean!" 2>nul
     
-      REM - Move everything to that folder
-      for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
-        
-        move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!team_clean!" >nul
+    ) else (
+    
+      REM - Create the main folder if not present
+      if not exist ".\extracted_exports\%%B" (
+        md ".\extracted_exports\%%B" 2>nul
       )
+      
+      REM - First check that it isn't empty
+      set movecommon=
+      >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set movecommon=1) || (echo ->nul)
+    
+      if defined movecommon (
+      
+        REM - Make a team folder with the team name after deleting it if already present
+        if exist ".\extracted_exports\%%B\!team_clean!\" (
+          rd /S /Q ".\extracted_exports\%%B\!team_clean!"
+        )
+        md ".\extracted_exports\%%B\!team_clean!" 2>nul
+      
+        REM - Move everything to that folder
+        for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+          
+          move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!team_clean!" >nul
+        )
+      )
+      
     )
     
   )

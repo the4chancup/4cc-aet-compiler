@@ -8,7 +8,7 @@ if not defined all_in_one (
 
   REM - Set the working folder
   cd /D "%~dp0"
-  
+ 
   REM - Load the settings
   call .\Engines\settings_init
 )
@@ -22,6 +22,8 @@ if %compression%==1 (
 )
 
 REM - Create folders just in case
+md ".\patches_output" 2>nul
+
 if not %multicpk_mode%==0 (
 
   set faces_foldername=Facescpk
@@ -37,15 +39,6 @@ if not %multicpk_mode%==0 (
   md ".\patches_contents\Singlecpk" 2>nul
 )
 
-REM - If Move Cpks mode is disabled set the output folder
-if %move_cpks%==0 (
-  
-  set pes_download_folder_location=".\patches_output"
-  
-  md !pes_download_folder_location! 2>nul
-
-)
-
 
 REM - Unless all_in_one mode is enabled
 if not defined all_in_one (
@@ -53,14 +46,14 @@ if not defined all_in_one (
   REM - If move_cpks mode is enabled
   if %move_cpks%==1 (
   
-    REM - Check the PES' download folder
+    REM - Check the PES download folder
     if not exist %pes_download_folder_location%\ (
       
       @echo - 
       @echo - 
-      @echo - PES download folder not found
-      @echo - Please set the correct path to it in the settings file
-      @echo - The script will restart automatically after you close notepad
+      @echo - PES download folder not found.
+      @echo - Please set its correct path in the settings file.
+      @echo - The script will restart automatically after you close notepad.
       @echo - 
       @echo - 
       pause
@@ -68,21 +61,25 @@ if not defined all_in_one (
       notepad .\settings.txt
       
       .\3_content_to_patches
-    )
+      
+    ) else (
     
-    REM - Check if admin mode is needed
-    call .\Engines\admin_check
-    
-    REM - If admin mode is needed or has been forced
-    if !admin_mode!==1 (
-    
-      REM - If permissions haven't been asked yet
-      if not defined admin_enabled (
-        
-        REM - Ask for admin permissions
-        .\Engines\admin_request
+      REM - Check if admin mode is needed
+      call .\Engines\admin_check
+      
+      REM - If admin mode is needed or has been forced
+      if !admin_mode!==1 (
+      
+        REM - If permissions haven't been asked yet
+        if not defined admin_enabled (
+          
+          REM - Ask for admin permissions
+          .\Engines\admin_request
+        )
       )
+      
     )
+    
   )
 )
 
@@ -105,14 +102,14 @@ if not %multicpk_mode%==0 (
   REM - Make the Faces patch (faces, portraits)
   @echo - Making the Faces patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" ".\patches_output\%faces_cpk_name%.cpk" !cpkmaker_args!
   
   
   REM - Make the Uniform patch (kits, logos, boots, gloves, etc.)
   @echo - 
   @echo - Making the Uniform patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" ".\patches_output\%uniform_cpk_name%.cpk" !cpkmaker_args!
   
   
   if %bins_updating%==1 (
@@ -121,7 +118,7 @@ if not %multicpk_mode%==0 (
     @echo - 
     @echo - Making the Bins patch
 
-    .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" !cpkmaker_args!
+    .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" ".\patches_output\%bins_cpk_name%.cpk" !cpkmaker_args!
     
   )
   
@@ -134,7 +131,7 @@ if not %multicpk_mode%==0 (
   REM - Make the single cpk patch
   @echo - Making the patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" ".\patches_output\%cpk_name%.cpk" !cpkmaker_args!
   
 )
 
@@ -169,10 +166,10 @@ if not %multicpk_mode%==0 (
   )
   
   REM - Move the cpks to the destination folder
-  move ".\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
-  move ".\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
+  move ".\patches_output\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
+  move ".\patches_output\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
   if %bins_updating%==1 (
-    move ".\%bins_cpk_name%.cpk" %pes_download_folder_location% >nul
+    move ".\patches_output\%bins_cpk_name%.cpk" %pes_download_folder_location% >nul
   )
   
 ) else (
@@ -183,7 +180,7 @@ if not %multicpk_mode%==0 (
   )
 
   REM - Move the cpk to the destination folder
-  move ".\%cpk_name%.cpk" %pes_download_folder_location% >nul
+  move ".\patches_output\%cpk_name%.cpk" %pes_download_folder_location% >nul
 
 )
 

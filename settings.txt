@@ -11,9 +11,9 @@ set fox_mode=1
 :: 
 :: - Cpk Name -
 :: Write the package names you want without quotes (e.g. 4cc, vg lel)
-:: The maximum name length you can set here is 28 characters. Spaces are fine.
-set cpk_name=4cc_test
-:: 
+:: The maximum filename length you can set here is 28 characters. Spaces are fine.
+set cpk_name=4cc_90_test
+::
 :: 
 :: - Move Cpks -
 :: This setting is for enabling the moving of the cpks to PES' download folder after
@@ -22,18 +22,21 @@ set cpk_name=4cc_test
 set move_cpks=1
 :: 
 :: 
-:: - PES' Download Folder Path -
-:: Set the path to PES' download folder (Only used if move_cpks is enabled).
+:: - PES Download Folder Path -
+:: This setting is only considered if Move Cpks mode is enabled.
+:: Set the path to the PES download folder between the quotes.
+:: If PES is installed in a system folder (like the default Program Files) the compiler
+:: will ask for admin permissions every time you run it.
 set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2018\download"
 :: 
 :: 
 :: - DpFileList Updating -
+:: This setting is only considered if Move Cpks mode is enabled.
 :: If enabled, the DpFileList file in your PES' download folder will be automatically
 :: updated with the entries needed for PES to load the cpks the script just created.
 :: Although the script does check if updating is needed before doing it, the process
 :: as a whole is a bit slow, so if you're sure you're not going to need it you can
 :: disable it from here.
-:: (If move_cpks is disabled, the DpFileList file won't be modified in any case.)
 :: Default: 1
 set dpfl_updating=1
 :: 
@@ -45,10 +48,10 @@ set dpfl_updating=1
 :: Updating the bins should only be disabled if your team has the same amount of kits as in
 :: previous seasons.
 :: Default: 1
-set bins_updating=0
+set bins_updating=1
 :: 
 :: 
-:: - Multi Cpk Mode -
+:: - Multi Cpk -
 :: This setting is usually only needed by aesthetics helpers when making cup DLC.
 :: Multi cpk mode creates various cpks, one with the face files, another one with the kits, boots,
 :: gloves, logos and portraits, and a third one with the unicolor and teamcolor files.
@@ -60,7 +63,7 @@ set bins_cpk_name=4cc_08_bins
 :: 
 :: 
 :: - FMDL ID Editing -
-:: This setting is only considered when in fox mode.
+:: This setting is only considered when Fox Mode is enabled.
 :: When enabled the script will edit the texture path inside the fmdls and replace the ID
 :: with the player's ID.
 :: . Level 0 means disabled, you'll have to use fmdls whose paths have been edited already.
@@ -74,6 +77,7 @@ set fmdl_id_editing=1
 ::
 :: - Compression Level -
 :: This setting is usually only needed by aesthetics helpers when making cup DLC.
+:: Level 2 is only available when Fox Mode is disabled.
 :: These two methods of compression only make the cpk smaller, but zipping it results in
 :: the same final size so use it only to save some space on your hard drive.
 :: . Level 0 means no compression, the largest cpk size and fastest compilation speed.
@@ -105,20 +109,18 @@ set pause_when_wrong=1
 :: 
 :: 
 :: - Pass-through Mode -
-:: If enabled, exports will never be discarded even if errors are recognized.
-:: The script will still warn about errors and say the export has been discarded.
-:: Use it if the script ever recognizes some errors in your export but the export is
-:: actually fine. If errors are actually present, though, conflicts may happen.
-:: Hopefully this setting will be never needed.
+:: If enabled exports will not be checked for errors, so the compilation will be faster.
+:: The script will still check if the team name is present on the teams list.
+:: Use it only if you're compiling perfect exports you have already checked.
 :: Default: 0
 set pass_through=0
 :: 
 :: 
 :: - Forced Admin Mode -
-:: This setting is for forcing the request of admin permissions.
+:: This setting is only considered if Move Cpks mode is enabled.
 :: The script checks automatically if you need admin permissions or not depending on your
-:: pes install folder, but if despite that the script fails to move the cpks enable this.
-:: (If move_cpks is disabled, admin permissions won't be asked in any case.)
+:: pes install folder, but if despite that the script fails to move the cpks you can try
+:: forcing the request of admin permissions with this setting.
 :: Default: 0
 set admin_mode=0
 :: 
