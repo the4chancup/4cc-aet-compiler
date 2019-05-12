@@ -43,7 +43,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   set foldername=%%A
   
   REM - Get the team's name
-  for /f "delims=+-_.:,;* " %%Z in ("%%A") do set team=%%Z
+  for /f "delims=+-_.:,;* " %%Z in ("!foldername!") do set team=%%Z
   
   REM - Convert it to full lowercase
   for %%T in ("!team!") do (
@@ -55,12 +55,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   
   set team_clean=!team!
   
-  REM - Add slashes (or brackets)
-  if not "!team!"=="s4s" (
-    set team=/!team!/
-  ) else (
-    set team=[!team!]
-  )
+  set team=/!team!/
   
   <nul set /p =- !team! 
   
@@ -104,15 +99,19 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - If it's fine
   if not defined error (
     
-    REM - Copy the contents of the txt file to a common file for quick reading
-    @echo . >> teamnotes.txt
-    @echo - >> teamnotes.txt
-    @echo -- !team!'s note file - !txtname! >> teamnotes.txt
-    @echo -  >> teamnotes.txt
+    if defined note_found (
     
-    REM - Read and copy line per line
-    for /f "tokens=* usebackq" %%R IN (".\extracted_exports\!foldername!\!txtname!") do (
-      @echo %%R >> teamnotes.txt
+      REM - Copy the contents of the txt file to a common file for quick reading
+      @echo . >> teamnotes.txt
+      @echo - >> teamnotes.txt
+      @echo -- !team!'s note file - !note_name! >> teamnotes.txt
+      @echo -  >> teamnotes.txt
+      
+      REM - Read and copy line per line
+      for /f "tokens=* usebackq" %%R IN (".\extracted_exports\!foldername!\!note_name!") do (
+        @echo %%R >> teamnotes.txt
+      )
+
     )
     
     

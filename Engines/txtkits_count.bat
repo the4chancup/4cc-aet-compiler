@@ -6,7 +6,7 @@ set stop=
 
 
 REM - For every line
-for /f "tokens=1-10 usebackq" %%A in (".\extracted_exports\!foldername!\!txtname!") do (
+for /f "tokens=1-10 usebackq" %%A in (".\extracted_exports\!foldername!\!note_name!") do (
   
   REM - Unless the relevant stuff is over
   if not defined stop (

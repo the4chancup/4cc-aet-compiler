@@ -1,52 +1,72 @@
 REM - Check the export for every kind of errors
 
-REM - Reset the main error flags
-set error=1
+REM - Reset the main flags
+set error=
 set not_root=
+set root_found=
 
 
-REM - Check if the folders are at the root by searching for the txt file first
+REM - Check if the folders are at the root by searching for a note txt, the faces and kit configs folders first
 if exist ".\extracted_exports\!foldername!\*.txt" (
-  set error=
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Faces" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Kit Configs" (
+  set root_found=1
 )
 
-REM - If there isn't a txt file at the root
-if defined error (
+
+REM - If the folders aren't at the root
+if not defined root_found (
   
-  REM - Look in every folder for a txt file
+  REM - Look in every folder for a faces or kit configs folder
   for /f "tokens=*" %%R in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
   
     if exist ".\extracted_exports\!foldername!\%%R\*.txt" (
-      
-      set error=
-      set foldername2=%%R
-      set not_root=1
+      set root_found=1
     )
+    if exist ".\extracted_exports\!foldername!\%%R\Faces" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Kit Configs" (
+      set root_found=1
+    )
+    
+    if defined root_found (
+    
+      set not_root=1
+      set foldername_inside=%%R
+      
+    )
+    
   )
 )
 
-REM - If there's no txt file anywhere
-if defined error (
+
+REM - If there's no files anywhere
+if not defined root_found (
   
   REM - Skip the whole export
   if not %pass_through%==1 (
+  
+    set error=1
     rd /S /Q ".\extracted_exports\!foldername!"
   
-  ) else (
-    set error=
   )
   
   @echo - >> memelist.txt
-  @echo - !team!'s manager needs to get memed on (no txt file^) - Export discarded >> memelist.txt
+  @echo - !team!'s manager needs to get memed on (no files^) - Export discarded. >> memelist.txt
   set memelist=1
   
   if not %pause_when_wrong%==0 (
     
     @echo - 
-    @echo - !team!'s manager needs to get memed on (no txt file^)
-    @echo - This export will be discarded to prevent conflicts
+    @echo - !team!'s manager needs to get memed on (no files^).
+    @echo - This export will be discarded.
     @echo - 
-    @echo - Closing the script's window and fixing the export is recommended
+    @echo - Closing the script's window and fixing the export is recommended.
     @echo - 
     
     pause
@@ -55,88 +75,138 @@ if defined error (
 
 )
 
-REM - If the txt was found, continue
+
+REM - If the export is usable, continue
 if not defined error (
 
+  REM - Reset the flag for usable team name found
+  set team_name_good=
+  
+  
   REM - If the folders are not at the root
   if defined not_root (
 
     REM - Move the stuff to the root
-    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\!foldername2!"') do (
-      move ".\extracted_exports\!foldername!\!foldername2!\%%C" ".\extracted_exports\!foldername!" >nul
+    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\!foldername_inside!"') do (
+      move ".\extracted_exports\!foldername!\!foldername_inside!\%%C" ".\extracted_exports\!foldername!" >nul
     )
     
     REM - Delete the now empty folder
-    rd /S /Q ".\extracted_exports\!foldername!\!foldername2!"
+    rd /S /Q ".\extracted_exports\!foldername!\!foldername_inside!"
   )
 
   
   REM - Look for a txt file with Note in the filename
-  for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\*.txt"') do (
+  set note_found=
+  
+  for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\*.txt" 2^>nul') do (
   
     set check_filename=%%C
-    set check_test=!check_filename:Note=!
+    set check_filename_noteless=!check_filename:Note=!
     
     REM - If the file has Note in the filename store its name
-    if not "!check_test!"=="!check_filename!" (
-      set txtname=%%C
-    )
-  )
-  
-  
-  REM - Get the team's name from the txt file
-  set error=1
-  set stop=
-  
-  for /f "tokens=1-2 usebackq" %%X in (".\extracted_exports\!foldername!\!txtname!") do (
+    if not "!check_filename_noteless!"=="!check_filename!" (
     
-    if not defined stop (
-      
-      if /i "%%X"=="Team:" (
-        
-        set stop=1
-        set name=%%Y
-      )
-      
-      if "%%Y"=="" (
-        
-        set stop=1
-        set name=%%X
-      )
+      set note_found=1
+      set note_name=%%C
       
     )
   )
   
-  REM - Search for the team ID in the list of team names
-  for /f "tokens=1,* skip=1 usebackq" %%U in (".\teams_list.txt") do (
-    if defined error (
-      if /i "!name!"=="%%V" (
-        set teamid=%%U
-        set error=
+  
+  REM - If there's a Note file try to get the team name from it
+  if defined note_found (
+  
+    set team_name_found=
+    
+    for /f "tokens=1-2 usebackq" %%X in (".\extracted_exports\!foldername!\!note_name!") do (
+      
+      if not defined team_name_found (
+        
+        if /i "%%X"=="Team:" (
+          
+          set team_name_found=1
+          set team_name=%%Y
+          
+        )
+        
+        if "%%Y"=="" (
+          
+          set team_name_found=1
+          set team_name=%%X
+          
+        )
+        
       )
     )
-  )
-  
-  REM - If no team ID was found
-  if defined error (
+    
+    if defined team_name_found (
+    
+      REM - If the name on the note file is different than the one on the export foldername print it
+      if not !team_name! == !team! (
+          <nul set /p =- Actual name: !team_name! 
+      )
+      
+      REM - Search for the team ID on the list of team names
+      for /f "tokens=1,* skip=1 usebackq" %%U in (".\teams_list.txt") do (
+        
+        if not defined team_name_good (
+        
+          if /i "!team_name!"=="%%V" (
+          
+            set teamid=%%U
+            set team_name_good=1
+            
+          )
+        )
+      )
 
+    )
+    
+  )
+  
+  
+  REM - If there's no Note file or no usable team name was found on it
+  if not defined team_name_good (
+    
+    REM - Check if the team name taken from the export foldername with brackets added is on the list
+    for /f "tokens=1,* skip=1 usebackq" %%U in (".\teams_list.txt") do (
+      
+      if not defined team_name_good (
+      
+        if /i "!team!"=="%%V" (
+        
+          set teamid=%%U
+          set team_name_good=1
+          
+        )
+      )
+    )
+    
+  )
+  
+  
+  REM - If no usable team name was found even then
+  if not defined team_name_good (
+  
     REM - Skip the whole export
     if not %pass_through%==1 (
+      
+      set error=1
       rd /S /Q ".\extracted_exports\!foldername!"
-    ) else (
-      set error=
+      
     )
     
     @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (unusable team name^) - Export discarded >> memelist.txt
+    @echo - !team!'s manager needs to get memed on (unusable team name^) - Export discarded. >> memelist.txt
     set memelist=1
     
     @echo -
-    @echo - !team!'s manager needs to get memed on (unusable team name^)
+    @echo - !team!'s manager needs to get memed on (unusable team name^).
     @echo - (txt files in the unsupported unicode format can cause this too^)
-    @echo - This export will be discarded to prevent conflicts
+    @echo - This export will be discarded to prevent conflicts.
     @echo - Adding the team name to the teams_list file and restarting the script
-    @echo - is recommended
+    @echo - is recommended.
     @echo - 
     
     if not %pause_when_wrong%==0 (
@@ -206,13 +276,13 @@ if not defined error (
   if defined nestederror (
 
     @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (nested folders^) - Fix Attempted >> memelist.txt
+    @echo - !team!'s manager needs to get memed on (nested folders^) - Fix Attempted. >> memelist.txt
     set memelist=1
     
     @echo -
-    @echo - !team!'s manager needs to get memed on (nested folders^)
-    @echo - An attempt to automatically fix those folders has just been done
-    @echo - Nothing has been discarded, though problems may still arise
+    @echo - !team!'s manager needs to get memed on (nested folders^).
+    @echo - An attempt to automatically fix those folders has just been done.
+    @echo - Nothing has been discarded, though problems may still arise.
     @echo -
     
     if not %pause_when_wrong%==0 (
@@ -374,11 +444,11 @@ if not defined error (
           set faceserror=1
           
           @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (bad face folders^) >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (bad face folders^). >> memelist.txt
           set memelist=1
           
           @echo -
-          @echo - !team!'s manager needs to get memed on (bad face folders^)
+          @echo - !team!'s manager needs to get memed on (bad face folders^).
         ) 
         
         REM - And skip the face folder
@@ -388,32 +458,32 @@ if not defined error (
         
         REM - Give an error depending on the particular problem
         if defined facewrong_num (
-          @echo - The face folder !facename! is bad >> memelist.txt
-          @echo - The face folder !facename! is bad
+          @echo - The face folder !facename! is bad. >> memelist.txt
+          @echo - The face folder !facename! is bad.
           @echo (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
           @echo (player number !facename:~3,2! out of the 01-23 range^)
         )
         if defined facewrong_nofpkxml (
-          @echo - The face folder !facename! is bad >> memelist.txt
-          @echo - The face folder !facename! is bad
+          @echo - The face folder !facename! is bad. >> memelist.txt
+          @echo - The face folder !facename! is bad.
           @echo (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
           @echo (no face.fpk.xml file inside^)
         )
         if defined facewrong_noxml (
-          @echo - The face folder !facename! is bad >> memelist.txt
-          @echo - The face folder !facename! is bad
+          @echo - The face folder !facename! is bad. >> memelist.txt
+          @echo - The face folder !facename! is bad.
           @echo (no face.xml file inside^) - Folder discarded >> memelist.txt
           @echo (no face.xml file inside^)
         )
         if defined facewrong_edithairxml (
-          @echo - The face folder !facename! is bad >> memelist.txt
-          @echo - The face folder !facename! is bad
+          @echo - The face folder !facename! is bad. >> memelist.txt
+          @echo - The face folder !facename! is bad.
           @echo (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
           @echo (unsupported edithair face folder, needs updating^)
         )
         if defined facewrong_edithairxml (
-          @echo - The face folder !facename! is bad >> memelist.txt
-          @echo - The face folder !facename! is bad
+          @echo - The face folder !facename! is bad. >> memelist.txt
+          @echo - The face folder !facename! is bad.
           @echo (!badtex! is not a real dds^) - Folder discarded >> memelist.txt
           @echo (!badtex! is not a real dds^)
         )
@@ -425,8 +495,8 @@ if not defined error (
     REM - If the team has bad face folders close the previously opened message
     if defined faceserror (
 
-      @echo - The face folders mentioned above will be discarded to avoid problems
-      @echo - Closing the script's window and fixing them is recommended
+      @echo - The face folders mentioned above will be discarded to avoid problems.
+      @echo - Closing the script's window and fixing them is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -525,13 +595,13 @@ if not defined error (
       )
       
       @echo - >> memelist.txt
-      @echo - !team!'s manager needs to get memed on (wrong kit config names^) - Kit Configs discarded >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (wrong kit config names^). - Kit Configs discarded >> memelist.txt
       set memelist=1
       
       @echo -
-      @echo - !team!'s manager needs to get memed on (wrong kit config names^)
-      @echo - The Kit Configs folder will be discarded since it's unusable
-      @echo - Closing the script's window and fixing it is recommended
+      @echo - !team!'s manager needs to get memed on (wrong kit config names^).
+      @echo - The Kit Configs folder will be discarded since it's unusable.
+      @echo - Closing the script's window and fixing it is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -540,25 +610,29 @@ if not defined error (
     
     ) else (
     
-      REM - Get the amount of proper kit color entries from the txt file
-      call .\Engines\txtkits_count
+      if defined note_found (
       
-      REM - Check that the amount of kit configs and kit color entries in the txt are the same
-      if not "!kits!"=="!configs!" (
+        REM - Get the amount of proper kit color entries from the txt file
+        call .\Engines\txtkits_count
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (missing kit configs or txt kit color entries^) - Warning >> memelist.txt
-        set memelist=1
-        
-        @echo - 
-        @echo - The amount of !team!'s kit color entries is not
-        @echo - equal to the amount of kit config files
-        @echo - Closing the script's window and fixing it is recommended
-        @echo - 
-        
-        if not %pause_when_wrong%==0 (
-          pause
+        REM - Check that the amount of kit configs and kit color entries in the txt are the same
+        if not "!kits!"=="!configs!" (
+          
+          @echo - >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (missing kit configs or txt kit color entries^). - Warning >> memelist.txt
+          set memelist=1
+          
+          @echo - 
+          @echo - The amount of !team!'s kit color entries is not equal to
+          @echo - the amount of kit config files.
+          @echo - Closing the script's window and fixing it is recommended.
+          @echo - 
+          
+          if not %pause_when_wrong%==0 (
+            pause
+          )
         )
+        
       )
     )
     
@@ -567,7 +641,7 @@ if not defined error (
     
     REM - If it doesn't exist or is empty, warn about it
     @echo - >> memelist.txt
-    @echo - !team!'s export doesn't have any Kit Configs - Warning >> memelist.txt
+    @echo - !team!'s export doesn't have any Kit Configs - Warning. >> memelist.txt
     set memelist=1
     
     REM - If the folder exists but is empty, delete it
@@ -672,17 +746,17 @@ if not defined error (
       )
       
       @echo - >> memelist.txt
-      @echo - !team!'s manager needs to get memed on (wrong format kit textures^) - Kit Textures discarded >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (wrong format kit textures^) - Kit Textures discarded. >> memelist.txt
       set memelist=1
       
       @echo -
-      @echo - !team!'s manager needs to get memed on (wrong format kit textures^)
+      @echo - !team!'s manager needs to get memed on (wrong format kit textures^).
       if not defined fox_mode (
-        @echo - This is usually caused by png textures renamed to dds instead of saved as dds
+        @echo - This is usually caused by png textures renamed to dds instead of saved as dds.
       )
       @echo - First game-crashing texture found: !texturename!
-      @echo - The Kit Textures folder will be discarded since it's unusable
-      @echo - Closing the script's window and fixing it is recommended
+      @echo - The Kit Textures folder will be discarded since it's unusable.
+      @echo - Closing the script's window and fixing it is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -723,11 +797,11 @@ if not defined error (
             set textureerror=1
             
             @echo - >> memelist.txt
-            @echo - !team!'s manager needs to get memed on (wrong kit texture names^) >> memelist.txt
+            @echo - !team!'s manager needs to get memed on (wrong kit texture names^). >> memelist.txt
             set memelist=1
             
             @echo -
-            @echo - !team!'s manager needs to get memed on (wrong kit texture names^)
+            @echo - !team!'s manager needs to get memed on (wrong kit texture names^).
           ) 
           
           REM - And skip it
@@ -735,9 +809,9 @@ if not defined error (
             del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!texturename!"
           )
           
-          @echo - The kit texture !texturename! is wrong - File discarded >> memelist.txt
+          @echo - The kit texture !texturename! is wrong - File discarded. >> memelist.txt
           
-          @echo - The kit texture !texturename! is wrong
+          @echo - The kit texture !texturename! is wrong.
         )
       
       )
@@ -745,8 +819,8 @@ if not defined error (
       REM - If the team has bad kit textures close the previously opened message
       if defined textureerror (
 
-        @echo - The kit textures mentioned above will be discarded since they're unusable
-        @echo - Closing the script's window and fixing them is recommended
+        @echo - The kit textures mentioned above will be discarded since they're unusable.
+        @echo - Closing the script's window and fixing them is recommended.
         @echo -
         
         if not %pause_when_wrong%==0 (
@@ -760,7 +834,7 @@ if not defined error (
   
     REM - If the Kit Textures folder doesn't exist or is empty, warn about it
     @echo - >> memelist.txt
-    @echo - !team!'s export doesn't have any Kit Textures - Warning >> memelist.txt
+    @echo - !team!'s export doesn't have any Kit Textures - Warning. >> memelist.txt
     set memelist=1
     
     REM - If the folder exists but is empty, delete it
@@ -821,13 +895,13 @@ if not defined error (
       )
       
       @echo - >> memelist.txt
-      @echo - !team!'s manager needs to get memed on (wrong logo filenames^) - Logo folder discarded >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (wrong logo filenames^). - Logo folder discarded >> memelist.txt
       set memelist=1
       
       @echo -
-      @echo - !team!'s manager needs to get memed on (wrong logo filenames^)
-      @echo - The Logo folder will be discarded since it's unusable
-      @echo - Closing the script's window and fixing it is recommended
+      @echo - !team!'s manager needs to get memed on (wrong logo filenames^).
+      @echo - The Logo folder will be discarded since it's unusable.
+      @echo - Closing the script's window and fixing it is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -879,11 +953,11 @@ if not defined error (
           set portraiterror=1
           
           @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong portrait names^) >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (wrong portrait names^). >> memelist.txt
           set memelist=1
           
           @echo -
-          @echo - !team!'s manager needs to get memed on (wrong portrait names^)
+          @echo - !team!'s manager needs to get memed on (wrong portrait names^).
         ) 
         
         REM - And skip it
@@ -891,9 +965,9 @@ if not defined error (
           del /F /Q ".\extracted_exports\!foldername!\Portraits\!portraitname!"
         )
         
-        @echo - The portrait !portraitname! is wrong - File discarded >> memelist.txt
+        @echo - The portrait !portraitname! is wrong - File discarded. >> memelist.txt
         
-        @echo - The portrait !portraitname! is wrong
+        @echo - The portrait !portraitname! is wrong.
       )
     
     )
@@ -901,8 +975,8 @@ if not defined error (
     REM - If the team has bad portraits close the previously opened message
     if defined portraiterror (
 
-      @echo - The portraits mentioned above will be discarded since they're unusable
-      @echo - Closing the script's window and fixing them is recommended
+      @echo - The portraits mentioned above will be discarded since they're unusable.
+      @echo - Closing the script's window and fixing them is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -956,11 +1030,11 @@ if not defined error (
           set bootserror=1
           
           @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong boots folder names^) >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (wrong boots folder names^). >> memelist.txt
           set memelist=1
           
           @echo -
-          @echo - !team!'s manager needs to get memed on (wrong boots folder names^)
+          @echo - !team!'s manager needs to get memed on (wrong boots folder names^).
         ) 
         
         REM - And skip it
@@ -968,9 +1042,9 @@ if not defined error (
           rd /S /Q ".\extracted_exports\!foldername!\Boots\!bootsname!"
         )
         
-        @echo - The boots folder !bootsname! is wrong - Folder discarded >> memelist.txt
+        @echo - The boots folder !bootsname! is wrong - Folder discarded. >> memelist.txt
         
-        @echo - The boots folder !bootsname! is wrong
+        @echo - The boots folder !bootsname! is wrong.
       )
       
     )
@@ -978,8 +1052,8 @@ if not defined error (
     REM - If the team has bad boots folders close the previously opened message
     if defined bootserror (
 
-      @echo - The boots folders mentioned above will be discarded since they're unusable
-      @echo - Closing the script's window and fixing them is recommended
+      @echo - The boots folders mentioned above will be discarded since they're unusable.
+      @echo - Closing the script's window and fixing them is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
@@ -1033,11 +1107,11 @@ if not defined error (
           set gloveserror=1
           
           @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong glove folder names^) >> memelist.txt
+          @echo - !team!'s manager needs to get memed on (wrong glove folder names^). >> memelist.txt
           set memelist=1
           
           @echo -
-          @echo - !team!'s manager needs to get memed on (wrong glove folder names^)
+          @echo - !team!'s manager needs to get memed on (wrong glove folder names^).
         ) 
         
         REM - And skip it
@@ -1045,9 +1119,9 @@ if not defined error (
           rd /S /Q ".\extracted_exports\!foldername!\Gloves\!glovesname!"
         )
         
-        @echo - The glove folder !glovesname! is wrong - Folder discarded  >> memelist.txt
+        @echo - The glove folder !glovesname! is wrong - Folder discarded. >> memelist.txt
         
-        @echo - The glove folder !glovesname! is wrong
+        @echo - The glove folder !glovesname! is wrong.
       )
       
     )
@@ -1055,8 +1129,8 @@ if not defined error (
     REM - If the team has bad gloves folders close the previously opened message
     if defined gloveserror (
 
-      @echo - The glove folders mentioned above will be discarded since they're unusable
-      @echo - Closing the script's window and fixing them is recommended
+      @echo - The glove folders mentioned above will be discarded since they're unusable.
+      @echo - Closing the script's window and fixing them is recommended.
       @echo -
       
       if not %pause_when_wrong%==0 (
