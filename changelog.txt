@@ -1,3 +1,10 @@
+03/05/19 - Version 4.1
+- Added automatic dds to ftex conversion when in fox mode
+- Updated the uniparam builder version to support updating the same file every time
+- Added automatic fmdl texture path editing
+- Made portraits in face folders get used even if the folder is unusable
+
+
 02/05/19 - Version 4.0 (Fox final)
 - Implemented kit texture checking and moving for pes 18
 - Implemented compilation of the UniParam file

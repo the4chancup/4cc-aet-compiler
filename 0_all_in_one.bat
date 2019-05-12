@@ -8,7 +8,7 @@ REM - Set the working folder
 cd /D "%~dp0"
 
 REM - Load the settings
-call .\Engines\init
+call .\Engines\settings_init
 
 
 REM - If move_cpks mode is enabled

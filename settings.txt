@@ -59,6 +59,19 @@ set uniform_cpk_name=4cc_45_uniform
 set bins_cpk_name=4cc_08_bins
 :: 
 :: 
+:: - FMDL ID Editing -
+:: This setting is only considered when in fox mode.
+:: When enabled the script will edit the texture path inside the fmdls and replace the ID
+:: with the player's ID.
+:: . Level 0 means disabled, you'll have to use fmdls whose paths have been edited already.
+:: . Level 1 means only the hair_high fmdl in each face folder will be edited.
+:: This is the default choice because normally people put their custom texture in face_bsm_alp,
+:: so if the face_high fmdl were to be edited you would get a weird looking neck.
+:: . Level 2 means every fmdl will have their path edited. Use it only on fully custom faces.
+:: Default: 1 :: Accepted values: 0 - 1 - 2
+set fmdl_id_editing=1
+::
+::
 :: - Compression Level -
 :: This setting is usually only needed by aesthetics helpers when making cup DLC.
 :: These two methods of compression only make the cpk smaller, but zipping it results in

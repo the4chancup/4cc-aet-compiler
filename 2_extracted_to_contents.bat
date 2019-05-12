@@ -10,7 +10,7 @@ if not defined all_in_one (
   cd /D "%~dp0"
   
   REM - Load the settings
-  call .\Engines\init
+  call .\Engines\settings_init
 )
 
 
@@ -58,10 +58,7 @@ if %bins_updating%==1 (
   if exist ".\extracted_exports\Kit Configs" (
     
     REM - Compile a UniformParam file
-    .\Engines\uniparam ".\extracted_exports\Kit Configs"
-    
-    REM - Move it to the Bin Files folder for later reference
-    move ".\extracted_exports\Kit Configs\UniformParameter.bin" ".\Bin Files" >nul
+    .\Engines\Python\uniparam_compile ".\extracted_exports\Kit Configs" ".\Bin Files\UniformParameter.bin"
     
     REM - And copy it to the Bins cpk folder
     copy ".\Bin Files\UniformParameter.bin" ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" >nul

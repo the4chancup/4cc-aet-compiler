@@ -12,11 +12,6 @@ if %compression%==1 (
   set cpkmaker_args=-align=2048 -mode=FILENAME -mask
 )
 
-REM - Create a "player" folder for portraits if not present
-if not exist ".\patches_contents\%faces_foldername%\common\render\symbol\player" (
-  md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
-)
-
 
 if not defined fox_mode (
   
@@ -38,17 +33,6 @@ if not defined fox_mode (
     
     REM - Rename it to the player id
     rename ".\extracted_exports\Faces\%%A" "!faceid!" >nul
-    
-    REM - If the folder has a portrait
-    if exist ".\extracted_exports\Faces\!faceid!\portrait.dds" (
-      
-      REM - Rename it with the player id
-      set name=player_!faceid!.dds
-      rename ".\extracted_exports\Faces\!faceid!\portrait.dds" "!name!"
-      
-      REM - And move it to the portraits folder
-      move ".\extracted_exports\Faces\!faceid!\!name!" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
-    )
     
     REM - Make a properly structured temp folder
     md ".\faces_in_folders\!faceid!\common\character0\model\character\face\real"
@@ -84,17 +68,6 @@ if not defined fox_mode (
     
     REM - Rename it to the player id
     rename ".\extracted_exports\Faces\%%A" "!faceid!" >nul
-    
-    REM - If the folder has a portrait
-    if exist ".\extracted_exports\Faces\!faceid!\portrait.dds" (
-      
-      REM - Rename it with the player id
-      set name=player_!faceid!.dds
-      rename ".\extracted_exports\Faces\!faceid!\portrait.dds" "!name!"
-      
-      REM - And move it to the portraits folder
-      move ".\extracted_exports\Faces\!faceid!\!name!" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
-    )
     
     REM - Delete the old face folder if present
     if exist ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!" (
@@ -138,7 +111,6 @@ if not defined fox_mode (
     rd /S /Q ".\faces_in_folders\!faceid!" >nul
     
   )
-  
   
 )
 

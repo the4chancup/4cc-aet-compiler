@@ -221,6 +221,6 @@ and try again.
 
 Tool by Shakes
 
-Special thanks to Tomato for ideas and some of the engines used by this compiler
+Special thanks to Tomato for ideas and for the python engines used by this compiler
 
-Last updated: 02/05/2019 (v4.0)
+Last updated: 03/05/2019 (v4.1)

@@ -10,7 +10,7 @@ if not defined all_in_one (
   cd /D "%~dp0"
   
   REM - Load the settings
-  call .\Engines\init
+  call .\Engines\settings_init
 )
 
 REM - Save the current working folder to a string
@@ -121,7 +121,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
       
       if not defined fox_mode (
       
-        REM - Zlib every txture
+        REM - Zlib every texture
         call .\Engines\textures_zlib
         
       )

@@ -22,6 +22,7 @@ if exist settings.txt (
   set dpfl_updating=1
   set bins_updating=1
   set multicpk_mode=0
+  set fmdl_id_editing=1
   set compression=0
   set pause_when_wrong=1
   set pass_through=0

@@ -10,7 +10,7 @@ if not defined all_in_one (
   cd /D "%~dp0"
   
   REM - Load the settings
-  call .\Engines\init
+  call .\Engines\settings_init
 )
 
 
