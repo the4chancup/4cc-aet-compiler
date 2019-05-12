@@ -1,0 +1,104 @@
+:: 4cc aet compiler - Settings file
+:: 
+:: Lines starting with :: are comment lines and will be ignored by the script.
+:: 1 means enabled, 0 means disabled. No spaces allowed next to the equal sign.
+:: 
+:: 
+:: - Cpk Name -
+:: Write the package name prefix you want without quotes (e.g. 4cc, vg lel)
+:: The maximum name length you can set here is 20 characters. Spaces are fine.
+set cpk_name=4cc_test
+:: 
+:: 
+:: - Move Cpks -
+:: This setting is for enabling the moving of the cpks to PES' download folder after
+:: they have been created. If disabled the cpks will stay in the script's folder.
+:: Default: 1
+set move_cpks=1
+:: 
+:: 
+:: - PES' Download Folder Path -
+:: Set the path to PES' download folder (Only used if move_cpks is enabled).
+set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
+:: 
+:: 
+:: - DpFileList Updating -
+:: If enabled, the DpFileList file in your PES' download folder will be automatically
+:: updated with the entries needed for PES to load the cpks the script just created.
+:: Although the script does check if updating is needed before doing it, the process
+:: as a whole is a bit slow, so if you're sure you're not going to need it you can
+:: disable it from here.
+:: (If move_cpks is disabled, the DpFileList file won't be modified in any case.)
+:: Default: 1
+set dpfl_updating=0
+:: 
+:: 
+:: - Pause when Wrong -
+:: This setting is for pausing the script every time an export with wrong folders is found.
+:: Even if disabled, a line with the team's name is added to the memelist.txt file, so that
+:: you can meme on its manager (and fix the problem). Also, the export will be discarded.
+:: With this setting you can stop the script and fix the export before restarting it.
+:: Disable it if you want to leave your pc running unattended without ever stopping.
+:: Default: 1
+set pause_when_wrong=1
+:: 
+:: 
+:: - Bins Updating -
+:: This setting is usually only needed by aesthetics helpers.
+:: If enabled, the UniColor and TeamColor files in the other_stuff folder will be automatically
+:: updated with entries taken from the teams' txt files. These files will then be copied to the
+:: patches_contents folder and end up in the final patch.
+:: Default: 1
+set bins_updating=1
+:: 
+:: 
+:: - Compression Level -
+:: This setting is usually only needed by aesthetics helpers.
+:: . Level 0 means no compression, the largest cpk size and fastest compilation speed.
+:: . Level 1 enables compression during the final packing, which becomes slower, and results
+:: in cpks which are around half as large as the uncompressed ones.
+:: . Level 2 is the highest level and makes the script check for unzlibbed textures and zlib
+:: them individually during the extraction of the exports, after checking them. This method
+:: is the slowest one the first time the script is run, but it results in cpks which are
+:: around a third of the size of the uncompressed ones.
+:: To mitigate level 2's slowness, a copy of every texture that has been zlibbed is kept in the
+:: storage_zlibbed folder, and when running the script again only new textures are zlibbed.
+:: This means that new textures with the same name as old ones will get replaced with an
+:: old copy though, so deleting the export folders of previously compiled exports from the
+:: storage_zlibbed folder when compiling new versions is required when using this setting.
+:: . In short, use level 1 if you just want a simple compression, and use level 2 if you know
+:: exactly what you're doing.
+:: Default: 0
+set compression=0
+:: 
+:: 
+:: - Full Patch Mode -
+:: This setting is usually only needed by aesthetics helpers.
+:: Full patch mode creates a _uniform cpk which includes all the default bin files and the 
+:: boots, gloves, thumbnails and other stuff, needed for it to completely replace the default
+:: 4cc_uniform cpk. It also copies the bin files again from the other_stuff folder.
+:: This mode requires the default_contents folder to be present in the script's folder.
+:: Default: 0
+set full_patch=0
+:: 
+:: 
+:: - Pass-through Mode -
+:: If enabled, exports will never be discarded even if errors are recognized.
+:: The script will still warn about errors and say the export has been discarded.
+:: Use it if the script ever recognizes some errors in your export but the export is
+:: actually fine. If errors are actually present, though, conflicts may happen.
+:: Hopefully this setting will be never needed.
+:: Default: 0
+set pass_through=0
+:: 
+:: 
+:: - Forced Admin Mode -
+:: [Important] This setting is for forcing the request of admin permissions.
+:: The script checks automatically if you need admin permissions or not depending on your
+:: pes install folder, but if despite that the script fails to move the cpks enable this.
+:: (If move_cpks is disabled, admin permissions won't be asked in any case.)
+:: Default: 0
+set admin_mode=0
+:: 
+:: 
+:: 
