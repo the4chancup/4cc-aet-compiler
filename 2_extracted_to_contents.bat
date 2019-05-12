@@ -1,20 +1,16 @@
 @echo off
 REM ^ Don't write everything to screen
 
-REM - Allow modifying named variables inside parentheses
-setlocal EnableDelayedExpansion
+if not defined all_in_one (
 
-REM - Set the working folder
-cd /D "%~dp0"
+  REM - Allow modifying named variables inside parentheses
+  setlocal EnableDelayedExpansion
 
-REM - Load the settings
-if exist settings.txt (
-  rename settings.txt settings.cmd
-  call settings
-  rename settings.cmd settings.txt
-) else (
-  set multicpk_mode=0
-  set bins_updating=1
+  REM - Set the working folder
+  cd /D "%~dp0"
+  
+  REM - Load the settings
+  call .\Engines\init
 )
 
 
@@ -39,7 +35,7 @@ md ".\patches_contents\%uniform_foldername%" 2>nul
 
 
 @echo - 
-@echo - Compiling the patch folders
+@echo - Preparing the patch folders
 @echo - 
 
 
@@ -50,14 +46,26 @@ if %bins_updating%==1 (
   md ".\patches_contents\%bins_foldername%\common\etc" 2>nul
   md ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" 2>nul
   
-  
   REM - Update the relevant bin files
   call .\Engines\bins_update
   
-  
-  REM - And copy them
+  REM - And copy them to the Bins cpk folder
   copy ".\Bin Files\TeamColor.bin" ".\patches_contents\%bins_foldername%\common\etc" >nul
   copy ".\Bin Files\UniColor.bin" ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" >nul
+  
+  
+  REM - If there's a Kit Configs folder
+  if exist ".\extracted_exports\Kit Configs" (
+    
+    REM - Compile a UniformParam file
+    .\Engines\uniparam ".\extracted_exports\Kit Configs"
+    
+    REM - Move it to the Bin Files folder for later reference
+    move ".\extracted_exports\Kit Configs\UniformParameter.bin" ".\Bin Files" >nul
+    
+    REM - And copy it to the Bins cpk folder
+    copy ".\Bin Files\UniformParameter.bin" ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" >nul
+  )
 )
 
 
@@ -80,7 +88,7 @@ if exist ".\extracted_exports\Kit Configs" (
     md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" 2>nul
   )
 
-  REM - Move the kit configs to the Uniform folder
+  REM - Move the kit configs to the Uniform cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Kit Configs" 2^>nul') do (
 
     if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team\%%A" (
@@ -106,15 +114,30 @@ if exist ".\extracted_exports\Kit Textures" (
     @echo - Moving the kits
   )
   
-  REM - Create a "texture" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" (
-    md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" 2>nul
-  )
-  
-  REM - Move the kit textures to the Uniform folder
-  for /f %%A in ('dir /b ".\extracted_exports\Kit Textures" 2^>nul') do (
-
-    move ".\extracted_exports\Kit Textures\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" >nul
+  if not defined fox_mode (
+    
+    REM - Create a "texture" folder if needed
+    if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" (
+      md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" 2>nul
+    )
+    
+    REM - Move the kit textures to the Uniform cpk folder
+    for /f %%A in ('dir /b ".\extracted_exports\Kit Textures" 2^>nul') do (  
+      move ".\extracted_exports\Kit Textures\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" >nul
+    )
+    
+  ) else (
+    
+    REM - Create a "texture" folder if needed
+    if not exist ".\patches_contents\%uniform_foldername%\Asset\model\character\uniform\texture\#windx11" (
+      md ".\patches_contents\%uniform_foldername%\Asset\model\character\uniform\texture\#windx11" 2>nul
+    )
+    
+    REM - Move the kit textures to the Uniform cpk folder
+    for /f %%A in ('dir /b ".\extracted_exports\Kit Textures" 2^>nul') do (
+      move ".\extracted_exports\Kit Textures\%%A" ".\patches_contents\%uniform_foldername%\Asset\model\character\uniform\texture\#windx11" >nul
+    )
+    
   )
   
   REM . Then delete the main folder
@@ -139,9 +162,8 @@ if exist ".\extracted_exports\Logo" (
     md ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" 2>nul
   )
 
-  REM - Move the logos to the Uniform folder
+  REM - Move the logos to the Uniform cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Logo" 2^>nul') do (
-    
     move ".\extracted_exports\Logo\%%A" ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" >nul
   )
 
@@ -166,9 +188,8 @@ if exist ".\extracted_exports\Portraits" (
     md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
   )
   
-  REM - Move the portraits to the Faces folder
+  REM - Move the portraits to the Faces cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Portraits" 2^>nul') do (
-    
     move ".\extracted_exports\Portraits\%%A" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
   )
 
@@ -193,7 +214,7 @@ if exist ".\extracted_exports\Boots" (
     md ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" 2>nul
   )
   
-  REM - Move the boots to the Uniform folder
+  REM - Move the boots to the Uniform cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Boots" 2^>nul') do (
     
     if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A" (
@@ -278,16 +299,12 @@ if exist ".\extracted_exports\Faces" (
 )
 
 
-
-del cpkmaker.out.csv 2>nul
-
-
 REM - If all_in_one mode is enabled invoke the next part of the process
 if defined all_in_one (
 
   @echo - 
   @echo - 
-  @echo - Patch contents folders compiled
+  @echo - Patch contents folder prepared
   @echo - 
   
   
@@ -295,7 +312,7 @@ if defined all_in_one (
 
   @echo - 
   @echo - 
-  @echo - The patches content folder has been compiled
+  @echo - The patches contents folder has been prepared
   @echo - 
   @echo - 4cc aet compiler by Shakes
   @echo - 

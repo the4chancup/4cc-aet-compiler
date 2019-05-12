@@ -1,4 +1,3 @@
-@echo off
 
 REM - Reset the variables
 set kits_found=

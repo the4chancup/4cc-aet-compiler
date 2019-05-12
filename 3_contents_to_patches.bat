@@ -1,24 +1,24 @@
 @echo off
 REM ^ Don't write everything to screen
 
-REM - Allow modifying named variables inside parentheses
-setlocal EnableDelayedExpansion
+if not defined all_in_one (
 
-REM - Set the working folder
-cd /D "%~dp0"
+  REM - Allow modifying named variables inside parentheses
+  setlocal EnableDelayedExpansion
 
-REM - Load the settings
-if exist settings.txt (
-  rename settings.txt settings.cmd
-  call settings
-  rename settings.cmd settings.txt
+  REM - Set the working folder
+  cd /D "%~dp0"
+  
+  REM - Load the settings
+  call .\Engines\init
+)
+
+
+REM - Prepare the arguments for the cpk packer
+if %compression%==1 (
+  set cpkmaker_args=-align=2048 -mode=FILENAME -mask -forcecompress
 ) else (
-  set multicpk_mode=0
-  set cpk_name=4cc_80_testpatch
-  set move_cpks=1
-  set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
-  set admin_mode=0
-  set dpfl_updating=1
+  set cpkmaker_args=-align=2048 -mode=FILENAME -mask
 )
 
 REM - Create folders just in case
@@ -102,24 +102,18 @@ if not %multicpk_mode%==0 (
   )
 
 
-  REM - Make the Faces patch
+  REM - Make the Faces patch (faces, portraits)
   @echo - Making the Faces patch
 
-  if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
-  ) else (
-    .\Engines\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
-  )
-
-  REM - Make the Uniform patch (kits, logos, portraits, boots, gloves, etc.)
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" "%faces_cpk_name%.cpk" !cpkmaker_args!
+  
+  
+  REM - Make the Uniform patch (kits, logos, boots, gloves, etc.)
   @echo - 
   @echo - Making the Uniform patch
 
-  if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
-  ) else (
-    .\Engines\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
-  )
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" "%uniform_cpk_name%.cpk" !cpkmaker_args!
+  
   
   if %bins_updating%==1 (
   
@@ -127,12 +121,8 @@ if not %multicpk_mode%==0 (
     @echo - 
     @echo - Making the Bins patch
 
-    if %compression%==1 (
-      .\Engines\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
-    ) else (
-      .\Engines\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
-    )
-  
+    .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" "%bins_cpk_name%.cpk" !cpkmaker_args!
+    
   )
   
 ) else (
@@ -144,12 +134,8 @@ if not %multicpk_mode%==0 (
   REM - Make the single cpk patch
   @echo - Making the patch
 
-  if %compression%==1 (
-    .\Engines\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask -forcecompress
-  ) else (
-    .\Engines\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" -align=2048 -mode=FILENAME -mask
-  )
-
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" "%cpk_name%.cpk" !cpkmaker_args!
+  
 )
 
 del cpkmaker.out.csv 2>nul

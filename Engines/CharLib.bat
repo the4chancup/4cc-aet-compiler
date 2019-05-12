@@ -1,4 +1,4 @@
-@echo off
+
   if "%~1"=="" (call :usage) else call :%*
 exit /b
 

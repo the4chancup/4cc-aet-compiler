@@ -474,17 +474,21 @@ if not defined error (
   
   if defined checktexture (
     
-    set texturecrash=
+    set texture_wrongformat_any=
     
     REM - For every texture
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
       
-      if not defined texturecrash (
+      if not defined texture_wrongformat_any (
       
+        set texture_wrongformat=1
+        
         set texturename=%%C
         
         set zlibbed=
-      
+        set type_dds=
+        set type_ftex=
+        
         REM - Check if it is zlibbed
         for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\%%C" -d 3 5`) do (
           
@@ -492,43 +496,61 @@ if not defined error (
           if "%%E%%F%%G%%H%%I"=="5745535953" (
             
             set zlibbed=1
-          )
-        )
-        
-        REM - If the file is zlibbed
-        if defined zlibbed (
-        
-          REM - Unzlib it
-          .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
-          
-          REM - Set the unzlibbed file as file to check
-          set texturename=%%C.unzlib
-        )
-        
-        
-        REM - Check if it is a dds
-        for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!texturename!" -d 0 3`) do (
-          
-          REM - If the file doesn't start with DDS it's bad
-          if not "%%E%%F%%G"=="444453" (
             
-            set texturecrash=1
-            set texturename=%%C
+            REM - Unzlib it
+            .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
+            
+            REM - Set the unzlibbed file as file to check
+            set texturename=%%C.unzlib
+          )
+        )
+        
+        
+        REM - Check if it is a dds, ftex, or none
+        for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!texturename!" -d 0 4`) do (
+          
+          if "%%E%%F%%G"=="444453" (
+            set type_dds=1
+            set texture_wrongformat=
+          )
+          
+          if "%%E%%F%%G%%H"=="46544558" (
+            set type_ftex=1
+            set texture_wrongformat=
+          )
+        )
+        
+        
+        REM - If its a dds and we're in fox mode ---convert it to ftex--- give an error
+        if defined fox_mode (
+          if defined type_dds (
+            set texture_wrongformat=1
+          )
+        ) else (
+          if defined type_ftex (
+            set texture_wrongformat=1
           )
         )
         
         
         if defined zlibbed (
-        
+          
+          REM - Set the zlibbed file
+          set texturename=%%C
+          
           REM - Delete the extra unzlibbed file
           del ".\extracted_exports\!foldername!\Kit Textures\%%C.unzlib" >nul
         )
         
+        
+        if defined texture_wrongformat (
+          set texture_wrongformat_any=1
+        )
       )
     )
     
     REM - If the folder has a non-dds texture
-    if defined texturecrash (
+    if defined texture_wrongformat_any (
     
       REM - Skip the whole Kit Textures folder
       if not %pass_through%==1 (
@@ -536,12 +558,14 @@ if not defined error (
       )
       
       @echo - >> memelist.txt
-      @echo - !team!'s manager needs to get memed on (non-dds kit textures^) - Kit Textures discarded >> memelist.txt
+      @echo - !team!'s manager needs to get memed on (wrong format kit textures^) - Kit Textures discarded >> memelist.txt
       set memelist=1
       
       @echo -
-      @echo - !team!'s manager needs to get memed on (non-dds kit textures^)
-      @echo - This is usually caused by png textures renamed to dds instead of saved as dds
+      @echo - !team!'s manager needs to get memed on (wrong format kit textures^)
+      if not defined fox_mode (
+        @echo - This is usually caused by png textures renamed to dds instead of saved as dds
+      )
       @echo - First game-crashing texture found: !texturename!
       @echo - The Kit Textures folder will be discarded since it's unusable
       @echo - Closing the script's window and fixing it is recommended

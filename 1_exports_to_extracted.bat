@@ -1,66 +1,21 @@
 @echo off
 REM ^ Don't write everything to screen
 
-REM - Allow modifying named variables inside parentheses
-setlocal EnableDelayedExpansion
+if not defined all_in_one (
 
-REM - Set the working folder
-cd /D "%~dp0"
+  REM - Allow modifying named variables inside parentheses
+  setlocal EnableDelayedExpansion
+
+  REM - Set the working folder
+  cd /D "%~dp0"
+  
+  REM - Load the settings
+  call .\Engines\init
+)
 
 REM - Save the current working folder to a string
 set script_folder=%~dp0
 
-REM - Load the settings
-if exist settings.txt (
-  rename settings.txt settings.cmd
-  call settings
-  rename settings.cmd settings.txt
-) else (
-  set move_cpks=1
-  set admin_mode=0
-  set pause_when_wrong=1
-  set compression=0
-  set pass_through=0
-)
-
-REM - If all_in_one mode is enabled
-if defined all_in_one (
-  
-  REM - If move_cpks mode is enabled
-  if %move_cpks%==1 (
-  
-    REM - Check the PES' download folder
-    if not exist %pes_download_folder_location%\ (
-      
-      @echo - 
-      @echo - 
-      @echo - PES download folder not found
-      @echo - Please set the correct path to it in the settings file
-      @echo - The script will restart automatically after you close notepad
-      @echo - 
-      @echo - 
-      pause
-      
-      notepad .\settings.txt
-      
-      .\1_exports_to_extracted
-    )
-    
-    REM - Check if admin mode is needed
-    call .\Engines\admin_check
-    
-    REM - If admin mode is needed or has been forced
-    if !admin_mode!==1 (
-    
-      REM - If permissions haven't been asked yet
-      if not defined admin_enabled (
-        
-        REM - Ask for admin permissions
-        .\Engines\admin_request  
-      )
-    )
-  )
-)
 
 @echo - 
 @echo - Extracting and checking the exports
@@ -163,9 +118,13 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     
     REM - If compression is set to 2
     if %compression%==2 (
-
-      REM - Zlib every txture
-      call .\Engines\textures_zlib
+      
+      if not defined fox_mode (
+      
+        REM - Zlib every txture
+        call .\Engines\textures_zlib
+        
+      )
     )
     
     

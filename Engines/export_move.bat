@@ -1,4 +1,4 @@
-REM - Edit and move the contents of the export to the root of extracted_exports
+REM - Edits and moves the contents of the export to the root of extracted_exports
 
 ::=========================================================================
 ::BEGIN DEFINITION OF THE MACRO FOR CONVERTING TO HEXADECIMAL
@@ -44,7 +44,7 @@ set unknownexists=
 for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
 
   set unknown=1
-
+  
   REM - Face folder
   if /i "%%B"=="Faces" (
   

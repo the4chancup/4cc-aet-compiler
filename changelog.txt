@@ -1,3 +1,9 @@
+02/05/19 - Version 4.0 (Fox final)
+- Implemented kit texture checking and moving for pes 18
+- Implemented compilation of the UniParam file
+- Streamlined the code by moving some of the functions into engine files
+
+
 30/04/19 - Version 3.9 (Fox preview)
 - Implemented packing of faces in pes18 format
 - Added support for portraits in face folders

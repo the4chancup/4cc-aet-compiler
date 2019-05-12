@@ -5,6 +5,13 @@ setlocal EnableDelayedExpansion
 @echo - Packing the face folders into cpks
 
 
+REM - Prepare the arguments for the cpk packer
+if %compression%==1 (
+  set cpkmaker_args=-align=2048 -mode=FILENAME -mask -forcecompress
+) else (
+  set cpkmaker_args=-align=2048 -mode=FILENAME -mask
+)
+
 REM - Create a "player" folder for portraits if not present
 if not exist ".\patches_contents\%faces_foldername%\common\render\symbol\player" (
   md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
@@ -50,11 +57,8 @@ if not defined fox_mode (
     move ".\extracted_exports\Faces\!faceid!" ".\faces_in_folders\!faceid!\common\character0\model\character\face\real" >nul
     
     REM - Make a cpk and put it in the Faces folder
-    if %compression%==1 (
-      .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask -forcecompress >nul
-    ) else (
-      .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask >nul
-    )
+    .\Engines\CpkMaker\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" !cpkmaker_args! >nul
+    
     
     rd /S /Q ".\faces_in_folders\!faceid!" >nul
   )
@@ -142,4 +146,7 @@ if not defined fox_mode (
 REM - Finally delete the main folder and temp folder
 rd /S /Q ".\extracted_exports\Faces" >nul
 rd /S /Q ".\faces_in_folders" >nul
+
+
+del cpkmaker.out.csv 2>nul
 
