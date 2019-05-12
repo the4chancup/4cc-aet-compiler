@@ -13,22 +13,31 @@ if exist settings.txt (
   call settings
   rename settings.bat settings.txt
 ) else (
+  set dualcpk_mode=0
   set bins_updating=0
 )
 
+
+REM - Set the name for the folders to put stuff into
+if not %dualcpk_mode%==0 (
+  
+  set faces_foldername=Faces
+  set uniform_foldername=Uniform
+
+) else (
+
+  set faces_foldername=Root
+  set uniform_foldername=Root
+)
+
+
 REM - Create folders just in case
-md ".\faces_in_folders" 2>nul
-md ".\patches_contents\Faces\common\character0\model\character\face\real" 2>nul
-md ".\patches_contents\Uniform\common\render\thumbnail\spike" 2>nul
-md ".\patches_contents\Uniform\common\render\thumbnail\glove" 2>nul
-md ".\patches_contents\Uniform\common\etc\pesdb" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\uniform\team" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\uniform\texture" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\uniform\nocloth" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\glove" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\d" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\boots" 2>nul
-md ".\patches_contents\Uniform\common\character0\model\character\appearance" 2>nul
+md ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real" 2>nul
+md ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" 2>nul
+md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" 2>nul
+md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" 2>nul
+md ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" 2>nul
+md ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" 2>nul
 
 
 if not defined full_patch (
@@ -101,98 +110,139 @@ if %full_patch%==1 (
   @echo - Copying the default content
   @echo - 
   
+  REM - Create folders just in case
+  md ".\patches_contents\%uniform_foldername%\common\render\thumbnail\spike" 2>nul
+  md ".\patches_contents\%uniform_foldername%\common\render\thumbnail\glove" 2>nul
+  md ".\patches_contents\%uniform_foldername%\common\etc\pesdb" 2>nul
+  md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\nocloth" 2>nul
+  md ".\patches_contents\%uniform_foldername%\common\character0\model\character\d" 2>nul
+  md ".\patches_contents\%uniform_foldername%\common\character0\model\character\appearance" 2>nul
+
+  
   REM - Copy the default files to the Uniform folder
   robocopy ".\default_contents" ".\patches_contents" /e /is >nul
+
   
   REM - Copy the bin files from other_stuff to the Uniform folder
-  copy ".\other_stuff\Bin Files\TeamColor.bin" ".\patches_contents\Uniform\common\etc" >nul
-  copy ".\other_stuff\Bin Files\UniColor.bin" ".\patches_contents\Uniform\common\character0\model\character\uniform\team" >nul
-  copy ".\other_stuff\Bin Files\Team.bin" ".\patches_contents\Uniform\common\etc\pesdb" >nul
-  copy ".\other_stuff\Bin Files\GloveList.bin" ".\patches_contents\Uniform\common\character0\model\character\glove" >nul
-  copy ".\other_stuff\Bin Files\BootsList.bin" ".\patches_contents\Uniform\common\character0\model\character\boots" >nul
-  copy ".\other_stuff\Bin Files\PlayerAppearance.bin" ".\patches_contents\Uniform\common\character0\model\character\appearance" >nul
+  copy ".\other_stuff\Bin Files\TeamColor.bin" ".\patches_contents\%uniform_foldername%\common\etc" >nul
+  copy ".\other_stuff\Bin Files\UniColor.bin" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" >nul
+  copy ".\other_stuff\Bin Files\Team.bin" ".\patches_contents\%uniform_foldername%\common\etc\pesdb" >nul
+  copy ".\other_stuff\Bin Files\GloveList.bin" ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" >nul
+  copy ".\other_stuff\Bin Files\BootsList.bin" ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" >nul
+  copy ".\other_stuff\Bin Files\PlayerAppearance.bin" ".\patches_contents\%uniform_foldername%\common\character0\model\character\appearance" >nul
 )
 
 
 REM - If Bins Updating is enabled
 if %bins_updating%==1 (
+
+  REM - Create the etc folder just in case
+  md ".\patches_contents\%uniform_foldername%\common\etc" 2>nul
+  
   
   REM - Update the relevant bin files
   call .\Engines\bins_update
   
+  
   REM - And copy them
-  copy ".\other_stuff\Bin Files\TeamColor.bin" ".\patches_contents\Uniform\common\etc" >nul
-  copy ".\other_stuff\Bin Files\UniColor.bin" ".\patches_contents\Uniform\common\character0\model\character\uniform\team" >nul
+  copy ".\other_stuff\Bin Files\TeamColor.bin" ".\patches_contents\%uniform_foldername%\common\etc" >nul
+  copy ".\other_stuff\Bin Files\UniColor.bin" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" >nul
 )
 
 
-REM - Make a properly structured temp folder for every face and move the faces from the Faces folder
-for /f %%A in ('dir /a:d /b ".\extracted_exports\Faces" 2^>nul') do (
-  md ".\faces_in_folders\%%A\common\character0\model\character\face\real"
-  move ".\extracted_exports\Faces\%%A" ".\faces_in_folders\%%A\common\character0\model\character\face\real" >nul
-)
 
 @echo - 
 @echo - Packing the face folders into cpks
 
-REM - Make a cpk of every face and put it in the Faces folder
-for /f %%B in ('dir /a:d /b ".\faces_in_folders" 2^>nul') do (
-  @echo - %%B
-  .\Engines\cpkmakec ".\faces_in_folders\%%B" ".\patches_contents\Faces\common\character0\model\character\face\real\%%B.cpk" -align=2048 -mode=FILENAME -mask >nul
+REM - For every face folder
+for /f "tokens=*" %%A in ('dir /a:d /b ".\extracted_exports\Faces" 2^>nul') do (
+  
+  set facename=%%A
+  set faceid=!facename:~0,5!
+
+  REM - Rename it to the player id
+  rename ".\extracted_exports\Faces\%%A" "!faceid!" >nul
+  
+  REM - Make a properly structured temp folder
+  md ".\faces_in_folders\!faceid!\common\character0\model\character\face\real"
+  
+  REM - Move the face folder to the temp folder
+  move ".\extracted_exports\Faces\!faceid!" ".\faces_in_folders\!faceid!\common\character0\model\character\face\real" >nul
+  
+  REM - Make a cpk and put it in the Faces folder
+  @echo - %%A
+  
+  if %compression%==1 (
+    .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask -forcecompress >nul
+  ) else (
+    .\Engines\cpkmakec ".\faces_in_folders\!faceid!" ".\patches_contents\%faces_foldername%\common\character0\model\character\face\real\!faceid!.cpk" -align=2048 -mode=FILENAME -mask >nul
+  )
 )
+
 
 
 @echo - 
 @echo - Moving the kits
 
-REM - Move the kits to the Uniform folder
-for /f %%A in ('dir /b "extracted_exports\Kits\Kit Configs" 2^>nul') do (
-  if exist ".\patches_contents\Uniform\common\character0\model\character\uniform\team\%%A" (
-    rd /S /Q ".\patches_contents\Uniform\common\character0\model\character\uniform\team\%%A"
+REM - Move the kit configs to the Uniform folder
+for /f %%A in ('dir /b ".\extracted_exports\Kit Configs" 2^>nul') do (
+
+  if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team\%%A" (
+    rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team\%%A"
   )
-  move ".\extracted_exports\Kits\Kit Configs\%%A" ".\patches_contents\Uniform\common\character0\model\character\uniform\team" >nul
+  
+  move ".\extracted_exports\Kit Configs\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" >nul
 )
-for /f %%A in ('dir /b "extracted_exports\Kits\Kit Textures" 2^>nul') do (
-  move ".\extracted_exports\Kits\Kit Textures\%%A" ".\patches_contents\Uniform\common\character0\model\character\uniform\texture" >nul
+
+REM - Move the kit textures to the Uniform folder
+for /f %%A in ('dir /b ".\extracted_exports\Kit Textures" 2^>nul') do (
+
+  move ".\extracted_exports\Kit Textures\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" >nul
 )
+
+
 
 @echo - 
-@echo - Moving the boots, gloves and other stuff
+@echo - Moving the boots, gloves and logos
 
 REM - Move the boots to the Uniform folder
-for /f %%A in ('dir /b "extracted_exports\Other\Boots" 2^>nul') do (
-  if exist ".\patches_contents\Uniform\common\character0\model\character\boots\%%A" (
-    rd /S /Q ".\patches_contents\Uniform\common\character0\model\character\boots\%%A"
+for /f %%A in ('dir /b ".\extracted_exports\Boots" 2^>nul') do (
+  
+  if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A" (
+    rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A"
   )
-  move ".\extracted_exports\Other\Boots\%%A" ".\patches_contents\Uniform\common\character0\model\character\boots" >nul
+  
+  move ".\extracted_exports\Boots\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" >nul
 )
+
 
 REM - Move the gloves to the Uniform folder
-for /f %%A in ('dir /b "extracted_exports\Other\Gloves" 2^>nul') do (
-  if exist ".\patches_contents\Uniform\common\character0\model\character\glove\%%A" (
-    rd /S /Q ".\patches_contents\Uniform\common\character0\model\character\glove\%%A"
+for /f %%A in ('dir /b ".\extracted_exports\Gloves" 2^>nul') do (
+  
+  if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A" (
+    rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A"
   )
-  move ".\extracted_exports\Other\Gloves\%%A" ".\patches_contents\Uniform\common\character0\model\character\glove" >nul
+  
+  move ".\extracted_exports\Gloves\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" >nul
 )
 
 
-REM - Move the other stuff to the Uniform folder
-for /f %%A in ('dir *.dds /b "other_stuff\Thumbnails\Boots" 2^>nul') do (
-  move ".\other_stuff\Thumbnails\Boots\%%A" ".\patches_contents\Uniform\common\render\thumbnail\spike" >nul
-)
-for /f %%A in ('dir *.dds /b "other_stuff\Thumbnails\Gloves" 2^>nul') do (
-  move ".\other_stuff\Thumbnails\Gloves\%%A" ".\patches_contents\Uniform\common\render\thumbnail\glove" >nul
-)
-for /f %%A in ('dir *.model /b "other_stuff\Nocloth Kits" 2^>nul') do (
-  move ".\other_stuff\Nocloth Kits\%%A" ".\patches_contents\Uniform\common\character0\model\character\uniform\nocloth" >nul
-)
-for /f %%A in ('dir *.model /b "other_stuff\modD Models" 2^>nul') do (
-  move ".\other_stuff\modD Models\%%A" ".\patches_contents\Uniform\common\character0\model\character\d" >nul
+REM - Move the logos to the Uniform folder
+for /f %%A in ('dir /b ".\extracted_exports\Logo" 2^>nul') do (
+  
+  move ".\extracted_exports\Logo\%%A" ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" >nul
 )
 
 
-REM - Remove the temp folder
-rd /S /Q .\faces_in_folders
+REM - Copy the other files to the Uniform folder
+robocopy ".\other_stuff\common" ".\patches_contents\%uniform_foldername%\common" /e /is >nul
+
+
+
+REM - Remove the temp faces folder if present
+if exist faces_in_folders (
+  rd /S /Q .\faces_in_folders >nul
+)
 
 del cpkmaker.out.csv 2>nul
 

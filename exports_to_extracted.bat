@@ -8,7 +8,7 @@ REM - Set the working folder
 cd /D "%~dp0"
 
 REM - Save the current working folder to a string
-set working_folder=%~dp0
+set script_folder=%~dp0
 
 REM - Load the settings
 if exist settings.txt (
@@ -122,19 +122,19 @@ if defined all_in_one (
 REM - Create folders just in case
 md ".\exports_to_add" 2>nul
 md ".\extracted_exports\Faces" 2>nul
-md ".\extracted_exports\Kits\Kit Configs" 2>nul
-md ".\extracted_exports\Kits\Kit Textures" 2>nul
-md ".\extracted_exports\Other\Boots" 2>nul
-md ".\extracted_exports\Other\Gloves" 2>nul
-md ".\extracted_exports\Other\Other" 2>nul
+md ".\extracted_exports\Kit Configs" 2>nul
+md ".\extracted_exports\Kit Textures" 2>nul
+md ".\extracted_exports\Boots" 2>nul
+md ".\extracted_exports\Gloves" 2>nul
+md ".\extracted_exports\Logo" 2>nul
+md ".\extracted_exports\Other" 2>nul
 
-REM - Clear flags for writing to file
-set teamlist=
+REM - Clear the flag for writing to file
 set memelist=
 
 REM - Reset the files
 @echo Team ID > .\Engines\teamlist.txt
-@echo --- 4cc AET compiler legacy - List of problems --- > memelist.txt
+@echo --- 4cc AET compiler simplified - List of problems --- > memelist.txt
 @echo --- 4cc txt notes compilation --- > teamnotes.txt
 
 @echo - 
@@ -150,6 +150,8 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - Get the team's name
   for /f "delims=+-_.:,;* " %%Z in ("%%A") do set team=%%Z
   
+  set team_clean=!team!
+  
   REM - Convert it to full lowercase
   for %%T in ("!team!") do (
     for /f "delims=~" %%U in ('echo %%T^> ~%%T ^& dir /L /B ~%%T') do (
@@ -157,8 +159,6 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
       del /Q ~%%T
     )
   )
-  
-  set team_clean=!team!
   
   REM - Add slashes (or brackets)
   if not "!team!"=="s4s" (
@@ -183,7 +183,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   
   REM - Delete the old export folder if present
   if exist ".\extracted_exports\!foldername!" (
-    rd /S /Q ".\extracted_exports\!foldername!" >nul
+    rd /S /Q ".\extracted_exports\!foldername!"
   )
   
   REM - Make a new folder inside the extracted_exports folder
@@ -212,7 +212,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     REM - Copy the contents of the txt file to a common file for quick reading
     @echo . >> teamnotes.txt
     @echo - >> teamnotes.txt
-    @echo -- !team!'s notes file - !txtname! >> teamnotes.txt
+    @echo -- !team!'s note file - !txtname! >> teamnotes.txt
     @echo -  >> teamnotes.txt
     
     REM - Read and copy line per line
@@ -227,7 +227,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
       REM - Zlib every txture
       call .\Engines\textures_zlib
     )
-
+    
     
     REM - Move the contents of the export to the root of extracted_exports
     call .\Engines\export_move
@@ -242,8 +242,8 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
 
 set other=
 
-REM - Check if there are any files in the Other\Other folder
->nul 2>nul dir /a-d /s ".\extracted_exports\Other\Other\*" && (set other=1) || (echo ->nul)
+REM - Check if there are any files in the Other folder
+>nul 2>nul dir /a-d /s ".\extracted_exports\Other\*" && (set other=1) || (echo ->nul)
 
 
 REM - Delete the memelist if everything went fine
@@ -263,18 +263,19 @@ set pause=
 @echo - 
 @echo - All the exports have been extracted and checked
 
+
 if defined memelist (
   set warn=1
   @echo - (Some problems were found, check the memelist.txt file for details^)
   
 )
 
-REM - If there's something in the Other\Other folder
+REM - If there's something in the Other folder
 if defined other (
   set warn=1
 
   @echo - 
-  @echo - There are some files in the extracted_exports\Other\Other folder
+  @echo - There are some files in the extracted_exports\Other folder
   @echo - 
   @echo - Please open it and check its contents, unless you have already done
   @echo - this previously for these exports

@@ -7,13 +7,13 @@ md ".\stored_zlibbed" 2>nul
 
 
 REM - Check the length of the working folder's path
-set working_folder=!working_folder!extracted_exports\!foldername!\
+set working_folder=!script_folder!extracted_exports\!foldername!\
 
 call .\Engines\CharLib strlen working_folder working_folder_len
 
 
-REM - For each folder in the extracted_exports folder
-for  /f "tokens=*" %%A in ('dir /a:d /b /s ".\extracted_exports"') do (
+REM - For each folder in the export folder
+for  /f "tokens=*" %%A in ('dir /a:d /b /s ".\extracted_exports\!foldername!\"') do (
   
   REM - For each DDS file
   for  /f "tokens=*" %%B in ('dir /a:-d /b "%%A\*.dds" 2^>nul') do (

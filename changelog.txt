@@ -1,0 +1,32 @@
+29/11/16 - Version 2.0
+- A fuckload of fixes. Now everything should work properly, including the bins file creation,
+the zlibbing and the checking of exports.
+- Soon(tm): Checking the texture filenames inside the kit config files.
+
+
+13/11/16 - Version 1.3
+- Modified the export extracting part of the script to warn about the amount of kit entries
+in the txt not being the same as the amount of kit config files in the export.
+- Improved the unicolor bin compiler to support txt files which don't have an Other section,
+and to show on screen the number of team colors and kits that were recognized properly.
+
+
+27/10/16 - Version 1.2
+- Removed the option for offering to create a txt for teams without note txts (it was breaking
+the whole program every time it was activated).
+- Improved the recognition of teams with txts without a team ID.
+- Added warning about txts with unicode formatting being unsupported.
+- Added support for teams with more than 7 kits to the unicolor bin updater.
+
+
+26/10/16 - Version 1.1
+- Implemented the removal of Thumbs.db files by making 7zip exclude them while extracting exports.
+- Added support to the checker for edithair faces.
+- Improved the zlibbing function by making it store every texture it zlibs in a folder, so that
+there's no need to zlib everything again when rerunning the script.
+- Added an option to make the cpkmaker exe compress the cpk it makes instead of zlibbing every
+texture. The zlibbing method is still recommended if compression is needed, though.
+
+
+25/10/16 - Version 1
+- Initial support for the new simplified export format.

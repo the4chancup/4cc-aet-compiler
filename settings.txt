@@ -3,11 +3,11 @@
 :: Lines starting with :: are comment lines and will be ignored by the script.
 :: 1 means enabled, 0 means disabled. No spaces allowed next to the equal sign.
 :: 
-:: 
+::
 :: - Cpk Name -
-:: Write the package name prefix you want without quotes (e.g. 4cc, vg lel)
-:: The maximum name length you can set here is 20 characters. Spaces are fine.
-set cpk_name=4cc_test
+:: Write the package names you want without quotes (e.g. 4cc, vg lel)
+:: The maximum name length you can set here is 28 characters. Spaces are fine.
+set cpk_name=4cc_80_test
 :: 
 :: 
 :: - Move Cpks -
@@ -30,7 +30,7 @@ set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 20
 :: disable it from here.
 :: (If move_cpks is disabled, the DpFileList file won't be modified in any case.)
 :: Default: 1
-set dpfl_updating=0
+set dpfl_updating=1
 :: 
 :: 
 :: - Pause when Wrong -
@@ -70,6 +70,16 @@ set bins_updating=1
 :: exactly what you're doing.
 :: Default: 0
 set compression=0
+:: 
+:: 
+:: - Dual Cpk Mode -
+:: This setting is usually only needed by aesthetics helpers.
+:: Dual cpk mode creates a two cpks, one with the face files and another one with the kits, boots,
+:: gloves, logos and other stuff.
+:: You can set their names here (The previous name will be ignored)
+set dualcpk_mode=0
+set faces_cpk_name=4cc_70_testfaces
+set uniform_cpk_name=4cc_75_testuniform
 :: 
 :: 
 :: - Full Patch Mode -

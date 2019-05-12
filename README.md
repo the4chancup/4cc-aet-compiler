@@ -1,6 +1,10 @@
 # 4cc AET Compiler
+Organizes the contents of aesthetic exports for the 4chan cup and packs them into DLC files for Pro Evolution Soccer
 
 ## Simple mode
+
+- This compiler only supports exports following the new simplified format -
+- Check the second to last paragraph for details -
 
 Just put your exports in the exports_to_add folder and run the all_in_one
 script. The resulting faces cpk and kits cpk will be copied automatically to
@@ -38,23 +42,25 @@ settings file.
 
 Here's a list of the stuff that the script checks after extracting an export,
 before moving its content into three common folders:
-- Checks the presence of the txt file.
-- Checks that the txt file has a team ID in it, accepting both the proper line
+- Checks the presence of the Note txt file. If there isn't any, it offers to
+  make one with just the Team ID.
+- Checks that the txt file has a Team ID in it, accepting both the proper line
   "ID: ###" and just a line with "###".
 - Checks that the team ID is in the range 701-892.
-- Checks on a list that the team ID is not the same as the ID of any of the
-  previously compiled exports, then stores the ID in that list.
-- Checks for nested folders with repeating names (e.g. aog export/Faces/Faces),
-  except for /Other/Other which is legitimate, and tries to fix it by moving
+- Checks for nested folders with repeating names (e.g. GD export/Faces/Faces),
+  except for /Other/Other which is legitimate, and tries to fix them by moving
   the offending folders down by one layer.
 - Checks that the face folders follow the format "tID##", where ## is not XX
-  (e.g.: XXXXX, 814XX and 80420, where ID: 814, are detected).
+  (e.g.: XXXXX, 814XX and 80420, where Team ID: 814, are detected as bad).
 - Checks, when it finds face folders that are in the old full path format
-  (Faces\XXXXX\common\character0\model\character\face\real\XXXXX), that the two
-  "XXXXX" names are the same.
+  (Faces\xxxxx\common\character0\model\character\face\real\xxxxx), that the two
+  "xxxxx" names are the same.
+- Checks that the Faces folder doesn't have any extra cpks in it.
 - Checks that the folder in the Kit Configs folder has "tID" as folder name.
-- Checks that the boot folders in the Boots folder follow the format "k####".
-- Checks that the glove folders in the Gloves folder follow the format "g###".
+- Checks that the kit config files and the kit texture files follow the proper
+  naming convention as defined by the Kits wikipage.
+- Checks that the boots folders in the Boots folder follow the format "k####".
+- Checks that the gloves folders in the Gloves folder follow the format "g###".
 
 All of these, apart from the nested folders, boot and glove folders checks, are
 not only done to warn about errors in the exports, but especially to prevent
@@ -64,11 +70,10 @@ team ID written on it is fine.
 Remember that there's no need to repack an export after unpacking and fixing it,
 the script will accept it in folder format too.
 
-After the checks are done, the script sorts the export's content into three
-folders (Faces, Kits, Other), which will hold the contents of all the processed
-exports, and copies the content of all the notes files into a single file called
-teamnotes.txt, allowing you to read them quickly without having to open multiple
-files every time.
+After the checks are done, the script sorts the export's content into folders
+which will hold the contents of all the processed exports, and copies the content
+of all the notes files into a single file called teamnotes.txt, allowing you to
+read them quickly without having to open multiple files every time.
 
 Use this script by itself if you just want to check the exports for correctness
 and/or prepare the extracted_exports folder for the next step.
@@ -80,13 +85,14 @@ This script makes a cpk for each  of the folders in the Faces folder inside
 the extracted_exports folder and stores it in the Faces folder inside the
 patch_contents folder.
 
-It also moves the content from the other Kits, Boots and Gloves folders and
-from the other_stuff folder to the proper folders inside the Uniform folder.
+It also moves the content from the other Kits, Boots, Gloves and Logo folders
+to the proper folders inside the Uniform folder.
 
-Lastly, if Full Patch mode is enabled, it copies the default contents from the
+If Full Patch mode is enabled, it copies the default contents from the
 default_contents folder, which must be in the same folder as the script
 (download the extra pack if you need it), to the Uniform folder, allowing the
 resulting uniform cpk to be replace completely the 4cc_uniform cpk.
+
 Also, if Bins Update is enabled, the team color and kit color entries from the
 txt files will be added to the UniColor and TeamColor files in other_stuff, and
 copied to the Uniform folder.
@@ -142,6 +148,39 @@ is not in the other_stuff folder and doesn't usually come from exports, using
 the 4cc CPK Compiler script is recommended instead, since it's faster.
 
 
+## About the new export format
+
+### The old legacy format has these folders:
+XXX Note.txt
+Faces
+-------\XXXXX\common\character0\model\character\face\real\XXXXX
+-------\XXXXX\common\character0\model\character\face\real\XXXXX
+Kits
+-------\Kit Configs
+--------------\XXX
+-------\Kit Textures
+Other (optional)
+-------\Boots (optional)
+-------\Gloves (optional)
+-------\Other (optional)
+
+### The new simplified format has these instead:
+XXX Note.txt
+Faces
+-------\XXXXX 
+-------\XXXXX - Player name (optional)
+Kit Configs
+-------\XXX
+Kit Textures
+Boots (optional)
+Gloves (optional)
+Other (optional)
+Logo (optional, recommended for new teams)
+
+The new format allows creating new exports and fixing stuff more quickly,
+and it makes errors due to wrong folder names become less frequent.
+
+
 ## Troubleshooting
 
 Q: Why is the script crashing?
@@ -153,7 +192,7 @@ don't hesitate to ask for help on the /4ccg/ thread.
 
 Q: Why am I getting a "cpkmakec.exe has crashed" message?
 
-A: This happens when you run the scripts while there's nothing in either the
+A: This may happen when you run the scripts while there's nothing in either the
 exports_to_add or the patches_contents folders to pack.
 
 Q: Why wasn't the cpk created at all? It's not in the /downloads folder.
@@ -171,6 +210,6 @@ make a clean file.
 
 ## Credits
 
-Tool and readme by Shakes
+Tool by Shakes
 
 Special thanks to Tomato for feature ideas
