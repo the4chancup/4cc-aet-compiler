@@ -118,7 +118,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     REM - If compression is set to 2
     if %compression%==2 (
       
-      if not defined fox_mode (
+      if %fox_mode%==0 (
       
         REM - Zlib every texture
         call .\Engines\textures_zlib
@@ -191,7 +191,7 @@ if not defined warn (
   @echo - No problems were found
 )
 
-REM - If all_in_one mode is enabled invoke the next part of the process
+
 if defined all_in_one (
 
   if defined warn (

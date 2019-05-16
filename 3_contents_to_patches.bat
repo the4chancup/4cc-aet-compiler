@@ -84,11 +84,6 @@ if not defined all_in_one (
 )
 
 
-@echo - 
-@echo - Packing the patches
-@echo - 
-
-
 if not %multicpk_mode%==0 (
   
   REM - Make sure that the folders are not empty to avoid cpkmakec errors
@@ -100,14 +95,15 @@ if not %multicpk_mode%==0 (
 
 
   REM - Make the Faces patch (faces, portraits)
-  @echo - Making the Faces patch
+  @echo - 
+  @echo - Packing the Faces patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" ".\patches_output\%faces_cpk_name%.cpk" %cpkmaker_args%
   
   
   REM - Make the Uniform patch (kits, logos, boots, gloves, etc.)
   @echo - 
-  @echo - Making the Uniform patch
+  @echo - Packing the Uniform patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" ".\patches_output\%uniform_cpk_name%.cpk" %cpkmaker_args%
   
@@ -116,7 +112,7 @@ if not %multicpk_mode%==0 (
   
     REM - Make the Bins patch (unicolor, teamcolor)
     @echo - 
-    @echo - Making the Bins patch
+    @echo - Packing the Bins patch
 
     .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" ".\patches_output\%bins_cpk_name%.cpk" %cpkmaker_args%
     
@@ -129,7 +125,8 @@ if not %multicpk_mode%==0 (
 
 
   REM - Make the single cpk patch
-  @echo - Making the patch
+  @echo - 
+  @echo - Packing the patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" ".\patches_output\%cpk_name%.cpk" %cpkmaker_args%
   

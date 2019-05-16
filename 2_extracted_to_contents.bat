@@ -63,19 +63,25 @@ if %bins_updating%==1 (
 )
 
 
-set kitmess=
-set othmess=
+set other_message=
+
+
+REM - If there's a Faces folder, pack its folders
+if exist ".\extracted_exports\Faces" (
+
+  @echo - 
+  @echo - Packing the face folders
+
+  call .\Engines\faces_pack
+)
 
 
 REM - If there's a Kit Configs folder, move its stuff
 if exist ".\extracted_exports\Kit Configs" (
-
-  if not defined kitmess (
-    set kitmess=1
-    
-    @echo - 
-    @echo - Moving the kits
-  )
+  
+  @echo - 
+  @echo - Moving the kit configs
+  
   
   REM - Create a "team" folder if needed
   if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" (
@@ -101,14 +107,11 @@ if exist ".\extracted_exports\Kit Configs" (
 REM - If there's a Kit Textures folder, move its stuff
 if exist ".\extracted_exports\Kit Textures" (
 
-  if not defined kitmess (
-    set kitmess=1
-    
-    @echo - 
-    @echo - Moving the kits
-  )
+  @echo - 
+  @echo - Moving the kit textures
   
-  if not defined fox_mode (
+  
+  if %fox_mode%==0 (
     
     REM - Create a "texture" folder if needed
     if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\texture" (
@@ -140,100 +143,31 @@ if exist ".\extracted_exports\Kit Textures" (
 )
 
 
-
-REM - If there's a Logo folder, move its stuff
-if exist ".\extracted_exports\Logo" (
-
-  if not defined othmess (
-    set othmess=1
-    
-    @echo - 
-    @echo - Moving the other stuff
-  )
-  
-  REM - Create a "flag" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" (
-    md ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" 2>nul
-  )
-
-  REM - Move the logos to the Uniform cpk folder
-  for /f %%A in ('dir /b ".\extracted_exports\Logo" 2^>nul') do (
-    move ".\extracted_exports\Logo\%%A" ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" >nul
-  )
-
-  REM . Then delete the main folder
-  rd /S /Q ".\extracted_exports\Logo" >nul
-  
-)
-
-
-REM - If there's a Portraits folder, move its stuff
-if exist ".\extracted_exports\Portraits" (
-
-  if not defined othmess (
-    set othmess=1
-    
-    @echo - 
-    @echo - Moving the other stuff
-  )
-  
-  REM - Create a "player" folder if needed
-  if not exist ".\patches_contents\%faces_foldername%\common\render\symbol\player" (
-    md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
-  )
-  
-  REM - Move the portraits to the Faces cpk folder
-  for /f %%A in ('dir /b ".\extracted_exports\Portraits" 2^>nul') do (
-    move ".\extracted_exports\Portraits\%%A" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
-  )
-
-  REM . Then delete the main folder
-  rd /S /Q ".\extracted_exports\Portraits" >nul
-
-)
-
-
-REM - If there's a Boots folder, move its stuff
+REM - If there's a Boots folder, move or pack its stuff
 if exist ".\extracted_exports\Boots" (
 
-  if not defined othmess (
-    set othmess=1
-    
+  if %fox_mode%==0 (
+  
     @echo - 
-    @echo - Moving the other stuff
-  )
-  
-  REM - Create a "boots" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" (
-    md ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" 2>nul
-  )
-  
-  REM - Move the boots to the Uniform cpk folder
-  for /f %%A in ('dir /b ".\extracted_exports\Boots" 2^>nul') do (
+    @echo - Moving the boots
     
-    if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A" (
-      rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A"
-    )
-    
-    move ".\extracted_exports\Boots\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" >nul
-  )
-
+  ) else (
   
-  REM . Then delete the main folder
-  rd /S /Q ".\extracted_exports\Boots" >nul
-
+    @echo - 
+    @echo - Packing the boots folders
+    
+  )
+  
+  call .\Engines\boots_pack
 )
 
 
 REM - If there's a Gloves folder, move its stuff
 if exist ".\extracted_exports\Gloves" (
-
-  if not defined othmess (
-    set othmess=1
-    
-    @echo - 
-    @echo - Moving the other stuff
-  )
+  
+  @echo - 
+  @echo - Moving the gloves
+  
   
   REM - Create a "glove" folder if needed
   if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" (
@@ -256,11 +190,63 @@ if exist ".\extracted_exports\Gloves" (
 )
 
 
+REM - If there's a Portraits folder, move its stuff
+if exist ".\extracted_exports\Portraits" (
+
+  if not defined other_message (
+    set other_message=1
+    
+    @echo - 
+    @echo - Moving the other stuff
+  )
+  
+  REM - Create a "player" folder if needed
+  if not exist ".\patches_contents\%faces_foldername%\common\render\symbol\player" (
+    md ".\patches_contents\%faces_foldername%\common\render\symbol\player" 2>nul
+  )
+  
+  REM - Move the portraits to the Faces cpk folder
+  for /f %%A in ('dir /b ".\extracted_exports\Portraits" 2^>nul') do (
+    move ".\extracted_exports\Portraits\%%A" ".\patches_contents\%faces_foldername%\common\render\symbol\player" >nul
+  )
+
+  REM . Then delete the main folder
+  rd /S /Q ".\extracted_exports\Portraits" >nul
+
+)
+
+
+REM - If there's a Logo folder, move its stuff
+if exist ".\extracted_exports\Logo" (
+
+  if not defined other_message (
+    set other_message=1
+    
+    @echo - 
+    @echo - Moving the other stuff
+  )
+  
+  REM - Create a "flag" folder if needed
+  if not exist ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" (
+    md ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" 2>nul
+  )
+
+  REM - Move the logos to the Uniform cpk folder
+  for /f %%A in ('dir /b ".\extracted_exports\Logo" 2^>nul') do (
+    move ".\extracted_exports\Logo\%%A" ".\patches_contents\%uniform_foldername%\common\render\symbol\flag" >nul
+  )
+
+  REM . Then delete the main folder
+  rd /S /Q ".\extracted_exports\Logo" >nul
+  
+)
+
+
 REM - If there's a Common folder, move its stuff
 if exist ".\extracted_exports\Common" (
 
-  if not defined othmess (
-    set othmess=1
+  if not defined other_message (
+    set other_message=1
     
     @echo - 
     @echo - Moving the other stuff
@@ -287,13 +273,6 @@ if exist ".\extracted_exports\Common" (
 )
 
 
-REM - If there's a Faces folder, pack its folders
-if exist ".\extracted_exports\Faces" (
-  call .\Engines\faces_pack
-)
-
-
-REM - If all_in_one mode is enabled invoke the next part of the process
 if defined all_in_one (
 
   @echo - 

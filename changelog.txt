@@ -1,5 +1,9 @@
-/05/19 - Version 4.2
+17/05/19 - Version 4.2
 - Fixed the request of admin permissions which was making the compiler crash at the start
+- Made the compiler get the team name from the name of the export's folder if it's missing a Note txt file
+- Note txt files are no longer compulsory in exports
+- Added checks to make sure dds kit textures for 18+ are DXT5 with mipmaps
+- Added packing of boots folders in 18+ format plus automatic fmdl texture path editing for them
 
 
 03/05/19 - Version 4.1

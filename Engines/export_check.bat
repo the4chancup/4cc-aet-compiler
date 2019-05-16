@@ -306,14 +306,14 @@ if not defined error (
     REM - For every face folder
     for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Faces"') do (
       
+      set facename=%%C
+      
       set facewrong=
       set facewrong_num=
       set facewrong_id2=
       set facewrong_noxml=
       set facewrong_edithairxml=
       set facewrong_badtex=
-      
-      set facename=%%C
       
       
       REM - Check that the player number is within the 01-23 range
@@ -347,27 +347,32 @@ if not defined error (
           move ".\extracted_exports\!foldername!\Faces\!facename!\!name!" ".\extracted_exports\!foldername!\Portraits" >nul
         )
         
-        if not defined fox_mode (
+        if %fox_mode%==0 (
           
           REM - Check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
-          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
-            set facewrong=1
-            set facewrong_noxml=1
-          )
           if exist ".\extracted_exports\!foldername!\Faces\!facename!\face_edithair.xml" (
+          
             set facewrong=1
             set facewrong_edithairxml=1
-            set facewrong_noxml=
+            
+          ) else (
+            if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
+            
+              set facewrong=1
+              set facewrong_noxml=1
+              
+            )
           )
           
         ) else (
           
           REM - Check that the folder has the essential face.fpk.xml file
           if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.fpk.xml" (
+          
             set facewrong=1
             set facewrong_nofpkxml=1
+            
           )
-          
         )
         
         REM - Check if any dds textures exist
@@ -414,7 +419,7 @@ if not defined error (
               REM - Set the original filename
               set tex_name=%%D
               
-              if not defined fox_mode (
+              if %fox_mode%==0 (
               
                 REM - Delete the extra unzlibbed file
                 del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
@@ -451,41 +456,42 @@ if not defined error (
           @echo - !team!'s manager needs to get memed on (bad face folders^).
         ) 
         
-        REM - And skip the face folder
-        if not %pass_through%==1 (
-          rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!"
-        )
-        
         REM - Give an error depending on the particular problem
         if defined facewrong_num (
           @echo - The face folder !facename! is bad. >> memelist.txt
           @echo - The face folder !facename! is bad.
-          @echo (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
-          @echo (player number !facename:~3,2! out of the 01-23 range^)
+          @echo - (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
+          @echo - (player number !facename:~3,2! out of the 01-23 range^)
         )
         if defined facewrong_nofpkxml (
           @echo - The face folder !facename! is bad. >> memelist.txt
           @echo - The face folder !facename! is bad.
-          @echo (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
-          @echo (no face.fpk.xml file inside^)
+          @echo - (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
+          @echo - (no face.fpk.xml file inside^)
         )
         if defined facewrong_noxml (
           @echo - The face folder !facename! is bad. >> memelist.txt
           @echo - The face folder !facename! is bad.
-          @echo (no face.xml file inside^) - Folder discarded >> memelist.txt
-          @echo (no face.xml file inside^)
+          @echo - (no face.xml file inside^) - Folder discarded >> memelist.txt
+          @echo - (no face.xml file inside^)
         )
         if defined facewrong_edithairxml (
           @echo - The face folder !facename! is bad. >> memelist.txt
           @echo - The face folder !facename! is bad.
-          @echo (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
-          @echo (unsupported edithair face folder, needs updating^)
+          @echo - (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
+          @echo - (unsupported edithair face folder, needs updating^)
         )
         if defined facewrong_edithairxml (
           @echo - The face folder !facename! is bad. >> memelist.txt
           @echo - The face folder !facename! is bad.
           @echo (!badtex! is not a real dds^) - Folder discarded >> memelist.txt
           @echo (!badtex! is not a real dds^)
+        )
+        
+        
+        REM - And skip it
+        if not %pass_through%==1 (
+          rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!"
         )
         
       )
@@ -763,7 +769,7 @@ if not defined error (
           REM - Set the original filename
           set tex_name=%%C
           
-          if not defined fox_mode (
+          if %fox_mode%==0 (
           
             REM - Delete the extra unzlibbed file
             del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
@@ -799,7 +805,7 @@ if not defined error (
       
       @echo -
       @echo - !team!'s manager needs to get memed on (wrong format kit textures^).
-      if not defined fox_mode (
+      if %fox_mode%==0 (
         @echo - This is usually caused by png textures renamed to dds instead of saved as dds.
       )
       @echo - First game-crashing texture found: !tex_name!
@@ -1050,32 +1056,48 @@ if not defined error (
   
   if defined checkboots (
     
-    set bootserror=
+    set boots_wrong_any=
     
     REM - For every boots folder
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Boots"') do (
       
-      set bootswrong=
-      set bootsname=%%C
+      set boots_name=%%C
+      
+      set boots_wrong=
+      set boots_wrong_name=
+      set boots_wrong_nofpkxml=
+      
       
       REM - Check that its name starts with a k, and that it's 5 characters long
-      if /i not "!bootsname:~0,1!"=="k" (
+      if /i not "!boots_name:~0,1!"=="k" (
         
-        set bootswrong=1
+        set boots_wrong=1
+        set boots_wrong_name=1
         
       ) else (
         
-        call .\Engines\CharLib strlen bootsname len_bootsname
-        if not "!len_bootsname!"=="5" set bootswrong=1
+        call .\Engines\CharLib strlen boots_name len_bootsname
+        if not "!len_bootsname!"=="5" set boots_wrong=1
+      )
+      
+      if %fox_mode%==1 (
+        
+        REM - Check that the folder has the essential boots.fpk.xml file
+        if not exist ".\extracted_exports\!foldername!\Boots\!boots_name!\boots.fpk.xml" (
+        
+          set boots_wrong=1
+          set boots_wrong_nofpkxml=1
+          
+        )
       )
       
       REM - If the boots folder is named wrongly
-      if defined bootswrong (
+      if defined boots_wrong (
         
         REM - Warn about the team having bad boots folders
-        if not defined bootserror (
+        if not defined boots_wrong_any (
           
-          set bootserror=1
+          set boots_wrong_any=1
           
           @echo - >> memelist.txt
           @echo - !team!'s manager needs to get memed on (wrong boots folder names^). >> memelist.txt
@@ -1083,22 +1105,35 @@ if not defined error (
           
           @echo -
           @echo - !team!'s manager needs to get memed on (wrong boots folder names^).
-        ) 
+        )
+        
+        REM - Give an error depending on the particular problem
+        if defined boots_wrong_name (
+          @echo - The boots folder !boots_name! is bad. >> memelist.txt
+          @echo - The boots folder !boots_name! is bad.
+          @echo (wrong boots folder name^) - Folder discarded >> memelist.txt
+          @echo (wrong boots folder name^)
+        )
+        
+        if defined boots_wrong_nofpkxml (
+          @echo - The boots folder !boots_name! is bad. >> memelist.txt
+          @echo - The boots folder !boots_name! is bad.
+          @echo (no boots.fpk.xml file inside^) - Folder discarded >> memelist.txt
+          @echo (no boots.fpk.xml file inside^)
+        )
+        
         
         REM - And skip it
         if not %pass_through%==1 (
-          rd /S /Q ".\extracted_exports\!foldername!\Boots\!bootsname!"
+          rd /S /Q ".\extracted_exports\!foldername!\Boots\!boots_name!"
         )
         
-        @echo - The boots folder !bootsname! is wrong - Folder discarded. >> memelist.txt
-        
-        @echo - The boots folder !bootsname! is wrong.
       )
       
     )
   
     REM - If the team has bad boots folders close the previously opened message
-    if defined bootserror (
+    if defined boots_wrong_any (
 
       @echo - The boots folders mentioned above will be discarded since they're unusable.
       @echo - Closing the script's window and fixing them is recommended.

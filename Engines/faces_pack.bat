@@ -1,8 +1,4 @@
-@echo off
 setlocal EnableDelayedExpansion
-
-@echo - 
-@echo - Packing the face folders into cpks
 
 
 REM - Prepare the arguments for the cpk packer
@@ -12,8 +8,9 @@ if %compression%==1 (
   set cpkmaker_args=-align=2048 -mode=FILENAME -mask
 )
 
+rem rem Get the face folders loop out of the check, share more stuff
 
-if not defined fox_mode (
+if %fox_mode%==0 (
   
   REM - PES 16/17 mode
   
@@ -102,8 +99,9 @@ if not defined fox_mode (
     REM - Move the fpk to the Faces folder
     move ".\faces_in_folders\!faceid!\face.fpk" ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!\#Win" >nul
     
-    REM - Copy an fpkd to the same folder
-    copy ".\Engines\face.fpkd" ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!\#Win" >nul
+    REM - Copy the generic fpkd to the same folder and rename it to face.fpkd
+    copy ".\Engines\generic.fpkd" ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!\#Win" >nul
+    rename ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!\#Win\generic.fpkd" "face.fpkd" >nul
     
     REM - Move the textures
     move ".\faces_in_folders\!faceid!\#windx11" ".\patches_contents\%faces_foldername%\Asset\model\character\face\real\!faceid!\sourceimages" >nul

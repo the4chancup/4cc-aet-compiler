@@ -37,9 +37,9 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Prepare the player ID
-      set name=%%C
-      set name=!teamid!!name:~3!
-      set faceid=!name:~0,5!
+      set faceid=%%C
+      set faceid=!teamid!!faceid:~3!
+      set faceid=!faceid:~0,5!
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -300,6 +300,37 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     REM - For each boots folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
+      REM - Prepare the ID
+      set bootsid=%%C
+      
+      REM - If fox mode is enabled
+      if %fox_mode%==1 (
+        
+        REM - Edit the texture paths if requested
+        if not %fmdl_id_editing%==0 (
+        
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !bootsid! >nul
+          )
+        )
+        
+        REM - Check if any dds textures exist
+        >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\%%B\%%C\*.dds" && (set dds_present=1) || (set dds_present=)
+        
+        if defined dds_present (
+          
+          REM - Convert the dds textures to ftex
+          call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\!foldername!\%%B\%%C" >nul
+          
+          REM - And delete them
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
+            del ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+          )
+        )
+        
+      )
+      
+      
       REM - Delete the folder if already present
       if exist ".\extracted_exports\%%B\%%C" (
         rd /S /Q ".\extracted_exports\%%B\%%C"
@@ -324,6 +355,37 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     
     REM - For each gloves folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+      
+      REM - Prepare the ID
+      set glovesid=%%C
+      
+      REM - If fox mode is enabled
+      if %fox_mode%==1 (
+        
+        REM - Edit the texture paths if requested
+        if not %fmdl_id_editing%==0 (
+        
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !glovesid! >nul
+          )
+        )
+        
+        REM - Check if any dds textures exist
+        >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\%%B\%%C\*.dds" && (set dds_present=1) || (set dds_present=)
+        
+        if defined dds_present (
+          
+          REM - Convert the dds textures to ftex
+          call .\Engines\Python\ftex_pack -m ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\!foldername!\%%B\%%C" >nul
+          
+          REM - And delete them
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
+            del ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+          )
+        )
+        
+      )
+      
       
       REM - Delete the folder if already present
       if exist ".\extracted_exports\%%B\%%C" (
