@@ -2,10 +2,10 @@
 REM ^ Don't write everything to screen
 
 if not defined all_in_one (
-
-  REM - Allow modifying named variables inside parentheses
+  
+  REM - Allow reading variables modified inside statements
   setlocal EnableDelayedExpansion
-
+  
   REM - Set the working folder
   cd /D "%~dp0"
   
@@ -92,7 +92,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   )
   
   
-  REM - Check the export for every kind of errors
+  REM - Check the export for all kinds of errors
   call .\Engines\export_check
   
   

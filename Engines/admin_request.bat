@@ -29,9 +29,9 @@ if '%errorlevel%' NEQ '0' (
     echo - Either accept the incoming request or disable Move Cpks mode in the settings file.
     echo - 
     
-    echo This file tells the compiler that you know why the request for admin privileges is needed. > .\Engines\admin_warned.txt
-    
     pause
+    
+    echo This file tells the compiler that you know why the request for admin privileges is needed. > .\Engines\admin_warned.txt
     
   )
   

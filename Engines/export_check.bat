@@ -1,4 +1,4 @@
-REM - Check the export for every kind of errors
+REM - Checks the export for all kinds of errors
 
 REM - Reset the main flags
 set error=
@@ -315,7 +315,7 @@ if not defined error (
       
       set facename=%%C
       
-
+      
       REM - Check that the player number is within the 01-23 range
       if "!facename:~3,2!" LSS "01" (
         set facewrong=1
@@ -378,8 +378,8 @@ if not defined error (
           REM - For every dds texture
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\*.dds"') do (
             
-            set texturename=%%D
-            set zlibbed=
+            set tex_name=%%D
+            set tex_zlibbed=
             
             REM - Check if it is zlibbed
             for /f "tokens=1-6 usebackq" %%E in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\%%D" -d 3 5`) do (
@@ -387,19 +387,19 @@ if not defined error (
               REM - If the file has the WESYS label it's zlibbed
               if "%%F%%G%%H%%I%%J"=="5745535953" (
                 
-                set zlibbed=1
+                set tex_zlibbed=1
                 
                 REM - Unzlib it
                 .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%C" -d >nul
                 
                 REM - Set the unzlibbed file as file to check
-                set texturename=%%D.unzlib
+                set tex_name=%%D.unzlib
               )
             )
             
             
             REM - Check if it is a real dds
-            for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!" -d 0 4`) do (
+            for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" -d 0 4`) do (
               
               if not "%%E%%F%%G"=="444453" (
                 set facewrong=1
@@ -409,23 +409,23 @@ if not defined error (
             )
             
             
-            if defined zlibbed (
+            if defined tex_zlibbed (
               
               REM - Set the original filename
-              set texturename=%%D
+              set tex_name=%%D
               
               if not defined fox_mode (
               
                 REM - Delete the extra unzlibbed file
-                del ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!.unzlib" >nul
+                del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
                 
               ) else (
                 
                 REM - Delete the orignal zlibbed file
-                del ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!" >nul
+                del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
                 
                 REM - Rename the file
-                rename ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!.unzlib" "!texturename!" >nul
+                rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" "!tex_name!" >nul
               )
             )
             
@@ -559,7 +559,7 @@ if not defined error (
       if /i not "!configname:~-12!"=="_realUni.bin" set configerror=1
       
       
-      set zlibbed=
+      set kitconf_zlibbed=
     
       REM - Check if it is zlibbed
       for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Configs\%%C" -d 3 5`) do (
@@ -567,12 +567,12 @@ if not defined error (
         REM - If the file has the WESYS label it's zlibbed
         if "%%E%%F%%G%%H%%I"=="5745535953" (
           
-          set zlibbed=1
+          set kitconf_zlibbed=1
         )
       )
       
       REM - If the file is zlibbed
-      if defined zlibbed (
+      if defined kitconf_zlibbed (
       
         REM - Unzlib it
         .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Configs\%%C" -d >nul
@@ -661,20 +661,21 @@ if not defined error (
   
   if defined checktexture (
     
-    set texture_wrongformat_any=
+    set tex_wrongformat_any=
     
     REM - For every texture
     for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
       
-      if not defined texture_wrongformat_any (
+      if not defined tex_wrongformat_any (
       
-        set texture_wrongformat=1
+        set tex_wrongformat=1
         
-        set texturename=%%C
+        set tex_name=%%C
         
-        set zlibbed=
-        set type_dds=
-        set type_ftex=
+        set tex_zlibbed=
+        set tex_type_dds=
+        set tex_resave=
+        
         
         REM - Check if it is zlibbed
         for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\%%C" -d 3 5`) do (
@@ -682,63 +683,110 @@ if not defined error (
           REM - If the file has the WESYS label it's zlibbed
           if "%%E%%F%%G%%H%%I"=="5745535953" (
             
-            set zlibbed=1
+            set tex_zlibbed=1
             
             REM - Unzlib it
             .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
             
             REM - Set the unzlibbed file as file to check
-            set texturename=%%C.unzlib
+            set tex_name=%%C.unzlib
           )
         )
         
         
         REM - Check if it is a dds, ftex, or none
-        for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!texturename!" -d 0 4`) do (
+        for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d 0 4`) do (
           
           REM - DDS
           if "%%E%%F%%G"=="444453" (
-            set texture_wrongformat=
+            set tex_type_dds=1
+            set tex_wrongformat=
           )
           
           REM - FTEX
           if "%%E%%F%%G%%H"=="46544558" (
-            if defined fox_mode (
-              set texture_wrongformat=
+            if %fox_mode%==1 (
+              set tex_wrongformat=
             )
           )
         )
         
         
-        if defined zlibbed (
-          
-          REM - Set the original filename
-          set texturename=%%C
-          
-          if not defined fox_mode (
-          
-            REM - Delete the extra unzlibbed file
-            del ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!.unzlib" >nul
+        REM - If it's a dds and fox mode is enabled
+        if defined tex_type_dds (
+          if %fox_mode%==1 (
             
-          ) else (
+            REM - Check if it's DXT5 with mipmaps
+            set line=0
             
-            REM - Delete the orignal zlibbed file
-            del ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!" >nul
+            for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 4 -d 1C F`) do (
+              
+              if !line!==0 (
+                
+                REM - Mipmaps count byte different from 0 or 1
+                set byte=%%E
+                set byte=!byte:~-2!
+                
+                if !byte!==00 (
+                  set tex_resave=1
+                )
+                
+                if !byte!==01 (
+                  set tex_resave=1
+                )
+              )
+              
+              if !line!==3 (
+                
+                REM - DXT type byte equal to 35, or 5 in ASCII
+                set byte=%%G
+                set byte=!byte:~0,2!
+                
+                if not !byte!==35 (
+                  set tex_resave=1
+                )
+              )
+              
+              set /a line+=1
+            )
             
-            REM - Rename the file
-            rename ".\extracted_exports\!foldername!\Faces\!facename!\!texturename!.unzlib" "!texturename!" >nul
+            if defined tex_resave (
+              set tex_wrongformat=1
+            )
           )
         )
         
         
-        if defined texture_wrongformat (
-          set texture_wrongformat_any=1
+        REM - If it was zlibbed
+        if defined tex_zlibbed (
+          
+          REM - Set the original filename
+          set tex_name=%%C
+          
+          if not defined fox_mode (
+          
+            REM - Delete the extra unzlibbed file
+            del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
+            
+          ) else (
+            
+            REM - Delete the orignal zlibbed file
+            del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
+            
+            REM - Rename the file
+            rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" "!tex_name!" >nul
+          )
+        )
+        
+        
+        if defined tex_wrongformat (
+          set tex_wrongformat_any=1
         )
       )
     )
     
     REM - If the folder has a non-dds texture
-    if defined texture_wrongformat_any (
+    if defined tex_wrongformat_any (
     
       REM - Skip the whole Kit Textures folder
       if not %pass_through%==1 (
@@ -754,7 +802,7 @@ if not defined error (
       if not defined fox_mode (
         @echo - This is usually caused by png textures renamed to dds instead of saved as dds.
       )
-      @echo - First game-crashing texture found: !texturename!
+      @echo - First game-crashing texture found: !tex_name!
       @echo - The Kit Textures folder will be discarded since it's unusable.
       @echo - Closing the script's window and fixing it is recommended.
       @echo -
@@ -772,19 +820,19 @@ if not defined error (
       for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
         
         set texturewrong=
-        set texturename=%%C
+        set tex_name=%%C
         
         
         REM - Check that its name starts with u
-        if not "!texturename:~0,1!"=="u" set texturewrong=1
+        if not "!tex_name:~0,1!"=="u" set texturewrong=1
         
         if not defined texturewrong (
         
           set texturewrong=1
         
           REM - Check that its name has p or g in the correct position
-          if /i "!texturename:~5,1!"=="p" set texturewrong=
-          if /i "!texturename:~5,1!"=="g" set texturewrong=
+          if /i "!tex_name:~5,1!"=="p" set texturewrong=
+          if /i "!tex_name:~5,1!"=="g" set texturewrong=
         )
         
       
@@ -806,12 +854,12 @@ if not defined error (
           
           REM - And skip it
           if not %pass_through%==1 (
-            del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!texturename!"
+            del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!tex_name!"
           )
           
-          @echo - The kit texture !texturename! is wrong - File discarded. >> memelist.txt
+          @echo - The kit texture !tex_name! is wrong - File discarded. >> memelist.txt
           
-          @echo - The kit texture !texturename! is wrong.
+          @echo - The kit texture !tex_name! is wrong.
         )
       
       )

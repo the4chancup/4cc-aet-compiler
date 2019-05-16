@@ -222,5 +222,3 @@ and try again.
 Tool by Shakes
 
 Special thanks to Tomato for ideas and for the python engines used by this compiler
-
-Last updated: 03/05/2019 (v4.1)

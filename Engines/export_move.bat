@@ -1,35 +1,13 @@
 REM - Edits and moves the contents of the export to the root of extracted_exports
 
-::=========================================================================
-::BEGIN DEFINITION OF THE MACRO FOR CONVERTING TO HEXADECIMAL
-::
-setlocal disableDelayedExpansion
-set LF=^
-
-
-::Above 2 blank lines are required - do not remove
-set ^"\n=^^^%LF%%LF%^%LF%%LF%^^"
-set "echo=echo("
-set macro_Call=for /f "tokens=1-26" %%a in
-
-set macro.Num2Hex=do (%\n%
-  setlocal enableDelayedExpansion%\n%
-  set /a "dec=(%%~a)"%\n%
-  if defined hex set "hex="%\n%
-  set "map=0123456789ABCDEF"%\n%
-  for /l %%n in (1,1,8) do (%\n%
-    set /a "d=dec&15,dec>>=4"%\n%
-    for %%d in (!d!) do set "hex=!map:~%%d,1!!hex!"%\n%
-  )%\n%
-  for %%v in (!hex!) do endlocal^&if "%%~b" neq "" (set "%%~b=%%v") else %echo%%%v%\n%
+REM - Check if the macro for converting to hexadecimal is defined, run the library otherwise
+if not defined macro.Num2Hex (
+  .\Engines\MacroLib "%~f0"
 )
-::
-::END DEFINITION OF THE MACRO
-::==========================================================================
 
-
-REM - Allow modifying named variables inside parentheses
+REM - Allow reading variables modified inside statements
 setlocal EnableDelayedExpansion
+
 
 REM - Move everything except the folders
 for /f "tokens=*" %%B in ('dir /a:-d /b ".\extracted_exports\!foldername!" 2^>nul') do (
@@ -64,7 +42,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       set faceid=!name:~0,5!
       
       REM - If fox mode is enabled
-      if defined fox_mode (
+      if %fox_mode%==1 (
         
         REM - Edit the texture paths if requested
         if %fmdl_id_editing%==1 (
@@ -222,7 +200,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     
     
     REM - If fox mode is enabled
-    if defined fox_mode (
+    if %fox_mode%==1 (
       
       REM - Check if any dds textures exist
       >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\%%B\*.dds" && (set dds_present=1) || (set dds_present=)
@@ -364,7 +342,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
     set unknown=
     
-    if defined fox_mode (
+    if %fox_mode%==1 (
       
       echo -
       echo - The Common folder is not supported in Fox Mode. It will be removed.

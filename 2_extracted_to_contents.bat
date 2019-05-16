@@ -3,9 +3,6 @@ REM ^ Don't write everything to screen
 
 if not defined all_in_one (
 
-  REM - Allow modifying named variables inside parentheses
-  setlocal EnableDelayedExpansion
-
   REM - Set the working folder
   cd /D "%~dp0"
   

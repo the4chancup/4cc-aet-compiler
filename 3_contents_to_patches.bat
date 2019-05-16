@@ -2,13 +2,13 @@
 REM ^ Don't write everything to screen
 
 if not defined all_in_one (
-
-  REM - Allow modifying named variables inside parentheses
+  
+  REM - Allow reading variables modified inside statements
   setlocal EnableDelayedExpansion
-
+  
   REM - Set the working folder
   cd /D "%~dp0"
- 
+  
   REM - Load the settings
   call .\Engines\settings_init
 )
@@ -102,14 +102,14 @@ if not %multicpk_mode%==0 (
   REM - Make the Faces patch (faces, portraits)
   @echo - Making the Faces patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" ".\patches_output\%faces_cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" ".\patches_output\%faces_cpk_name%.cpk" %cpkmaker_args%
   
   
   REM - Make the Uniform patch (kits, logos, boots, gloves, etc.)
   @echo - 
   @echo - Making the Uniform patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" ".\patches_output\%uniform_cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" ".\patches_output\%uniform_cpk_name%.cpk" %cpkmaker_args%
   
   
   if %bins_updating%==1 (
@@ -118,7 +118,7 @@ if not %multicpk_mode%==0 (
     @echo - 
     @echo - Making the Bins patch
 
-    .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" ".\patches_output\%bins_cpk_name%.cpk" !cpkmaker_args!
+    .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" ".\patches_output\%bins_cpk_name%.cpk" %cpkmaker_args%
     
   )
   
@@ -131,7 +131,7 @@ if not %multicpk_mode%==0 (
   REM - Make the single cpk patch
   @echo - Making the patch
 
-  .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" ".\patches_output\%cpk_name%.cpk" !cpkmaker_args!
+  .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" ".\patches_output\%cpk_name%.cpk" %cpkmaker_args%
   
 )
 

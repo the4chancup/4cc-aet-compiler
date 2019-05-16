@@ -1,7 +1,7 @@
 @echo off
 REM ^ Don't write everything to screen
 
-REM - Allow modifying named variables inside parentheses
+REM - Allow reading variables modified inside statements
 setlocal EnableDelayedExpansion
 
 REM - Set the working folder
@@ -9,6 +9,7 @@ cd /D "%~dp0"
 
 REM - Load the settings
 call .\Engines\settings_init
+
 
 REM - Set all_in_one mode
 set all_in_one=1

@@ -10,7 +10,7 @@ if exist settings.txt (
   
   @echo - Warning:
   @echo - The settings.txt file is missing.
-  @echo - The plugin will run with the default settings.
+  @echo - The compiler will run with the default settings.
   @echo - 
   @echo - Getting a settings file from the zip this compiler came from is recommended.
   @echo - 
