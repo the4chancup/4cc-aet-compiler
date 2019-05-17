@@ -340,11 +340,11 @@ if not defined error (
           )
           
           REM - Rename the portrait with the player id
-          set name=player_!faceid!.dds
-          rename ".\extracted_exports\!foldername!\Faces\!facename!\portrait.dds" "!name!"
+          set portrait_name=player_!faceid!.dds
+          rename ".\extracted_exports\!foldername!\Faces\!facename!\portrait.dds" "!portrait_name!"
           
           REM - And move it to the portraits folder
-          move ".\extracted_exports\!foldername!\Faces\!facename!\!name!" ".\extracted_exports\!foldername!\Portraits" >nul
+          move ".\extracted_exports\!foldername!\Faces\!facename!\!portrait_name!" ".\extracted_exports\!foldername!\Portraits" >nul
         )
         
         if %fox_mode%==0 (
@@ -722,7 +722,7 @@ if not defined error (
         if defined tex_type_dds (
           if %fox_mode%==1 (
             
-            REM - Check if it's DXT5 with mipmaps
+            REM - Check if it has mipmaps
             set line=0
             
             for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 4 -d 1C F`) do (
@@ -744,12 +744,12 @@ if not defined error (
               
               if !line!==3 (
                 
-                REM - DXT type byte equal to 35, or 5 in ASCII
+                REM - Check DXT type to warn about DXT3 losing quality
                 set byte=%%G
                 set byte=!byte:~0,2!
                 
                 if not !byte!==35 (
-                  set tex_resave=1
+                  rem set tex_resave=1 
                 )
               )
               

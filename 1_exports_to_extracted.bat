@@ -225,14 +225,20 @@ if defined all_in_one (
   @echo - 4cc aet compiler by Shakes
   @echo - 
   @echo - 
-
+  
+  
   if defined warn (
     
-    timeout /t 30
+    if not %pause_when_wrong%==0 (
+      pause
+      
+    ) else (
+      timeout /t 30
+    )
     
   ) else (
     
-    timeout /t 20
+    pause
   )
 
 )

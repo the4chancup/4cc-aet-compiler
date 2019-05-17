@@ -37,9 +37,9 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Prepare the player ID
-      set faceid=%%C
-      set faceid=!teamid!!faceid:~3!
-      set faceid=!faceid:~0,5!
+      set face_id=%%C
+      set face_id=!teamid!!face_id:~3!
+      set face_id=!face_id:~0,5!
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -49,14 +49,14 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
           REM - Level 1 - Just the hair_high fmdl
           if exist ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !faceid! >nul
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !face_id! >nul
           )
         )
         if %fmdl_id_editing%==2 (
           
           REM - Level 2 - Every fmdl
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !faceid! >nul
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !face_id! >nul
           )
         )
         
@@ -77,15 +77,15 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       )
       
       REM - Replace the dummy team ID with the actual one
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!face_id!"
       
       REM - Delete the folder if already present
-      if exist ".\extracted_exports\%%B\!name!" (
-        rd /S /Q ".\extracted_exports\%%B\!name!"
+      if exist ".\extracted_exports\%%B\!face_id!" (
+        rd /S /Q ".\extracted_exports\%%B\!face_id!"
       )
       
       REM - And move the face folder
-      move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
+      move ".\extracted_exports\!foldername!\%%B\!face_id!" ".\extracted_exports\%%B" >nul
     )
     
   )
@@ -176,13 +176,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       
       
       REM - Replace the dummy team ID in the filename with the actual one
-      set name=%%C
-      set name=!teamid!!name:~3!
+      set object_name=%%C
+      set object_name=!teamid!!object_name:~3!
       
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
       REM - And move the file
-      move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B\!teamid!" >nul
+      move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B\!teamid!" >nul
     )
     
   )
@@ -223,13 +223,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
-      set name=%%C
-      set name=u0!teamid!!name:~5!
+      set object_name=%%C
+      set object_name=u0!teamid!!object_name:~5!
       
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
       REM - And move the file
-      move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
+      move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
     )
     
   )
@@ -249,13 +249,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
-      set name=%%C
-      set name=emblem_0!teamid!!name:~11!
+      set object_name=%%C
+      set object_name=emblem_0!teamid!!object_name:~11!
       
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
       REM - And move the file
-      move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
+      move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
     )
     
   )
@@ -275,13 +275,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
-      set name=%%C
-      set name=player_!teamid!!name:~10!
+      set object_name=%%C
+      set object_name=player_!teamid!!object_name:~10!
       
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!name!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
       REM - And move the file
-      move ".\extracted_exports\!foldername!\%%B\!name!" ".\extracted_exports\%%B" >nul
+      move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
     )
     
   )

@@ -238,8 +238,7 @@ if defined all_in_one (
   REM - Reset the all_in_one mode flag
   set all_in_one=
   
-  pause
-  
-) else (
-  timeout /t 5
 )
+
+pause
+

@@ -291,7 +291,7 @@ if defined all_in_one (
   @echo - 
   @echo - 
 
-  timeout /t 5
+  pause
   
 )
 
