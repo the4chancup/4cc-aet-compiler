@@ -80,53 +80,53 @@ ID Name
 779 Backup 17
 780 Backup 18
 781 /@/
-782 /2hug/
-783 /aceg/
-784 /agdg/
-785 /aog/
-786 /civ4xg/
+782 /2hug/ 
+783 /aceg/ 
+784 /agdg/ 
+785 /civ4xg/ 
+786 /d2g/
 787 /dbg/
-788 /ddg/
-789 /digi/
-790 /domg/
-791 /drg/
-792 /feg/
-793 /ffg/
-794 /fgg/
-795 /fgoalter/
-796 /fgog/
-797 /gsg/
-798 /hanny/
-799 /hsg/
-800 /indie/
-801 /ksg/
-802 /llsifg/
-803 /lolg/
-804 /lzg/
-805 /meg/
-806 /mggg/
-807 /nepgen/
-808 /pmmm/
-809 /rs07g/
-810 /rsg/
-811 /skg/
-812 /smtg/
-813 /svg/
-814 /tfg2/
-815 /utg/
-816 /vitagen/
-817 /vn/
-818 /wtg/
-819 /xcg/
-820 /yyy/
-821 VGL 41
-822 VGL 42
-823 VGL 43
-824 VGL 44
-825 VGL 45
-826 VGL 46
-827 VGL 47
-828 VGL 48
+788 /ddlc/ 
+789 /dfg/
+790 /digi/ 
+791 /domg/ 
+792 /drag/ 
+793 /drg/
+794 /egg/
+795 /feg/
+796 /ffg/
+797 /fgoalter/ 
+798 /fgog/ 
+799 /gbfg/ 
+800 /gbpen/
+801 /gfg/
+802 /gsg/
+803 /hanny/
+804 /hpgg/ 
+805 /hsg/
+806 /indie/
+807 /ksg/
+808 /llsifg/ 
+809 /mbg/
+810 /mcg/
+811 /mggg/ 
+812 /nepgen/ 
+813 /osg/
+814 /pmmm/ 
+815 /r6g/
+816 /rsg/
+817 /skg/
+818 /ssbg/ 
+819 /tesg/ 
+820 /tf2g/ 
+821 /tnm/
+822 /trg/
+823 /twg/
+824 /vitagen/
+825 /vn/ 
+826 /vrg/
+827 /wtg/
+828 /kirara/
 829 VGL 49
 830 VGL 50
 831 /trash/
