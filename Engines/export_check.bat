@@ -431,7 +431,7 @@ if not defined error (
                 set tex_zlibbed=1
                 
                 REM - Unzlib it
-                call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%C" -d >nul
+                call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%D" -d >nul
                 
                 REM - Set the unzlibbed file as file to check
                 set tex_name=%%D.unzlib
