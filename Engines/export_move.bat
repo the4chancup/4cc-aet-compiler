@@ -21,12 +21,12 @@ set unknownexists=
 
 for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
 
-  set unknown=1
+  set folder_type_found=
   
   REM - Face folder
   if /i "%%B"=="Faces" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -94,7 +94,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Kit Configs folder
   if /i "%%B"=="Kit Configs" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -125,7 +125,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     )
     
     REM - For every kit config file
-    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B"') do (
+    for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B\*.bin"') do (
       
       set zlibbed=
     
@@ -191,7 +191,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Kit Textures folder
   if /i "%%B"=="Kit Textures" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -220,7 +220,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     
     
     REM - For every kit texture file
-    for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+    for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B\*.dds" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
       set object_name=%%C
@@ -238,7 +238,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Logo folder
   if /i "%%B"=="Logo" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -264,7 +264,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Portraits folder
   if /i "%%B"=="Portraits" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -290,7 +290,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Boots folder
   if /i "%%B"=="Boots" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -346,7 +346,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Gloves folder
   if /i "%%B"=="Gloves" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -402,44 +402,30 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Common folder
   if /i "%%B"=="Common" (
   
-    set unknown=
+    set folder_type_found=1
     
-    if %fox_mode%==1 (
-      
-      echo -
-      echo - The Common folder is not supported in Fox Mode. It will be removed.
-      echo -
-      
-      if not %pause_when_wrong%==0 (
-        pause
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
+    REM - First check that it isn't empty
+    set movecommon=
+    >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set movecommon=1) || (echo ->nul)
+    
+    if defined movecommon (
+    
+      REM - Make a team folder with the team name after deleting it if already present
+      if exist ".\extracted_exports\%%B\!team_clean!\" (
+        rd /S /Q ".\extracted_exports\%%B\!team_clean!"
       )
+      md ".\extracted_exports\%%B\!team_clean!" 2>nul
     
-    ) else (
-    
-      REM - Create the main folder if not present
-      if not exist ".\extracted_exports\%%B" (
-        md ".\extracted_exports\%%B" 2>nul
+      REM - Move everything to that folder
+      for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+        
+        move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!team_clean!" >nul
       )
-      
-      REM - First check that it isn't empty
-      set movecommon=
-      >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Common\*" && (set movecommon=1) || (echo ->nul)
-    
-      if defined movecommon (
-      
-        REM - Make a team folder with the team name after deleting it if already present
-        if exist ".\extracted_exports\%%B\!team_clean!\" (
-          rd /S /Q ".\extracted_exports\%%B\!team_clean!"
-        )
-        md ".\extracted_exports\%%B\!team_clean!" 2>nul
-      
-        REM - Move everything to that folder
-        for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
-          
-          move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!team_clean!" >nul
-        )
-      )
-      
     )
     
   )
@@ -448,7 +434,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   REM - Other folder
   if /i "%%B"=="Other" (
   
-    set unknown=
+    set folder_type_found=1
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
@@ -468,7 +454,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       md ".\extracted_exports\%%B\!teamid! - !team_clean!" 2>nul
     
       REM - Move everything to that folder
-      for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+      for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
         
         move ".\extracted_exports\!foldername!\%%B\%%C" ".\extracted_exports\%%B\!teamid! - !team_clean!" >nul
       )
@@ -478,35 +464,35 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   
   
   REM - If the folder is out of the AET specifics
-  if defined unknown (
+  if not defined folder_type_found (
     
     REM - Look for it later to avoid the Other folder getting reset
-    set unknownexists=1
+    set folder_unknown_pres=1
   )
   
 )
 
 
 REM - If there were any unknown folders
-if defined unknownexists (
+if defined folder_unknown_pres (
 
   REM - Look for it
   for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
 
-    set unknown=1
+    set folder_type_found=
     
-    if /i "%%B"=="Faces" set unknown=
-    if /i "%%B"=="Kit Configs" set unknown=
-    if /i "%%B"=="Kit Textures" set unknown=
-    if /i "%%B"=="Logo" set unknown=
-    if /i "%%B"=="Portraits" set unknown=
-    if /i "%%B"=="Boots" set unknown=
-    if /i "%%B"=="Gloves" set unknown=
-    if /i "%%B"=="Common" set unknown=
-    if /i "%%B"=="Other" set unknown=
+    if /i "%%B"=="Faces"        set folder_type_found=1
+    if /i "%%B"=="Kit Configs"  set folder_type_found=1
+    if /i "%%B"=="Kit Textures" set folder_type_found=1
+    if /i "%%B"=="Logo"         set folder_type_found=1
+    if /i "%%B"=="Portraits"    set folder_type_found=1
+    if /i "%%B"=="Boots"        set folder_type_found=1
+    if /i "%%B"=="Gloves"       set folder_type_found=1
+    if /i "%%B"=="Common"       set folder_type_found=1
+    if /i "%%B"=="Other"        set folder_type_found=1
     
     REM - If the folder was found
-    if defined unknown (
+    if not defined folder_type_found (
     
       REM - First check that it isn't empty
       set moveother=

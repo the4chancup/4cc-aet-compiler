@@ -7,33 +7,16 @@ set root_found=
 
 
 REM - Check if the folders are at the root by searching for a note txt, the faces and kit configs folders first
-if exist ".\extracted_exports\!foldername!\*.txt" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Faces" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Kit Configs" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Kit Textures" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Portraits" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Boots" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Gloves" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Logo" (
-  set root_found=1
-)
-if exist ".\extracted_exports\!foldername!\Common" (
-  set root_found=1
-)
+if exist ".\extracted_exports\!foldername!\*.txt"        (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Faces"        (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Kit Configs"  (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Kit Textures" (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Portraits"    (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Boots"        (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Gloves"       (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Logo"         (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Common"       (set root_found=1)
+if exist ".\extracted_exports\!foldername!\Other"        (set root_found=1)
 
 
 REM - If the folders aren't at the root
@@ -42,33 +25,16 @@ if not defined root_found (
   REM - Look in every folder for a faces or kit configs folder
   for /f "tokens=*" %%R in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
   
-    if exist ".\extracted_exports\!foldername!\%%R\*.txt" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Faces" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Kit Configs" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Kit Textures" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Boots" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Gloves" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Portraits" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Logo" (
-      set root_found=1
-    )
-    if exist ".\extracted_exports\!foldername!\%%R\Common" (
-      set root_found=1
-    )
+    if exist ".\extracted_exports\!foldername!\%%R\*.txt"        (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Faces"        (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Kit Configs"  (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Kit Textures" (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Boots"        (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Gloves"       (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Portraits"    (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Logo"         (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Common"       (set root_found=1)
+    if exist ".\extracted_exports\!foldername!\%%R\Other"        (set root_found=1)
     
     if defined root_found (
     

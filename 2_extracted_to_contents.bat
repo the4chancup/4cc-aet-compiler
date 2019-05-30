@@ -177,7 +177,7 @@ if exist ".\extracted_exports\Gloves" (
     md ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" 2>nul
   )
   
-  REM - Move the gloves to the Uniform folder
+  REM - Move the gloves to the Uniform cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Gloves" 2^>nul') do (
     
     if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A" (
@@ -255,16 +255,23 @@ if exist ".\extracted_exports\Common" (
     @echo - Moving the other stuff
   )
   
-  REM - Create a "common" folder if needed
-  if not exist ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common" (
-    md ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common" 2>nul
+  REM - Set the path depending on the fox mode setting
+  if %fox_mode%==0 (
+    set common_path=common\character1\model\character\uniform\common
+  ) else (
+    set common_path=Asset\model\character\common
   )
   
-  REM - Move the team folders to the Faces folder
+  REM - Create a "common" folder if needed
+  if not exist ".\patches_contents\%faces_foldername%\!common_path!" (
+    md ".\patches_contents\%faces_foldername%\!common_path!" 2>nul
+  )
+  
+  REM - Move the team folders to the Faces cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Common" 2^>nul') do (
     
-    if exist ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common\%%A" (
-      rd /S /Q ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common\%%A"
+    if exist ".\patches_contents\%faces_foldername%\!common_path!\%%A" (
+      rd /S /Q ".\patches_contents\%faces_foldername%\!common_path!\%%A"
     )
     
     move ".\extracted_exports\Common\%%A" ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common" >nul
