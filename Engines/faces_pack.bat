@@ -78,7 +78,7 @@ if %fox_mode%==0 (
     move ".\extracted_exports\Faces\!faceid!" ".\faces_in_folders\!faceid!" >nul
     
     REM - Move the textures to a separate folder
-    for /f "tokens=*" %%A in ('dir /b .\faces_in_folders\!faceid!\!faceid!\*.ftex') do (
+    for /f "tokens=*" %%A in ('dir /b .\faces_in_folders\!faceid!\!faceid!\*.ftex 2^>nul') do (
       set texname=%%A
       move ".\faces_in_folders\!faceid!\!faceid!\!texname!" ".\faces_in_folders\!faceid!\#windx11" >nul
     )

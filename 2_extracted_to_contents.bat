@@ -12,17 +12,20 @@ if not defined all_in_one (
 
 
 REM - Set the name for the folders to put stuff into
-if not %multicpk_mode%==0 (
-  
-  set faces_foldername=Facescpk
-  set uniform_foldername=Uniformcpk
-  set bins_foldername=Binscpk
-
-) else (
+if %multicpk_mode%==0 (
 
   set faces_foldername=Singlecpk
   set uniform_foldername=Singlecpk
   set bins_foldername=Singlecpk
+  
+) 
+
+if %multicpk_mode%==1 (
+
+  set faces_foldername=Facescpk
+  set uniform_foldername=Uniformcpk
+  set bins_foldername=Binscpk
+  
 )
 
 
@@ -271,6 +274,10 @@ if exist ".\extracted_exports\Common" (
   rd /S /Q ".\extracted_exports\Common" >nul
 
 )
+
+
+REM . Finally delete the extracted exports folder
+rd /S /Q ".\extracted_exports" >nul
 
 
 if defined all_in_one (

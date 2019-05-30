@@ -16,6 +16,24 @@ if exist ".\extracted_exports\!foldername!\Faces" (
 if exist ".\extracted_exports\!foldername!\Kit Configs" (
   set root_found=1
 )
+if exist ".\extracted_exports\!foldername!\Kit Textures" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Portraits" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Boots" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Gloves" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Logo" (
+  set root_found=1
+)
+if exist ".\extracted_exports\!foldername!\Common" (
+  set root_found=1
+)
 
 
 REM - If the folders aren't at the root
@@ -31,6 +49,24 @@ if not defined root_found (
       set root_found=1
     )
     if exist ".\extracted_exports\!foldername!\%%R\Kit Configs" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Kit Textures" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Boots" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Gloves" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Portraits" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Logo" (
+      set root_found=1
+    )
+    if exist ".\extracted_exports\!foldername!\%%R\Common" (
       set root_found=1
     )
     
@@ -395,7 +431,7 @@ if not defined error (
                 set tex_zlibbed=1
                 
                 REM - Unzlib it
-                .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%C" -d >nul
+                call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%C" -d >nul
                 
                 REM - Set the unzlibbed file as file to check
                 set tex_name=%%D.unzlib
@@ -581,7 +617,7 @@ if not defined error (
       if defined kitconf_zlibbed (
       
         REM - Unzlib it
-        .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Configs\%%C" -d >nul
+        call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Configs\%%C" -d >nul
         
         REM - Delete the original file
         del ".\extracted_exports\!foldername!\Kit Configs\%%C" >nul
@@ -630,8 +666,8 @@ if not defined error (
           
           @echo - 
           @echo - The amount of !team!'s kit color entries is not equal to
-          @echo - the amount of kit config files.
-          @echo - Closing the script's window and fixing it is recommended.
+          @echo - the amount of kit config files in the Note txt file.
+          @echo - Closing the script's window and fixing this is recommended.
           @echo - 
           
           if not %pause_when_wrong%==0 (
@@ -680,6 +716,8 @@ if not defined error (
         
         set tex_zlibbed=
         set tex_type_dds=
+        set tex_type_ftex=
+        
         set tex_resave=
         
         
@@ -692,7 +730,7 @@ if not defined error (
             set tex_zlibbed=1
             
             REM - Unzlib it
-            .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
+            call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
             
             REM - Set the unzlibbed file as file to check
             set tex_name=%%C.unzlib
@@ -712,11 +750,11 @@ if not defined error (
           REM - FTEX
           if "%%E%%F%%G%%H"=="46544558" (
             if %fox_mode%==1 (
+              set tex_type_ftex=1
               set tex_wrongformat=
             )
           )
         )
-        
         
         REM - If it's a dds and fox mode is enabled
         if defined tex_type_dds (
@@ -727,21 +765,6 @@ if not defined error (
             
             for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 4 -d 1C F`) do (
               
-              if !line!==0 (
-                
-                REM - Mipmaps count byte different from 0 or 1
-                set byte=%%E
-                set byte=!byte:~-2!
-                
-                if !byte!==00 (
-                  set tex_resave=1
-                )
-                
-                if !byte!==01 (
-                  set tex_resave=1
-                )
-              )
-              
               if !line!==3 (
                 
                 REM - Check DXT type to warn about DXT3 losing quality
@@ -749,11 +772,38 @@ if not defined error (
                 set byte=!byte:~0,2!
                 
                 if not !byte!==35 (
+                
                   rem set tex_resave=1 
                 )
               )
               
               set /a line+=1
+            )
+            
+            if defined tex_resave (
+              set tex_wrongformat=1
+            )
+          )
+        )
+        
+        REM - If it's an ftex and fox mode is enabled
+        if defined tex_type_ftex (
+          if %fox_mode%==1 (
+            
+            REM - Check if it has mipmaps
+            set line=0
+            
+            for /f "tokens=1-2 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 1 -d 10 1`) do (
+              
+                REM - Mipmaps count byte different from 0
+                set byte=%%E
+                
+                if !byte!==00 (
+                  set tex_resave=1
+                )
+                
+              )
+              
             )
             
             if defined tex_resave (
@@ -807,6 +857,8 @@ if not defined error (
       @echo - !team!'s manager needs to get memed on (wrong format kit textures^).
       if %fox_mode%==0 (
         @echo - This is usually caused by png textures renamed to dds instead of saved as dds.
+      ) else (
+        @echo - This is usually caused by missing mipmaps.
       )
       @echo - First game-crashing texture found: !tex_name!
       @echo - The Kit Textures folder will be discarded since it's unusable.
