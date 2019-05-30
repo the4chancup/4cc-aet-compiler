@@ -245,6 +245,13 @@ if exist ".\extracted_exports\Logo" (
 )
 
 
+REM - Set the common folder path depending on the fox mode setting
+if %fox_mode%==0 (
+  set common_path=common\character1\model\character\uniform\common
+) else (
+  set common_path=Asset\model\character\common
+)
+  
 REM - If there's a Common folder, move its stuff
 if exist ".\extracted_exports\Common" (
 
@@ -255,26 +262,19 @@ if exist ".\extracted_exports\Common" (
     @echo - Moving the other stuff
   )
   
-  REM - Set the path depending on the fox mode setting
-  if %fox_mode%==0 (
-    set common_path=common\character1\model\character\uniform\common
-  ) else (
-    set common_path=Asset\model\character\common
-  )
-  
   REM - Create a "common" folder if needed
-  if not exist ".\patches_contents\%faces_foldername%\!common_path!" (
-    md ".\patches_contents\%faces_foldername%\!common_path!" 2>nul
+  if not exist ".\patches_contents\%faces_foldername%\%common_path%" (
+    md ".\patches_contents\%faces_foldername%\%common_path%" 2>nul
   )
   
   REM - Move the team folders to the Faces cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Common" 2^>nul') do (
     
-    if exist ".\patches_contents\%faces_foldername%\!common_path!\%%A" (
-      rd /S /Q ".\patches_contents\%faces_foldername%\!common_path!\%%A"
+    if exist ".\patches_contents\%faces_foldername%\%common_path%\%%A" (
+      rd /S /Q ".\patches_contents\%faces_foldername%\%common_path%\%%A"
     )
     
-    move ".\extracted_exports\Common\%%A" ".\patches_contents\%faces_foldername%\common\character1\model\character\uniform\common" >nul
+    move ".\extracted_exports\Common\%%A" ".\patches_contents\%faces_foldername%\%common_path%" >nul
   )
   
   REM . Then delete the main folder
