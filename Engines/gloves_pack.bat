@@ -5,19 +5,19 @@ if %fox_mode%==0 (
 
   REM - PES 16/17 mode
   
-  REM - Create a "boots" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" (
-    md ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" 2>nul
+  REM - Create a "glove" folder if needed
+  if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" (
+    md ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" 2>nul
   )
   
-  REM - Move the boots to the Uniform cpk folder
-  for /f %%A in ('dir /b ".\extracted_exports\Boots" 2^>nul') do (
+  REM - Move the gloves to the Uniform cpk folder
+  for /f %%A in ('dir /b ".\extracted_exports\Gloves" 2^>nul') do (
     
-    if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A" (
-      rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots\%%A"
+    if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A" (
+      rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A"
     )
     
-    move ".\extracted_exports\Boots\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\boots" >nul
+    move ".\extracted_exports\Gloves\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" >nul
   )
   
   
@@ -25,17 +25,17 @@ if %fox_mode%==0 (
   
   REM - PES 18/19 mode
   
-  REM - Create a "boots" folder if needed
-  if not exist ".\patches_contents\%faces_foldername%\Asset\model\character\boots" (
-    md ".\patches_contents\%faces_foldername%\Asset\model\character\boots" 2>nul
+  REM - Create a "gloves" folder if needed
+  if not exist ".\patches_contents\%faces_foldername%\Asset\model\character\glove" (
+    md ".\patches_contents\%faces_foldername%\Asset\model\character\glove" 2>nul
   )
   
   
-  REM - For every boots folder
-  for /f "tokens=*" %%A in ('dir /a:d /b ".\extracted_exports\Boots" 2^>nul') do (
+  REM - For every gloves folder
+  for /f "tokens=*" %%A in ('dir /a:d /b ".\extracted_exports\Gloves" 2^>nul') do (
     
-    set object_type=boots
-    set object_folder=boots
+    set object_type=glove
+    set object_folder=glove
     set object_name=%%A
     set object_id=!object_name:~0,5!
     @echo - !object_name!
@@ -43,10 +43,10 @@ if %fox_mode%==0 (
     
     if !object_type!==face (
       REM - Rename it to the id
-      rename ".\extracted_exports\Boots\!object_name!" "!object_id!" >nul
+      rename ".\extracted_exports\Gloves\!object_name!" "!object_id!" >nul
     )
     
-    REM - Delete the old boots folder if present
+    REM - Delete the old gloves folder if present
     if exist ".\patches_contents\%faces_foldername%\Asset\model\character\!object_folder!\!object_id!" (
       rd /S /Q ".\patches_contents\%faces_foldername%\Asset\model\character\!object_folder!\!object_id!" >nul
     )
@@ -55,7 +55,7 @@ if %fox_mode%==0 (
     md ".\temp\!object_id!\#windx11"
     
     REM - Move the folder to the temp folder
-    move ".\extracted_exports\Boots\!object_id!" ".\temp\!object_id!" >nul
+    move ".\extracted_exports\Gloves\!object_id!" ".\temp\!object_id!" >nul
     
     REM - Move the textures to a separate folder
     for /f "tokens=*" %%A in ('dir /b .\temp\!object_id!\!object_id!\*.ftex 2^>nul') do (
@@ -102,6 +102,6 @@ if %fox_mode%==0 (
 
 
 REM - Finally delete the main folder and temp folder
-rd /S /Q ".\extracted_exports\Boots" >nul
+rd /S /Q ".\extracted_exports\Gloves" >nul
 rd /S /Q ".\temp" >nul
 

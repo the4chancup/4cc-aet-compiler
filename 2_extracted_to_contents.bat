@@ -168,28 +168,19 @@ if exist ".\extracted_exports\Boots" (
 REM - If there's a Gloves folder, move its stuff
 if exist ".\extracted_exports\Gloves" (
   
-  @echo - 
-  @echo - Moving the gloves
+  if %fox_mode%==0 (
   
+    @echo - 
+    @echo - Moving the gloves
+    
+  ) else (
   
-  REM - Create a "glove" folder if needed
-  if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" (
-    md ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" 2>nul
+    @echo - 
+    @echo - Packing the gloves folders
+    
   )
   
-  REM - Move the gloves to the Uniform cpk folder
-  for /f %%A in ('dir /b ".\extracted_exports\Gloves" 2^>nul') do (
-    
-    if exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A" (
-      rd /S /Q ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove\%%A"
-    )
-    
-    move ".\extracted_exports\Gloves\%%A" ".\patches_contents\%uniform_foldername%\common\character0\model\character\glove" >nul
-  )
-  
-  REM . Then delete the main folder
-  rd /S /Q ".\extracted_exports\Gloves" >nul
-
+  call .\Engines\gloves_pack
 )
 
 
