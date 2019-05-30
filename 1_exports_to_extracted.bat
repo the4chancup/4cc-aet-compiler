@@ -43,19 +43,17 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   set foldername=%%A
   
   REM - Get the team's name
-  for /f "delims=+-_.:,;* " %%Z in ("!foldername!") do set team=%%Z
+  for /f "delims=+-_.:,;* " %%Z in ("!foldername!") do set team_raw=%%Z
   
   REM - Convert it to full lowercase
-  for %%T in ("!team!") do (
+  for %%T in ("!team_raw!") do (
     for /f "delims=~" %%U in ('echo %%T^> ~%%T ^& dir /L /B ~%%T') do (
-      set team=%%U
+      set team_clean=%%U
       del /Q ~%%T
     )
   )
   
-  set team_clean=!team!
-  
-  set team=/!team!/
+  set team=/!team_clean!/
   
   <nul set /p =- !team! 
   

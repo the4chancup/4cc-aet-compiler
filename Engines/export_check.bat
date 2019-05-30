@@ -103,14 +103,15 @@ if not defined error (
   
   for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\*.txt" 2^>nul') do (
   
-    set check_filename=%%C
-    set check_filename_noteless=!check_filename:Note=!
+    set txt_name=%%C
+    set txt_name_noteless=!txt_name:Note=!
     
-    REM - If the file has Note in the filename store its name
-    if not "!check_filename_noteless!"=="!check_filename!" (
+    REM - If the file has Note in the filename rename it with the team name and store its name
+    if not "!txt_name_noteless!"=="!txt_name!" (
     
       set note_found=1
-      set note_name=%%C
+      set note_name=!team_raw! Note.txt
+      rename ".\extracted_exports\!foldername!\!txt_name!" "!note_name!" >nul
       
     )
   )
