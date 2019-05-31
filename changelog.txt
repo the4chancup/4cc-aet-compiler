@@ -1,9 +1,13 @@
-17/05/19 - Version 4.2
+31/05/19 - Version 4.2
+- Fixed non fox mode making checks from fox mode and failing to compile faces
 - Fixed the request of admin permissions which was making the compiler crash at the start
 - Made the compiler get the team name from the name of the export's folder if it's missing a Note txt file
 - Note txt files are no longer compulsory in exports
-- Added checks to make sure dds kit textures for 18+ are DXT5 with mipmaps
-- Added packing of boots folders in 18+ format plus automatic fmdl texture path editing for them
+- Added checks to make sure ftex kit textures have mipmaps
+- Added packing of Boots and Gloves folders in fpk format plus automatic fmdl texture path editing for them
+- Added support for the Common folder in fox mode
+- Fixed the loss of the player name on the face folders in extracted_to_exports
+- Updated the teams_list and bin files
 
 
 03/05/19 - Version 4.1
@@ -20,7 +24,7 @@
 
 
 30/04/19 - Version 3.9 (Fox preview)
-- Implemented packing of faces in pes18+ format
+- Implemented packing of faces in fpk format
 - Added support for portraits in face folders
 
 
