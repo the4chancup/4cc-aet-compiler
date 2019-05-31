@@ -37,9 +37,9 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Prepare the player ID
-      set face_id=%%C
-      set face_id=!teamid!!face_id:~3!
-      set face_id=!face_id:~0,5!
+      set face_id_withname=%%C
+      set face_id_withname=!teamid!!face_id_withname:~3!
+      set face_id=!face_id_withname:~0,5!
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -77,15 +77,15 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       )
       
       REM - Replace the dummy team ID with the actual one
-      rename ".\extracted_exports\!foldername!\%%B\%%C" "!face_id!"
+      rename ".\extracted_exports\!foldername!\%%B\%%C" "!face_id_withname!"
       
       REM - Delete the folder if already present
-      if exist ".\extracted_exports\%%B\!face_id!" (
-        rd /S /Q ".\extracted_exports\%%B\!face_id!"
+      if exist ".\extracted_exports\%%B\!face_id_withname!" (
+        rd /S /Q ".\extracted_exports\%%B\!face_id_withname!"
       )
       
       REM - And move the face folder
-      move ".\extracted_exports\!foldername!\%%B\!face_id!" ".\extracted_exports\%%B" >nul
+      move ".\extracted_exports\!foldername!\%%B\!face_id_withname!" ".\extracted_exports\%%B" >nul
     )
     
   )
