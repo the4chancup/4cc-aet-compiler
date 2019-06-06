@@ -90,12 +90,15 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   )
   
   
-  REM - Check the export for all kinds of errors
-  call .\Engines\export_check
+  REM - Look for the team name on the ID list
+  call .\Engines\teamid_get
   
   
-  REM - If it's fine
+  REM - If the ID was found
   if not defined error (
+    
+    REM - Check the export for all kinds of errors
+    call .\Engines\export_check
     
     if defined note_found (
     
