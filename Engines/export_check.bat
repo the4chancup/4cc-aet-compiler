@@ -166,8 +166,9 @@ if defined checkfaces (
               REM - Unzlib it
               call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%D" -d >nul
               
-              REM - Set the unzlibbed file as file to check
-              set tex_name=%%D.unzlib
+              REM - Store the original filename and set the unzlibbed file as file to check
+              set tex_name_orig=!tex_name!
+              set tex_name=!tex_name!.unzlib
             )
           )
           
@@ -185,21 +186,18 @@ if defined checkfaces (
           
           if defined tex_zlibbed (
             
-            REM - Set the original filename
-            set tex_name=%%D
-            
             if %fox_mode%==0 (
             
               REM - Delete the extra unzlibbed file
-              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
+              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
               
             ) else (
               
               REM - Delete the orignal zlibbed file
-              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
+              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name_orig!" >nul
               
               REM - Rename the file
-              rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" "!tex_name!" >nul
+              rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" "!tex_name_orig!" >nul
             )
           )
           
@@ -300,7 +298,7 @@ if defined checkconfig (
 
   set configerror=
   
-  REM - Look for a folder inside Kit Configs containing the kit config files
+  REM - Check if the files are in an inner folder
   for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Kit Configs" 2^>nul') do (
     
     REM - If a folder was found move its contents to the root folder
@@ -446,7 +444,7 @@ if defined checktexture (
       
       
       REM - Check if it is zlibbed
-      for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\%%C" -d 3 5`) do (
+      for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d 3 5`) do (
         
         REM - If the file has the WESYS label it's zlibbed
         if "%%E%%F%%G%%H%%I"=="5745535953" (
@@ -454,10 +452,12 @@ if defined checktexture (
           set tex_zlibbed=1
           
           REM - Unzlib it
-          call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\%%C" -d >nul
+          call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d >nul
           
-          REM - Set the unzlibbed file as file to check
-          set tex_name=%%C.unzlib
+          REM - Store the original filename and set the unzlibbed file as file to check
+          set tex_name_orig=!tex_name!
+          set tex_name=!tex_name!.unzlib
+          
         )
       )
       
@@ -540,21 +540,18 @@ if defined checktexture (
       REM - If it was zlibbed
       if defined tex_zlibbed (
         
-        REM - Set the original filename
-        set tex_name=%%C
-        
         if %fox_mode%==0 (
         
           REM - Delete the extra unzlibbed file
-          del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" >nul
+          del ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" >nul
           
         ) else (
           
           REM - Delete the orignal zlibbed file
-          del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
+          del ".\extracted_exports\!foldername!\Kit Textures\!tex_name_orig!" >nul
           
           REM - Rename the file
-          rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!.unzlib" "!tex_name!" >nul
+          rename ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" "!tex_name_orig!" >nul
         )
         
       )

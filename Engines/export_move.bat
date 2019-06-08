@@ -20,7 +20,7 @@ REM - Move the folders' contents
 set unknownexists=
 
 for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul') do (
-
+  
   set folder_type_found=
   
   REM - Face folder
@@ -95,6 +95,22 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   if /i "%%B"=="Kit Configs" (
   
     set folder_type_found=1
+    
+    if %pass_through%==2 (
+    
+      REM - Check if the files are in an inner folder
+      for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Kit Configs" 2^>nul') do (
+        
+        REM - If a folder was found move its contents to the root folder
+        for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Kit Configs\%%C"') do (
+        
+          move ".\extracted_exports\!foldername!\Kit Configs\%%C\%%D" ".\extracted_exports\!foldername!\Kit Configs" >nul
+        )
+        
+        REM - And delete the now empty folder
+        rd /S /Q ".\extracted_exports\!foldername!\Kit Configs\%%C"
+      )
+    )
     
     REM - Create the main folder if not present
     if not exist ".\extracted_exports\%%B" (
