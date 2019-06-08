@@ -97,8 +97,12 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - If the ID was found
   if not defined error (
     
-    REM - Check the export for all kinds of errors
-    call .\Engines\export_check
+    if not %pass_through%==2 (
+    
+      REM - Check the export for all kinds of errors
+      call .\Engines\export_check
+      
+    )
     
     if defined note_found (
     
@@ -119,6 +123,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     REM - If compression is set to 2
     if %compression%==2 (
       
+      REM - And fox mode is disabled
       if %fox_mode%==0 (
       
         REM - Zlib every texture
@@ -134,7 +139,9 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     
     REM - Delete the now empty export folder
     rd /S /Q ".\extracted_exports\!foldername!" >nul
+    
   )
+  
 )
 
 if exist ".\Engines\stored_zlibbed" (

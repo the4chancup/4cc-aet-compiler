@@ -24,7 +24,7 @@ if %compression%==1 (
 REM - Create folders just in case
 md ".\patches_output" 2>nul
 
-if not %multicpk_mode%==0 (
+if %multicpk_mode%==1 (
 
   set faces_foldername=Facescpk
   set uniform_foldername=Uniformcpk
@@ -34,8 +34,9 @@ if not %multicpk_mode%==0 (
   md ".\patches_contents\%uniform_foldername%" 2>nul
   md ".\patches_contents\%bins_foldername%" 2>nul
 
-) else (
-  
+)
+
+if %multicpk_mode%==0 (
   md ".\patches_contents\Singlecpk" 2>nul
 )
 
@@ -84,7 +85,8 @@ if not defined all_in_one (
 )
 
 
-if not %multicpk_mode%==0 (
+REM - Make the patches
+if %multicpk_mode%==1 (
   
   REM - Make sure that the folders are not empty to avoid cpkmakec errors
   >nul 2>nul dir /a-d /s ".\patches_contents\%faces_foldername%\*" && (echo ->nul) || (type nul >".\patches_contents\%faces_foldername%\placeholder")
@@ -118,7 +120,9 @@ if not %multicpk_mode%==0 (
     
   )
   
-) else (
+)
+
+if %multicpk_mode%==0 (
 
   REM - Make sure that the folder is not empty to avoid cpkmakec errors
   >nul 2>nul dir /a-d /s ".\patches_contents\Singlecpk\*" && (echo ->nul) || (type nul >".\patches_contents\Singlecpk\placeholder")
@@ -144,46 +148,42 @@ if %move_cpks%==1 (
   @echo - Moving the cpks to the download folder
   @echo -
 
-)
+  if %multicpk_mode%==1 (
 
-
-if not %multicpk_mode%==0 (
-
-  REM - Remove the cpks from the destination folder if present
-  if exist %pes_download_folder_location%\"%faces_cpk_name%.cpk" (
-    del %pes_download_folder_location%\"%faces_cpk_name%.cpk"
-  )
-  if exist %pes_download_folder_location%\"%uniform_cpk_name%.cpk" (
-    del %pes_download_folder_location%\"%uniform_cpk_name%.cpk"
-  )
-  if %bins_updating%==1 (
-    if exist %pes_download_folder_location%\"%bins_cpk_name%.cpk" (
-      del %pes_download_folder_location%\"%bins_cpk_name%.cpk"
+    REM - Remove the cpks from the destination folder if present
+    if exist %pes_download_folder_location%\"%faces_cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%faces_cpk_name%.cpk"
     )
+    if exist %pes_download_folder_location%\"%uniform_cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%uniform_cpk_name%.cpk"
+    )
+    if %bins_updating%==1 (
+      if exist %pes_download_folder_location%\"%bins_cpk_name%.cpk" (
+        del %pes_download_folder_location%\"%bins_cpk_name%.cpk"
+      )
+    )
+    
+    REM - Move the cpks to the destination folder
+    move ".\patches_output\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
+    move ".\patches_output\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
+    if %bins_updating%==1 (
+      move ".\patches_output\%bins_cpk_name%.cpk" %pes_download_folder_location% >nul
+    )
+    
+  )
+
+  if %multicpk_mode%==0 (
+
+    REM - Remove the cpk from the destination folder if present
+    if exist %pes_download_folder_location%\"%cpk_name%.cpk" (
+      del %pes_download_folder_location%\"%cpk_name%.cpk"
+    )
+
+    REM - Move the cpk to the destination folder
+    move ".\patches_output\%cpk_name%.cpk" %pes_download_folder_location% >nul
+
   )
   
-  REM - Move the cpks to the destination folder
-  move ".\patches_output\%faces_cpk_name%.cpk" %pes_download_folder_location% >nul
-  move ".\patches_output\%uniform_cpk_name%.cpk" %pes_download_folder_location% >nul
-  if %bins_updating%==1 (
-    move ".\patches_output\%bins_cpk_name%.cpk" %pes_download_folder_location% >nul
-  )
-  
-) else (
-
-  REM - Remove the cpk from the destination folder if present
-  if exist %pes_download_folder_location%\"%cpk_name%.cpk" (
-    del %pes_download_folder_location%\"%cpk_name%.cpk"
-  )
-
-  REM - Move the cpk to the destination folder
-  move ".\patches_output\%cpk_name%.cpk" %pes_download_folder_location% >nul
-
-)
-
-
-REM - If Move Cpks mode is enabled
-if %move_cpks%==1 (
   
   REM - If DpFileList Updating is enabled
   if %dpfl_updating%==1 (
@@ -195,9 +195,8 @@ if %move_cpks%==1 (
     REM - Get a temporary copy of the dpfl from the downloads folder
     copy %pes_download_folder_location%\DpFileList.bin .\Engines >nul
     
-    
     REM - Update it
-    if not %multicpk_mode%==0 (
+    if %multicpk_mode%==1 (
       
       if %bins_updating%==1 (
         set cpk_name=%bins_cpk_name%
@@ -210,17 +209,19 @@ if %move_cpks%==1 (
       set cpk_name=%uniform_cpk_name%
       call .\Engines\dpfl_update
       
-    ) else (
+    )
     
+    if %multicpk_mode%==0 (
       call .\Engines\dpfl_update
     )
-
     
     REM - And copy it back
     copy .\Engines\DpFileList.bin %pes_download_folder_location% >nul
     
     del .\Engines\DpFileList.bin
+    
   )
+  
 )
 
 

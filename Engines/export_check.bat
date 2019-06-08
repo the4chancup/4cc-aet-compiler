@@ -259,7 +259,7 @@ if defined checkfaces (
       
       
       REM - And skip it
-      if not %pass_through%==1 (
+      if %pass_through%==0 (
         rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!"
       )
       
@@ -361,7 +361,7 @@ if defined checkconfig (
   if defined configerror (
   
     REM - Skip the whole Kit Config folder
-    if not %pass_through%==1 (
+    if %pass_through%==0 (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Configs"
     )
     
@@ -571,7 +571,7 @@ if defined checktexture (
   if defined tex_wrongformat_any (
   
     REM - Skip the whole Kit Textures folder
-    if not %pass_through%==1 (
+    if %pass_through%==0 (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Textures"
     )
     
@@ -637,7 +637,7 @@ if defined checktexture (
         ) 
         
         REM - And skip it
-        if not %pass_through%==1 (
+        if %pass_through%==0 (
           del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!tex_name!"
         )
         
@@ -719,7 +719,7 @@ if defined checklogo (
   if defined logoerror (
   
     REM - Skip the whole Logo folder
-    if not %pass_through%==1 (
+    if %pass_through%==0 (
       rd /S /Q ".\extracted_exports\!foldername!\Logo"
     )
     
@@ -786,7 +786,7 @@ if defined checkportraits (
       ) 
       
       REM - And skip it
-      if not %pass_through%==1 (
+      if %pass_through%==0 (
         del /F /Q ".\extracted_exports\!foldername!\Portraits\!portraitname!"
       )
       
@@ -891,7 +891,7 @@ if defined checkboots (
       
       
       REM - And skip it
-      if not %pass_through%==1 (
+      if %pass_through%==0 (
         rd /S /Q ".\extracted_exports\!foldername!\Boots\!boots_name!"
       )
       
@@ -961,7 +961,7 @@ if defined checkgloves (
       ) 
       
       REM - And skip it
-      if not %pass_through%==1 (
+      if %pass_through%==0 (
         rd /S /Q ".\extracted_exports\!foldername!\Gloves\!glovesname!"
       )
       
