@@ -480,36 +480,6 @@ if defined checktexture (
         )
       )
       
-      REM - If it's a dds and fox mode is enabled
-      if defined tex_type_dds (
-        if %fox_mode%==1 (
-          
-          REM - Check if it has mipmaps
-          set line=0
-          
-          for /f "tokens=1-4 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 4 -d 1C F`) do (
-            
-            if !line!==3 (
-              
-              REM - Check DXT type to warn about DXT3 losing quality
-              set byte=%%G
-              set byte=!byte:~0,2!
-              
-              if not !byte!==35 (
-              
-                rem set tex_resave=1 
-              )
-            )
-            
-            set /a line+=1
-          )
-          
-          if defined tex_resave (
-            set tex_wrongformat=1
-          )
-          
-        )
-      )
       
       REM - If it's an ftex and fox mode is enabled
       if defined tex_type_ftex (
