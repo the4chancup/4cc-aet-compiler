@@ -232,11 +232,19 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         )
       )
       
+      REM - Set the texture file extension to ftex
+      set kit_tex_ext=ftex
+      
+    ) else (
+      
+      REM - Set the texture file extension to dds
+      set kit_tex_ext=dds
+      
     )
     
     
     REM - For every kit texture file
-    for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B\*.dds" 2^>nul') do (
+    for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B\*.!kit_tex_ext!" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
       set object_name=%%C

@@ -1,9 +1,14 @@
+29/06/19 - Version 4.4
+- Fixed kit texture compiling some more, ftex files were being ignored
+
+
 22/06/19 - Version 4.3
 - Fixed kit texture compiling and checking
 - Fixed the cpks being moved even if move cpks mode is disabled
 - Added level 2 to pass through mode for skipping export checks
 - Updated the descriptions of the settings file
 - Updated the readme files
+
 
 31/05/19 - Version 4.2
 - Fixed non fox mode making checks from fox mode and failing to compile faces
