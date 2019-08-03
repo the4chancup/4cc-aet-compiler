@@ -184,6 +184,31 @@ if exist ".\extracted_exports\Gloves" (
 )
 
 
+REM - If there's a Collars folder, move its stuff
+if exist ".\extracted_exports\Collars" (
+  
+  if not defined other_message (
+    set other_message=1
+    
+    @echo - 
+    @echo - Moving the other stuff
+  )
+    
+  REM - Create the folder structure if needed
+  if not exist ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" (
+    md ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" 2>nul
+  )
+  
+  REM - Move the collars to the Faces cpk folder
+  for /f %%A in ('dir /b ".\extracted_exports\Collars" 2^>nul') do (
+    move ".\extracted_exports\Collars\%%A" ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" >nul
+  )
+
+  REM . Then delete the main folder
+  rd /S /Q ".\extracted_exports\Collars" >nul
+)
+
+
 REM - If there's a Portraits folder, move its stuff
 if exist ".\extracted_exports\Portraits" (
 

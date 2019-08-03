@@ -431,6 +431,39 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
   )
   
   
+  REM - Collars folder
+  if /i "%%B"=="Collars" (
+  
+    set folder_type_found=1
+    
+    REM - Create the main folder if not present
+    if not exist ".\extracted_exports\%%B" (
+      md ".\extracted_exports\%%B" 2>nul
+    )
+    
+    REM - For each collar file
+    for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
+      
+      set object_name=%%C
+      
+      REM - Check if there's another one with the same name already
+      if exist ".\extracted_exports\%%B\!object_name!" (
+      
+        echo - Collar filename conflict for collar !object_name!
+        echo - Please choose a different slot
+      
+      ) else (
+        
+        REM - Move the file
+        move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
+        
+      )
+      
+    )
+    
+  )
+  
+  
   REM - Common folder
   if /i "%%B"=="Common" (
   
