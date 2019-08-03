@@ -88,6 +88,8 @@ before moving its content into three common folders:
 - Checks that the dds files in the Portraits folder are properly named.
 - Checks that the boots folders in the Boots folder follow the format "k####".
 - Checks that the gloves folders in the Gloves folder follow the format "g###".
+- Checks that the collars in the Collars folder don't have the same filename as the
+  collars from the other exports extracted in the same session.
 
 Having a Note txt file used to be compulsory but it isn't anymore. It's stil
 recommended to have. If there's no txt the compiler will try to use the first
@@ -180,6 +182,7 @@ the exports_to_add folder when they need to be updated.
   - Portraits (optional, putting them in the player face folders is recommended instead)
   - Boots (optional)
   - Gloves (optional)
+  - Collars (optional)
   - Common (optional)
   - Other (optional)
 
