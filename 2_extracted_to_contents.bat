@@ -253,6 +253,7 @@ if exist ".\extracted_exports\Common" (
     @echo - Moving the other stuff
   )
   
+  
   REM - Create a "common" folder if needed
   if not exist ".\patches_contents\%faces_foldername%\%common_path%" (
     md ".\patches_contents\%faces_foldername%\%common_path%" 2>nul
@@ -260,12 +261,41 @@ if exist ".\extracted_exports\Common" (
   
   REM - Move the team folders to the Faces cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Common" 2^>nul') do (
+  
+    if %fox_mode%==0 (
     
-    if exist ".\patches_contents\%faces_foldername%\%common_path%\%%A" (
-      rd /S /Q ".\patches_contents\%faces_foldername%\%common_path%\%%A"
+      if exist ".\patches_contents\%faces_foldername%\%common_path%\%%A" (
+        rd /S /Q ".\patches_contents\%faces_foldername%\%common_path%\%%A"
+      )
+      
+      move ".\extracted_exports\Common\%%A" ".\patches_contents\%faces_foldername%\%common_path%" >nul
+    
+    ) else (
+      
+      REM - Check if any dds textures exist
+      >nul 2>nul dir /a-d /s ".\extracted_exports\Common\%%A\*.dds" && (set dds_present=1) || (set dds_present=)
+      
+      if defined dds_present (
+        
+        REM - Convert the dds textures to ftex
+        for /f "tokens=*" %%B in ('dir /b ".\extracted_exports\Common\%%A\*.dds"') do (
+          call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\Common\%%A\%%B" >nul
+        )
+        
+        REM - And delete them
+        for /f "tokens=*" %%B in ('dir /b ".\extracted_exports\Common\%%A\*.dds"') do (
+          del ".\extracted_exports\Common\%%A\%%B" >nul
+        )
+      )
+      
+      md ".\patches_contents\%faces_foldername%\%common_path%\%%A\sourceimages\#windx11" 2>nul
+     
+      for /f %%B in ('dir /b ".\extracted_exports\Common\%%A" 2^>nul') do (
+        move ".\extracted_exports\Common\%%A\%%B" ".\patches_contents\%faces_foldername%\%common_path%\%%A\sourceimages\#windx11" >nul
+      )
+      
     )
     
-    move ".\extracted_exports\Common\%%A" ".\patches_contents\%faces_foldername%\%common_path%" >nul
   )
   
   REM . Then delete the main folder
