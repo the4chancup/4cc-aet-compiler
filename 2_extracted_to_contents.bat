@@ -193,15 +193,21 @@ if exist ".\extracted_exports\Collars" (
     @echo - 
     @echo - Moving the other stuff
   )
-    
+  
+  if %fox_mode%==0
+    set collars_folder_path=common\character0\model\character\uniform\nocloth
+  ) else (
+    set collars_folder_path=Asset\model\character\uniform\nocloth\#Win
+  )
+  
   REM - Create the folder structure if needed
-  if not exist ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" (
-    md ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" 2>nul
+  if not exist ".\patches_contents\%faces_foldername%\%collars_folder_path%" (
+    md ".\patches_contents\%faces_foldername%\%collars_folder_path%" 2>nul
   )
   
   REM - Move the collars to the Faces cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Collars" 2^>nul') do (
-    move ".\extracted_exports\Collars\%%A" ".\patches_contents\%faces_foldername%\Asset\model\character\uniform\nocloth\#Win" >nul
+    move ".\extracted_exports\Collars\%%A" ".\patches_contents\%faces_foldername%\%collars_folder_path%" >nul
   )
 
   REM . Then delete the main folder

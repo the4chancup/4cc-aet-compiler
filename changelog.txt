@@ -1,3 +1,9 @@
+04/10/19 - Version 4.6
+- Changed the base UniformParameter.bin file back to the one without referee kits, as those weren't being handled
+properly by the uniparam editor
+- Added support for collars on pes 16/17
+
+
 03/08/19 - Version 4.5
 - Added basic support for the Collars folder
 - Changed the destination path for files in the Common folder in Fox mode, since only textures can be used from it
