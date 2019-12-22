@@ -1,3 +1,7 @@
+16/11/19 - Version 4.7
+- Quick fix for a bug which was crashing the main part of the compiling
+
+
 04/10/19 - Version 4.6
 - Changed the base UniformParameter.bin file back to the one without referee kits, as those weren't being handled
 properly by the uniparam editor

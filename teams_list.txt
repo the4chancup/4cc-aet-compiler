@@ -79,74 +79,74 @@ ID Name
 778 Backup 16
 779 Backup 17
 780 Backup 18
-781 /@/
-782 /2hug/
-783 /aceg/
-784 /agdg/
-785 /civ4xg/
-786 /d2g/
-787 /dbg/
-788 /ddlc/
-789 /dfg/
-790 /digi/
-791 /domg/
-792 /drag/
-793 /drg/
-794 /egg/
-795 /feg/
-796 /ffg/
-797 /fgoalter/
-798 /fgog/
-799 /gbfg/
-800 /gbpen/
-801 /gfg/
-802 /gsg/
-803 /hanny/
-804 /hpgg/
-805 /hsg/
-806 /indie/
-807 /ksg/
-808 /llsifg/
-809 /mbg/
-810 /mcg/
-811 /mggg/
-812 /nepgen/
-813 /osg/
-814 /pmmm/
-815 /r6g/
-816 /rsg/
-817 /skg/
-818 /ssbg/
-819 /tesg/
-820 /tf2g/
-821 /tnm/
-822 /trg/
-823 /twg/
-824 /vitagen/
-825 /vn/
-826 /vrg/
-827 /wtg/
-828 /kirara/
-829 VGL 49
-830 VGL 50
-831 /trash/
-832 Invitational 2
-833 Invitational 3
-834 Invitational 4
-835 Invitational 5
-836 Invitational 6
-837 Invitational 7
-838 Invitational 8
-839 Invitational 9
-840 Invitational 10
-841 Invitational 11
-842 Invitational 12
-843 Invitational 13
-844 Invitational 14
-845 Invitational 15
-846 Invitational 16
-847 Invitational 17
-848 Invitational 18
+781 Backup 19
+782 Backup 20
+783 Backup 21
+784 Backup 22
+785 Backup 23
+786 Backup 24
+787 Backup 25
+788 Backup 26
+789 Backup 27
+790 Backup 28
+791 Backup 29
+792 Backup 30
+793 Backup 31
+794 Backup 32
+795 Backup 33
+796 Backup 34
+797 Backup 35
+798 Backup 36
+799 Backup 37
+800 Backup 38
+801 /2hug/
+802 /aceg/
+803 /agdg/
+804 /alg/
+805 /civ4xg/
+806 /d2g/
+807 /dbg/
+808 /ddlc/
+809 /digi/
+810 /dng/
+811 /domg/
+812 /drag/
+813 /drg/
+814 /egg/
+815 /feg/
+816 /fgoalter/
+817 /fgog/
+818 /gbfg/
+819 /gbpen/
+820 /gfg/
+821 /gsg/
+822 /hanny/
+823 /hpgg/
+824 /hsg/
+825 /indie/
+826 /ink/
+827 /kfg/
+828 /llsifg/
+829 /lzg/
+830 /mbg/
+831 /mggg/
+832 /mjg/
+833 /nepgen/
+834 /osg/
+835 /pmmm/
+836 /r6g/
+837 /rsg/
+838 /skg/
+839 /ssbg/
+840 /tekgen/
+841 /tf2g/
+842 /tnm/
+843 /utg/
+844 /vitagen/
+845 /vn/
+846 /vrg/
+847 /wtg/
+848 /kirara/
 849 Invitational 19
 850 Invitational 20
 851 Invitational 21
