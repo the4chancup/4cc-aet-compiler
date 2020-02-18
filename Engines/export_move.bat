@@ -36,7 +36,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     REM - For each face folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
-      REM - Prepare the player ID
+      REM - Prepare the ID
       set face_id_withname=%%C
       set face_id_withname=!teamid!!face_id_withname:~3!
       set face_id=!face_id_withname:~0,5!
@@ -304,7 +304,12 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     
       REM - Replace the dummy team ID in the filename with the actual one
       set object_name=%%C
-      set object_name=player_!teamid!!object_name:~10!
+      
+      if %fox_portraits%==1 (
+        set object_name=!teamid!!object_name:~10!
+      ) else (
+        set object_name=player_!teamid!!object_name:~10!
+      )
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
@@ -329,7 +334,8 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
       REM - Prepare the ID
-      set bootsid=%%C
+      set boots_id_withname=%%C
+      set boots_id=!boots_id_withname:~0,5!
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -338,7 +344,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if not %fmdl_id_editing%==0 (
         
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !bootsid! >nul
+            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !boots_id! >nul
           )
         )
         

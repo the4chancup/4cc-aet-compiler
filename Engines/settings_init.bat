@@ -16,6 +16,7 @@ if exist settings.txt (
   @echo - 
   
   set fox_mode=1
+  set fox_portraits=1
   set cpk_name=4cc_90_test
   set move_cpks=1
   set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2018\download"

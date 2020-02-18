@@ -6,7 +6,9 @@
 :: 
 :: - Fox Mode -
 :: Enable this to make the compiler accept exports with files for PES18/19 instead of PES16/17
+:: Fox portraits will compile the portraits with the filename format required by PES19
 set fox_mode=1
+set fox_portraits=1
 :: 
 :: 
 :: - Cpk Name -
@@ -27,7 +29,7 @@ set move_cpks=1
 :: Set the path to the PES download folder between the quotes.
 :: If PES is installed in a system folder (like the default Program Files) the compiler
 :: will ask for admin permissions every time you run it.
-set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2018\download"
+set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
 :: 
 :: 
 :: - DpFileList Updating -
