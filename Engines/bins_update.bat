@@ -53,7 +53,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
             if /i "!team!"=="%%V" (
               
               set teamid=%%U
-              set /a id=!teamid!-701
+              set /a id=!teamid!-100
               set id_found=1
             )
           )

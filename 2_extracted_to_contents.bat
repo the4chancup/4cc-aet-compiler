@@ -57,11 +57,27 @@ if %bins_updating%==1 (
   REM - If there's a Kit Configs folder
   if exist ".\extracted_exports\Kit Configs" (
     
-    REM - Compile a UniformParam file
-    .\Engines\Python\uniparam_compile ".\extracted_exports\Kit Configs" ".\Bin Files\UniformParameter.bin" >nul
+    REM - Set the filename depending on pes version
+    if %fox_portraits%==1 (
+      set uniparam_filename=UniformParameter19
+    ) else (
+      set uniparam_filename=UniformParameter18
+    )
     
-    REM - And copy it to the Bins cpk folder
-    copy ".\Bin Files\UniformParameter.bin" ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" >nul
+    REM - Compile the UniformParam file
+    .\Engines\Python\uniparam_compile ".\extracted_exports\Kit Configs" ".\Bin Files\!uniparam_filename!.bin" >nul
+    
+    REM - Copy it to the Engines folder temporarily
+    copy ".\Bin Files\!uniparam_filename!.bin" ".\Engines" >nul
+    
+    REM - Rename it
+    ren ".\Engines\!uniparam_filename!.bin" "UniformParameter.bin" >nul
+    
+    REM - Copy it to the Bins cpk folder
+    copy ".\Engines\UniformParameter.bin" ".\patches_contents\%bins_foldername%\common\character0\model\character\uniform\team" >nul
+    
+    REM - And delete the temporary copy
+    del ".\Engines\UniformParameter.bin" >nul
   )
 )
 

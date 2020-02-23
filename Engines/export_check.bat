@@ -727,14 +727,16 @@ if defined checkportraits (
     set portraitwrong=
     set portraitname=%%C
     
+    if not %fox_portraits%==1 (
     
-    REM - Check that its name starts with player_
-    if not "!portraitname:~0,7!"=="player_" set portraitwrong=1
+      REM - Check that its name starts with player_
+      if not "!portraitname:~0,7!"=="player_" set portraitwrong=1
+      
+      REM - Check that the player number is within the 01-23 range
+      if "!portraitname:~-6,2!" LSS "01" set portraitwrong=1
+      if "!portraitname:~-6,2!" GTR "23" set portraitwrong=1
     
-    REM - Check that the player number is within the 01-23 range
-    if "!portraitname:~-6,2!" LSS "01" set portraitwrong=1
-    if "!portraitname:~-6,2!" GTR "23" set portraitwrong=1
-    
+    )
   
     REM - If the portrait is named wrongly
     if defined portraitwrong (

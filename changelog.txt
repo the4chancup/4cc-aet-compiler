@@ -1,3 +1,13 @@
+23/02/20 - Version 4.10
+- Added a temporary skip for the portrait filename check when the fox portraits setting is enabled
+- Extended the teamcolor and unicolor editing to support the full 100-902 range of team IDs
+- Included new teamcolor and unicolor bins with 100-902 ID ranges
+- Moved the teams19 txt used by the uniparam editing plugin to the root folder
+- Included an additional uniparam bin with team IDs in PES19 format
+- Made the fox portraits setting toggle between using the uniparam for PES18 or PES19
+- Added the team IDs available on PES19 to the teams list txt with blank team names
+
+
 18/02/20 - Version 4.9
 - Added support for the portrait filename format required by PES19
 - Added support for boots folder names with additional characters after the ID

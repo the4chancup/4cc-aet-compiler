@@ -29,7 +29,7 @@ set move_cpks=1
 :: Set the path to the PES download folder between the quotes.
 :: If PES is installed in a system folder (like the default Program Files) the compiler
 :: will ask for admin permissions every time you run it.
-set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2016\download"
+set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2019\download"
 :: 
 :: 
 :: - DpFileList Updating -
@@ -77,8 +77,8 @@ set bins_cpk_name=4cc_08_bins
 ::   custom texture in face_bsm_alp, so if also the face_high fmdl were to be edited you would
 ::   get a weird looking neck.
 :: . Level 2 means every fmdl will have their path edited. Use it only if the faces are fully custom.
-:: Default: 1 :: Accepted values: 0 - 1 - 2
-set fmdl_id_editing=1
+:: Default: 2 :: Accepted values: 0 - 1 - 2
+set fmdl_id_editing=2
 ::
 ::
 :: - Compression Level -
