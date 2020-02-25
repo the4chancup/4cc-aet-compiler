@@ -1,3 +1,7 @@
+25/02/20 - Version 4.11
+- Added support for logos for fake teams in the export checker
+
+
 23/02/20 - Version 4.10
 - Added a temporary skip for the portrait filename check when the fox portraits setting is enabled
 - Extended the teamcolor and unicolor editing to support the full 100-902 range of team IDs

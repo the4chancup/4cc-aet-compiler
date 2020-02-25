@@ -667,9 +667,14 @@ if defined checklogo (
     
     
     REM - Check the suffix and increase the plus counter if present and correct
+    REM - Real teams
     if /i "!logoname:~11!"=="_r.png" set /a logocountplus+=1
     if /i "!logoname:~11!"=="_r_l.png" set /a logocountplus+=1
     if /i "!logoname:~11!"=="_r_ll.png" set /a logocountplus+=1
+    REM - Fake teams
+    if /i "!logoname:~11!"=="_f.png" set /a logocountplus+=1
+    if /i "!logoname:~11!"=="_f_l.png" set /a logocountplus+=1
+    if /i "!logoname:~11!"=="_f_ll.png" set /a logocountplus+=1
     
     
     if defined logowrong (
