@@ -49,14 +49,14 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
           REM - Level 1 - Just the hair_high fmdl
           if exist ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !face_id! >nul
+            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !face_id! >nul
           )
         )
         if %fmdl_id_editing%==2 (
           
           REM - Level 2 - Every fmdl
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !face_id! >nul
+            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !face_id! >nul
           )
         )
         
@@ -120,12 +120,12 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     )
     
     REM - Delete the team folder if already present
-    if exist ".\extracted_exports\Kit Configs\!teamid!" (
-      rd /S /Q ".\extracted_exports\Kit Configs\!teamid!"
+    if exist ".\extracted_exports\%%B\!teamid!" (
+      rd /S /Q ".\extracted_exports\%%B\!teamid!"
     )
     
     REM - Create a folder with the team ID
-    md ".\extracted_exports\Kit Configs\!teamid!" 2>nul
+    md ".\extracted_exports\%%B\!teamid!" 2>nul
     
     
     REM - Prepare the texture filename
@@ -303,12 +303,21 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     for /f "tokens=*" %%C in ('dir /a:-d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
     
       REM - Replace the dummy team ID in the filename with the actual one
-      set object_name=%%C
+      set object_foldername=%%C
       
-      if %fox_portraits%==1 (
-        set object_name=!teamid!!object_name:~10!
+      set object_id_temp=!object_foldername:~3,2!
+      if "!object_id_temp!" GEQ "01" (
+        if "!object_id_temp!" LEQ "23" set object_id=!object_id_temp!
+      )
+      set object_id_temp=!object_foldername:~-6,2!
+      if "!object_id_temp!" GEQ "01" (
+        if "!object_id_temp!" LEQ "23" set object_id=!object_id_temp!
+      )
+      
+      if %fox_19%==1 (
+        set object_name=!teamid!!object_id!.dds
       ) else (
-        set object_name=player_!teamid!!object_name:~10!
+        set object_name=player_!teamid!!object_id!.dds
       )
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
@@ -330,12 +339,12 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       md ".\extracted_exports\%%B" 2>nul
     )
     
-    REM - For each boots folder
+    REM - Boots folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
       REM - Prepare the ID
-      set boots_id_withname=%%C
-      set boots_id=!boots_id_withname:~0,5!
+      set boots_foldername=%%C
+      set boots_id=!boots_foldername:~0,5!
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -344,7 +353,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if not %fmdl_id_editing%==0 (
         
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !boots_id! >nul
+            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !boots_id! >nul
           )
         )
         
@@ -392,8 +401,13 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     REM - For each gloves folder
     for /f "tokens=*" %%C in ('dir /a:d /b ".\extracted_exports\!foldername!\%%B" 2^>nul') do (
       
-      REM - Prepare the ID
-      set glovesid=%%C
+      REM - Prepare the ID depending on version
+      set gloves_foldername=%%C
+      if not %fox_19%==1 (
+        set gloves_id=!gloves_foldername:~0,4!
+      ) else (
+        set gloves_id=!gloves_foldername:~0,5!
+      )
       
       REM - If fox mode is enabled
       if %fox_mode%==1 (
@@ -402,7 +416,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if not %fmdl_id_editing%==0 (
         
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change ".\extracted_exports\!foldername!\%%B\%%C\%%D" !glovesid! >nul
+            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !gloves_id! >nul
           )
         )
         
@@ -452,18 +466,8 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
       
       set object_name=%%C
       
-      REM - Check if there's another one with the same name already
-      if exist ".\extracted_exports\%%B\!object_name!" (
-      
-        echo - Collar filename conflict for collar !object_name!
-        echo - Please choose a different slot
-      
-      ) else (
-        
-        REM - Move the file
-        move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
-        
-      )
+      REM - Move the file
+      move ".\extracted_exports\!foldername!\%%B\!object_name!" ".\extracted_exports\%%B" >nul
       
     )
     

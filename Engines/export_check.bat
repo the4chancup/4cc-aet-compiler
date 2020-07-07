@@ -1,6 +1,5 @@
 REM - Checks the export for all kinds of errors
 
-
 REM - Check for nested folders with repeating names
 set nestederror=
 
@@ -97,24 +96,6 @@ if defined checkfaces (
     
     
     if not defined facewrong (
-      
-      REM - If the folder has a portrait
-      if exist ".\extracted_exports\!foldername!\Faces\!facename!\portrait.dds" (
-        
-        set faceid=!teamid!!facename:~3,2!
-        
-        REM - Create a folder for portraits if not present
-        if not exist ".\extracted_exports\!foldername!\Portraits" (
-          md ".\extracted_exports\!foldername!\Portraits" 2>nul
-        )
-        
-        REM - Rename the portrait with the player id
-        set portrait_name=player_!faceid!.dds
-        rename ".\extracted_exports\!foldername!\Faces\!facename!\portrait.dds" "!portrait_name!"
-        
-        REM - And move it to the portraits folder
-        move ".\extracted_exports\!foldername!\Faces\!facename!\!portrait_name!" ".\extracted_exports\!foldername!\Portraits" >nul
-      )
       
       if %fox_mode%==0 (
         
@@ -729,18 +710,17 @@ if defined checkportraits (
   REM - For every portrait
   for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Portraits"') do (
     
-    set portraitwrong=
+    set portraitwrong=1
     set portraitname=%%C
     
-    if not %fox_portraits%==1 (
-    
-      REM - Check that its name starts with player_
-      if not "!portraitname:~0,7!"=="player_" set portraitwrong=1
-      
-      REM - Check that the player number is within the 01-23 range
-      if "!portraitname:~-6,2!" LSS "01" set portraitwrong=1
-      if "!portraitname:~-6,2!" GTR "23" set portraitwrong=1
-    
+    REM - Check that the player number is within the 01-23 range
+    set portrait_id_temp=!portraitname:~3,2!
+    if "!portrait_id_temp!" GEQ "01" (
+      if "!portrait_id_temp!" LEQ "23" set portraitwrong=
+    )
+    set portrait_id_temp=!portraitname:~-6,2!
+    if "!portrait_id_temp!" GEQ "01" (
+      if "!portrait_id_temp!" LEQ "23" set portraitwrong=
     )
   
     REM - If the portrait is named wrongly
@@ -809,16 +789,12 @@ if defined checkboots (
     set boots_wrong_nofpkxml=
     
     
-    REM - Check that its name starts with a k, and that it's 5 characters long
+    REM - Check that its name starts with a k
     if /i not "!boots_name:~0,1!"=="k" (
       
       set boots_wrong=1
       set boots_wrong_name=1
       
-    ) else (
-      
-      call .\Engines\CharLib strlen boots_name len_bootsname
-      if not "!len_bootsname!"=="5" set boots_wrong=1
     )
     
     if %fox_mode%==1 (
@@ -907,15 +883,11 @@ if defined checkgloves (
     set gloveswrong=
     set glovesname=%%C
     
-    REM - Check that its name starts with a g, and that it's 4 characters long
+    REM - Check that its name starts with a g
     if /i not "!glovesname:~0,1!"=="g" (
       
       set gloveswrong=1
       
-    ) else (
-      
-      call .\Engines\CharLib strlen glovesname len_glovesname
-      if not "!len_glovesname!"=="4" set gloveswrong=1
     )
     
     REM - If the gloves folder is named wrongly

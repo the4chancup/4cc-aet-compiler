@@ -2,14 +2,16 @@
 REM ^ Don't write everything to screen
 
 if not defined all_in_one (
-
+  
+  REM - Allow reading variables modified inside statements
+  setlocal EnableDelayedExpansion
+  
   REM - Set the working folder
   cd /D "%~dp0"
   
   REM - Load the settings
   call .\Engines\settings_init
 )
-
 
 REM - Set the name for the folders to put stuff into
 if %multicpk_mode%==0 (
@@ -57,17 +59,29 @@ if %bins_updating%==1 (
   REM - If there's a Kit Configs folder
   if exist ".\extracted_exports\Kit Configs" (
     
+    @echo - 
+    <nul set /p =- Compiling the kit config files into the UniformParameter bin
+    
     REM - Set the filename depending on pes version
-    if %fox_portraits%==1 (
+    if %fox_19%==1 (
       set uniparam_filename=UniformParameter19
     ) else (
       set uniparam_filename=UniformParameter18
     )
     
-    REM - Compile the UniformParam file
-    .\Engines\Python\uniparam_compile ".\extracted_exports\Kit Configs" ".\Bin Files\!uniparam_filename!.bin" >nul
+    REM - Copy the kit configs to the main folder
+    for /f "tokens=*" %%A in ('dir /b /a:d ".\extracted_exports\Kit Configs" 2^>nul') do (
+      
+      copy ".\extracted_exports\Kit Configs\%%A\*.bin" ".\extracted_exports\Kit Configs" >nul
+    )
     
-    REM - Copy it to the Engines folder temporarily
+    REM - Compile the UniformParameter file
+    call .\Engines\Python\pes-file-tools\tools\uniparam\pes-uniparam-edit.py -a ".\Bin Files\!uniparam_filename!.bin" ".\extracted_exports\Kit Configs"
+    
+    REM - Delete the kit configs in the main configs folder
+    del ".\extracted_exports\Kit Configs\*.bin" >nul
+    
+    REM - Copy the uniparam to the Engines folder temporarily
     copy ".\Bin Files\!uniparam_filename!.bin" ".\Engines" >nul
     
     REM - Rename it
@@ -78,6 +92,9 @@ if %bins_updating%==1 (
     
     REM - And delete the temporary copy
     del ".\Engines\UniformParameter.bin" >nul
+
+    @echo.
+    @echo - 
   )
 )
 
@@ -101,12 +118,11 @@ if exist ".\extracted_exports\Kit Configs" (
   @echo - 
   @echo - Moving the kit configs
   
-  
   REM - Create a "team" folder if needed
   if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" (
     md ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" 2>nul
   )
-
+  
   REM - Move the kit configs to the Uniform cpk folder
   for /f %%A in ('dir /b ".\extracted_exports\Kit Configs" 2^>nul') do (
 
@@ -128,7 +144,6 @@ if exist ".\extracted_exports\Kit Textures" (
 
   @echo - 
   @echo - Moving the kit textures
-  
   
   if %fox_mode%==0 (
     
@@ -352,7 +367,7 @@ if exist ".\extracted_exports\Common" (
 
 
 REM . Finally delete the extracted exports folder
-rd /S /Q ".\extracted_exports" >nul
+rd /S /Q ".\extracted_exports" 2>nul
 
 
 if defined all_in_one (

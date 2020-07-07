@@ -6,9 +6,9 @@
 :: 
 :: - Fox Mode -
 :: Enable this to make the compiler accept exports with files for PES18/19 instead of PES16/17
-:: Fox portraits will compile the portraits with the filename format required by PES19
+:: Fox 19 will set a few behaviours required by PES19
 set fox_mode=1
-set fox_portraits=1
+set fox_19=1
 :: 
 :: 
 :: - Cpk Name -
@@ -134,6 +134,5 @@ set pass_through=0
 :: forcing the request of admin permissions with this setting.
 :: Default: 0
 set admin_mode=0
-:: 
 :: 
 :: 

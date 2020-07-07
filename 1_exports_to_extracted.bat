@@ -97,6 +97,9 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - If the ID was found
   if not defined error (
     
+    REM - Move the portraits out of the face folders
+    call .\Engines\portraits_move
+    
     if not %pass_through%==2 (
     
       REM - Check the export for all kinds of errors
@@ -234,19 +237,7 @@ if defined all_in_one (
   @echo - 
   @echo - 
   
-  
-  if defined warn (
-    
-    if not %pause_when_wrong%==0 (
-      pause
-      
-    ) else (
-      timeout /t 30
-    )
-    
-  ) else (
-    
-    pause
+  pause
   )
 
 )

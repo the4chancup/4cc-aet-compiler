@@ -1,15 +1,39 @@
+07/07/20 - Version 5.00
+- Started using python plugins in .py format instead of .exe, this makes the
+  download package smaller but it also means python must be installed to be able
+  to run this compiler
+- Renamed the fox_portraits setting to fox_19
+- Updated the team IDs in the teams_list txt with the new IDs used by PES19
+- Added support for gloves folder names with 4-digit IDs on 19
+- Added support for gloves and boots folder names with the player name added
+  after the ID
+- Extended support for portrait filenames from the Portraits folder, now they
+  only need to have a 01-23 ID on either the last two characters or the 4th and
+  5th characters of its filename, which also means that the same names used on
+  their face folders can be used
+- Fix portraits in face folders not being moved to the Portraits if pass_through
+  is set to 2
+- Fixed the functions for packing kit configs into uniparams on 19
+- Added a warning when the settings file in use is outdated or missing some
+  settings
+
+
 25/02/20 - Version 4.11
 - Added support for logos for fake teams in the export checker
 
 
 23/02/20 - Version 4.10
-- Added a temporary skip for the portrait filename check when the fox portraits setting is enabled
-- Extended the teamcolor and unicolor editing to support the full 100-902 range of team IDs
+- Added a temporary skip for the portrait filename check when the fox portraits
+  setting is enabled
+- Extended the teamcolor and unicolor editing to support the full 100-902 range
+  of team IDs
 - Included new teamcolor and unicolor bins with 100-902 ID ranges
 - Moved the teams19 txt used by the uniparam editing plugin to the root folder
 - Included an additional uniparam bin with team IDs in PES19 format
-- Made the fox portraits setting toggle between using the uniparam for PES18 or PES19
-- Added the team IDs available on PES19 to the teams list txt with blank team names
+- Made the fox portraits setting toggle between using the uniparam for PES18 or
+  PES19
+- Added the team IDs available on PES19 to the teams list txt with blank team
+  names
 
 
 18/02/20 - Version 4.9
@@ -26,16 +50,18 @@
 
 
 04/10/19 - Version 4.6
-- Changed the base UniformParameter.bin file back to the one without referee kits, as those weren't being handled
-properly by the uniparam editor
+- Changed the base UniformParameter.bin file back to the one without referee
+  kits, as those weren't being handled properly by the uniparam editor
 - Added support for collars on pes 16/17
 
 
 03/08/19 - Version 4.5
 - Added basic support for the Collars folder
-- Changed the destination path for files in the Common folder in Fox mode, since only textures can be used from it
+- Changed the destination path for files in the Common folder in Fox mode, since
+  only textures can be used from it
 - Updated the base UniformParameter.bin file with working referee kits
-- Replaced the python ftex packer with the FtexTool plugin which supports some weird dds textures properly
+- Replaced the python ftex packer with the FtexTool plugin which supports some
+  weird dds textures properly
 
 
 29/06/19 - Version 4.4
@@ -52,11 +78,14 @@ properly by the uniparam editor
 
 31/05/19 - Version 4.2
 - Fixed non fox mode making checks from fox mode and failing to compile faces
-- Fixed the request of admin permissions which was making the compiler crash at the start
-- Made the compiler get the team name from the name of the export's folder if it's missing a Note txt file
+- Fixed the request of admin permissions which was making the compiler crash at
+  the start
+- Made the compiler get the team name from the name of the export's folder if it
+  is missing a Note txt file
 - Note txt files are no longer compulsory in exports
 - Added checks to make sure ftex kit textures have mipmaps
-- Added packing of Boots and Gloves folders in fpk format plus automatic fmdl texture path editing for them
+- Added packing of Boots and Gloves folders in fpk format plus automatic fmdl
+  texture path editing for them
 - Added support for the Common folder in fox mode
 - Fixed the loss of the player name on the face folders in extracted_to_exports
 - Updated the teams_list and bin files
@@ -64,7 +93,8 @@ properly by the uniparam editor
 
 03/05/19 - Version 4.1
 - Added automatic dds to ftex conversion when in fox mode
-- Updated the uniparam builder version to support updating the same file every time
+- Updated the uniparam builder version to support updating the same file every
+  time
 - Added automatic fmdl texture path editing
 - Made portraits in face folders get used even if the folder is unusable
 
@@ -92,7 +122,8 @@ properly by the uniparam editor
 9/9/17 - Version 3.6
 - Added order numbers to the script files
 - Added support for zlibbed kit configs
-- Added a check for the right type of file on kit textures (no more pngs renamed to dds)
+- Added a check for the right type of file on kit textures (no more pngs renamed
+  to dds)
 - Improved the error messages
 - Updated the readme
 
@@ -111,42 +142,47 @@ properly by the uniparam editor
 
 
 18/1/17 - Version 3.1
-- Ignore empty Other folders.
+- Ignore empty Other folders
 
 
 4/1/17 - Version 3.0
-- Id-less. Automatic replacing of the team IDs in the exports' files.
-- Support for PES17's portraits.
+- Id-less. Automatic replacing of the team IDs in the exports' files
+- Support for PES17's portraits
 
 
 29/11/16 - Version 2.0
-- A fuckload of fixes. Now everything should work properly, including the bins file creation,
-the zlibbing and the checking of exports.
+- A huge amount of fixes. Now everything should work properly, including the
+  bin files creation, the zlibbing and the checking of exports
 
 
 13/11/16 - Version 1.3
-- Modified the export extracting part of the script to warn about the amount of kit entries
-in the txt not being the same as the amount of kit config files in the export.
-- Improved the unicolor bin compiler to support txt files which don't have an Other section,
-and to show on screen the number of team colors and kits that were recognized properly.
+- Modified the export extracting part of the script to warn about the amount of
+  kit entries in the txt not being the same as the amount of kit config files in
+  the export
+- Improved the unicolor bin compiler to support txt files which don't have an
+  Other section, and to show on screen the number of team colors and kits that
+  were recognized properly
 
 
 27/10/16 - Version 1.2
-- Removed the option for offering to create a txt for teams without note txts (it was breaking
-the whole program every time it was activated).
-- Improved the recognition of teams with txts without a team ID.
-- Added warning about txts with unicode formatting being unsupported.
-- Added support for teams with more than 7 kits to the unicolor bin updater.
+- Removed the option for offering to create a txt for exports without note txts
+  (it was breaking the whole program every time it was activated)
+- Improved the recognition of teams with txts without a team ID
+- Added warning about txts with unicode formatting being unsupported
+- Added support for teams with more than 7 kits to the unicolor bin updater
 
 
 26/10/16 - Version 1.1
-- Implemented the removal of Thumbs.db files by making 7zip exclude them while extracting exports.
-- Added support to the checker for edithair faces.
-- Improved the zlibbing function by making it store every texture it zlibs in a folder, so that
-there's no need to zlib everything again when rerunning the script.
-- Added an option to make the cpkmaker exe compress the cpk it makes instead of zlibbing every
-texture. The zlibbing method is still recommended if compression is needed, though.
+- Implemented the removal of Thumbs.db files by making 7zip exclude them while
+  extracting exports
+- Added support to the checker for edithair faces
+- Improved the zlibbing function by making it store every texture it zlibs in a
+  folder, so that there's no need to zlib everything again when rerunning the
+script
+- Added an option to make the cpkmaker exe compress the cpk it makes instead of
+  zlibbing every texture. The zlibbing method is still recommended if
+  compression is needed, though
 
 
 25/10/16 - Version 1.0
-- Initial support for the new simplified export format.
+- Initial support for the new simplified export format
