@@ -67,7 +67,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them
@@ -227,7 +227,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
         REM - Convert the dds textures to ftex
         for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B\*.dds"') do (
-          call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\!foldername!\%%B\%%C" >nul
+          call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C" >nul
         )
         
         REM - And delete them
@@ -364,7 +364,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them
@@ -427,7 +427,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them

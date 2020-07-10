@@ -24,6 +24,56 @@ if defined checkfaces (
       REM - If the folder has a portrait
       if exist ".\extracted_exports\!foldername!\Faces\!facename!\portrait.dds" (
         
+        set tex_name=portrait.dds
+        set tex_zlibbed=
+        
+        REM - Check if it is zlibbed
+        for /f "tokens=1-6 usebackq" %%E in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" -d 3 5`) do (
+          
+          REM - If the file has the WESYS label it's zlibbed
+          if "%%F%%G%%H%%I%%J"=="5745535953" (
+            
+            set tex_zlibbed=1
+            
+            REM - Unzlib it
+            call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" -d >nul
+            
+            REM - Store the original filename and set the unzlibbed file as file to check
+            set tex_name_orig=!tex_name!
+            set tex_name=!tex_name!.unzlib
+          )
+        )
+        
+        
+        REM - Check if it is a real dds
+        for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" -d 0 4`) do (
+          
+          if not "%%E%%F%%G"=="444453" (
+            set facewrong_badtex=1
+
+            
+          )
+        )
+        
+        
+        if defined tex_zlibbed (
+          
+          if %fox_mode%==0 (
+          
+            REM - Delete the extra unzlibbed file
+            del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
+            
+          ) else (
+            
+            REM - Delete the orignal zlibbed file
+            del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name_orig!" >nul
+            
+            REM - Rename the file
+            rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" "!tex_name_orig!" >nul
+          )
+        )
+
+
         set faceid=!teamid!!facename:~3,2!
         
         REM - Create a folder for portraits if not present

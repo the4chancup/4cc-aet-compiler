@@ -1,5 +1,11 @@
+10/07/20 - Version 5.01
+- Fixed a bug with glove packing
+- Replaced the FtexTool ftex conversion engine with a new python ftex engine
+- Added a function that checks if python is installed when starting the compiler
+
+
 07/07/20 - Version 5.00
-- Started using python plugins in .py format instead of .exe, this makes the
+- Started using python engines in .py format instead of .exe, this makes the
   download package smaller but it also means python must be installed to be able
   to run this compiler
 - Renamed the fox_portraits setting to fox_19
@@ -28,7 +34,7 @@
 - Extended the teamcolor and unicolor editing to support the full 100-902 range
   of team IDs
 - Included new teamcolor and unicolor bins with 100-902 ID ranges
-- Moved the teams19 txt used by the uniparam editing plugin to the root folder
+- Moved the teams19 txt used by the uniparam editing engine to the root folder
 - Included an additional uniparam bin with team IDs in PES19 format
 - Made the fox portraits setting toggle between using the uniparam for PES18 or
   PES19
@@ -42,7 +48,7 @@
 
 
 22/12/19 - Version 4.8
-- Updated the uniparam updater plugin for PES19 support
+- Updated the uniparam updater engine for PES19 support
 
 
 16/11/19 - Version 4.7
@@ -60,7 +66,7 @@
 - Changed the destination path for files in the Common folder in Fox mode, since
   only textures can be used from it
 - Updated the base UniformParameter.bin file with working referee kits
-- Replaced the python ftex packer with the FtexTool plugin which supports some
+- Replaced the python ftex packer with the FtexTool engine which supports some
   weird dds textures properly
 
 

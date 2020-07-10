@@ -10,6 +10,9 @@ cd /D "%~dp0"
 REM - Load the settings
 call .\Engines\settings_init
 
+REM - Check if python is installed and was added to the PATH
+call .\Engines\python_check
+
 
 REM - Set all_in_one mode
 set all_in_one=1

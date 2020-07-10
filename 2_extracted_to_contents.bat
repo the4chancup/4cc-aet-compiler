@@ -11,6 +11,9 @@ if not defined all_in_one (
   
   REM - Load the settings
   call .\Engines\settings_init
+
+  REM - Check if python is installed and was added to the PATH
+  call .\Engines\python_check
 )
 
 REM - Set the name for the folders to put stuff into
@@ -192,7 +195,7 @@ if exist ".\extracted_exports\Boots" (
     
   )
   
-  call .\Engines\boots_pack
+  call .\Engines\objects_pack boots Boots boots
 )
 
 
@@ -211,7 +214,7 @@ if exist ".\extracted_exports\Gloves" (
     
   )
   
-  call .\Engines\gloves_pack
+  call .\Engines\objects_pack glove Gloves glove
 )
 
 
@@ -341,7 +344,7 @@ if exist ".\extracted_exports\Common" (
         
         REM - Convert the dds textures to ftex
         for /f "tokens=*" %%B in ('dir /b ".\extracted_exports\Common\%%A\*.dds"') do (
-          call .\Engines\FtexTool\FtexTool -f 0 ".\extracted_exports\Common\%%A\%%B" >nul
+          call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\Common\%%A\%%B" >nul
         )
         
         REM - And delete them

@@ -11,6 +11,9 @@ if not defined all_in_one (
   
   REM - Load the settings
   call .\Engines\settings_init
+
+  REM - Check if python is installed and was added to the PATH
+  call .\Engines\python_check
 )
 
 

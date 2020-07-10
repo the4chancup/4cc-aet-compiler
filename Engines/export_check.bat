@@ -817,11 +817,11 @@ if defined checkboots (
         set boots_wrong_any=1
         
         @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (wrong boots folder names^). >> memelist.txt
+        @echo - !team!'s manager needs to get memed on. >> memelist.txt
         set memelist=1
         
         @echo -
-        @echo - !team!'s manager needs to get memed on (wrong boots folder names^).
+        @echo - !team!'s manager needs to get memed on.
       )
       
       REM - Give an error depending on the particular problem
@@ -875,51 +875,76 @@ REM - If a Gloves folder exists and is not empty, check that the gloves folder n
 
 if defined checkgloves (
   
-  set gloveserror=
+  set glove_wrong_any=
   
   REM - For every gloves folder
   for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Gloves"') do (
     
-    set gloveswrong=
+    set glove_wrong=
     set glovesname=%%C
     
     REM - Check that its name starts with a g
     if /i not "!glovesname:~0,1!"=="g" (
       
-      set gloveswrong=1
+      set glove_wrong=1
+      set glove_wrong_name=1
       
     )
     
+    if %fox_mode%==1 (
+      
+      REM - Check that the folder has the essential glove.fpk.xml file
+      if not exist ".\extracted_exports\!foldername!\glove\!glove_name!\glove.fpk.xml" (
+      
+        set glove_wrong=1
+        set glove_wrong_nofpkxml=1
+        
+      )
+    )
+    
     REM - If the gloves folder is named wrongly
-    if defined gloveswrong (
+    if defined glove_wrong (
       
       REM - Warn about the team having bad gloves folders
-      if not defined gloveserror (
+      if not defined glove_wrong_any (
         
-        set gloveserror=1
+        set glove_wrong_any=1
         
         @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (wrong glove folder names^). >> memelist.txt
+        @echo - !team!'s manager needs to get memed on. >> memelist.txt
         set memelist=1
         
         @echo -
-        @echo - !team!'s manager needs to get memed on (wrong glove folder names^).
+        @echo - !team!'s manager needs to get memed on.
       ) 
       
+      REM - Give an error depending on the particular problem
+      if defined glove_wrong_name (
+        @echo - The glove folder !glove_name! is bad. >> memelist.txt
+        @echo - The glove folder !glove_name! is bad.
+        @echo (wrong glove folder name^) - Folder discarded >> memelist.txt
+        @echo (wrong glove folder name^)
+      )
+      
+      if defined glove_wrong_nofpkxml (
+        @echo - The glove folder !glove_name! is bad. >> memelist.txt
+        @echo - The glove folder !glove_name! is bad.
+        @echo (no glove.fpk.xml file inside^) - Folder discarded >> memelist.txt
+        @echo (no glove.fpk.xml file inside^)
+      )
+      
+
       REM - And skip it
       if %pass_through%==0 (
         rd /S /Q ".\extracted_exports\!foldername!\Gloves\!glovesname!"
       )
       
-      @echo - The glove folder !glovesname! is wrong - Folder discarded. >> memelist.txt
-      
-      @echo - The glove folder !glovesname! is wrong.
     )
     
   )
 
   REM - If the team has bad gloves folders close the previously opened message
-  if defined gloveserror (
+  if defined glove_wrong_any (
 
     @echo - The glove folders mentioned above will be discarded since they're unusable.
     @echo - Closing the script's window and fixing them is recommended.
