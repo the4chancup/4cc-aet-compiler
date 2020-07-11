@@ -881,10 +881,10 @@ if defined checkgloves (
   for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Gloves"') do (
     
     set glove_wrong=
-    set glovesname=%%C
+    set glove_name=%%C
     
     REM - Check that its name starts with a g
-    if /i not "!glovesname:~0,1!"=="g" (
+    if /i not "!glove_name:~0,1!"=="g" (
       
       set glove_wrong=1
       set glove_wrong_name=1
@@ -894,7 +894,7 @@ if defined checkgloves (
     if %fox_mode%==1 (
       
       REM - Check that the folder has the essential glove.fpk.xml file
-      if not exist ".\extracted_exports\!foldername!\glove\!glove_name!\glove.fpk.xml" (
+      if not exist ".\extracted_exports\!foldername!\Gloves\!glove_name!\glove.fpk.xml" (
       
         set glove_wrong=1
         set glove_wrong_nofpkxml=1
@@ -936,7 +936,7 @@ if defined checkgloves (
 
       REM - And skip it
       if %pass_through%==0 (
-        rd /S /Q ".\extracted_exports\!foldername!\Gloves\!glovesname!"
+        rd /S /Q ".\extracted_exports\!foldername!\Gloves\!glove_name!"
       )
       
     )

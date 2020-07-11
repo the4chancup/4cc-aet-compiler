@@ -1,5 +1,13 @@
+11/07/20 - Version 5.02
+- Fixed a bug with glove xml checking
+- Updated the python ftex engine with a fixed version which converts non-square
+  textures properly
+- Improved the python checker to support computers which have both python 2 and
+  python 3 installed
+
+
 10/07/20 - Version 5.01
-- Fixed a bug with glove packing
+- Fixed a bug with glove packing and added glove xml checking
 - Replaced the FtexTool ftex conversion engine with a new python ftex engine
 - Added a function that checks if python is installed when starting the compiler
 
