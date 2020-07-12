@@ -8,12 +8,12 @@ if exist settings.txt (
   
 ) else (
   
-  @echo - Warning:
-  @echo - The settings.txt file is missing.
-  @echo - The compiler will run with the default settings.
-  @echo - 
-  @echo - Getting a settings file from the zip is recommended.
-  @echo - 
+  echo - Warning:
+  echo - The settings.txt file is missing.
+  echo - The compiler will run with the default settings.
+  echo - 
+  echo - Getting a settings file from the zip is recommended.
+  echo - 
   pause
 
   set settings_default_init=1
@@ -65,12 +65,12 @@ if not defined settings_default_init (
 
 if defined settings_missing (
     
-  @echo - Warning:
-  @echo - The settings.txt file is outdated or missing some settings.
-  @echo - The compiler will run with the default settings.
-  @echo - 
-  @echo - Getting a new settings file from the zip is recommended.
-  @echo - 
+  echo - Warning:
+  echo - The settings.txt file is outdated or missing some settings.
+  echo - The compiler will run with the default settings.
+  echo - 
+  echo - Getting a new settings file from the zip is recommended.
+  echo - 
   pause
 
   set settings_default_init=1

@@ -20,9 +20,9 @@ REM - Save the current working folder to a string
 set script_folder=%~dp0
 
 
-@echo - 
-@echo - Extracting and checking the exports
-@echo - 
+echo - 
+echo - Extracting and checking the exports
+echo - 
 
 REM - Create folders just in case
 md ".\exports_to_add" 2>nul
@@ -32,11 +32,11 @@ REM - Clear the flag for writing to file
 set memelist=
 
 REM - Reset the files
-@echo --- 4cc AET compiler id-less - List of problems --- > memelist.txt
-@echo --- 4cc txt notes compilation --- > teamnotes.txt
+echo --- 4cc AET compiler id-less - List of problems --- > memelist.txt
+echo --- 4cc txt notes compilation --- > teamnotes.txt
 
-@echo - 
-@echo - Working on team:
+echo - 
+echo - Working on team:
 
 REM - For every export
 for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
@@ -104,7 +104,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     call .\Engines\portraits_move
     
     if not %pass_through%==2 (
-    
+      
       REM - Check the export for all kinds of errors
       call .\Engines\export_check
       
@@ -113,14 +113,14 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     if defined note_found (
     
       REM - Copy the contents of the txt file to a common file for quick reading
-      @echo . >> teamnotes.txt
-      @echo - >> teamnotes.txt
-      @echo -- !team!'s note file - !note_name! >> teamnotes.txt
-      @echo -  >> teamnotes.txt
+      echo . >> teamnotes.txt
+      echo - >> teamnotes.txt
+      echo -- !team!'s note file - !note_name! >> teamnotes.txt
+      echo -  >> teamnotes.txt
       
       REM - Read and copy line per line
       for /f "tokens=* usebackq" %%R IN (".\extracted_exports\!foldername!\!note_name!") do (
-        @echo %%R >> teamnotes.txt
+        echo %%R >> teamnotes.txt
       )
 
     )
@@ -167,23 +167,23 @@ if not defined memelist (
   del memelist.txt
 
 ) else (
-  @echo - >> memelist.txt
-  @echo - >> memelist.txt
+  echo - >> memelist.txt
+  echo - >> memelist.txt
 )
 
 
 set pause=
 
-@echo - 
-@echo - 
-@echo - All the exports have been extracted and checked
+echo - 
+echo - 
+echo - All the exports have been extracted and checked
 
 
 if defined memelist (
 
   set warn=1
   
-  @echo - (Some problems were found, check the memelist.txt file for details^)
+  echo - (Some problems were found, check the memelist.txt file for details^)
   
 )
 
@@ -192,17 +192,17 @@ if defined other (
 
   set warn=1
 
-  @echo - 
-  @echo - There are some files in the extracted_exports\Other folder
-  @echo - 
-  @echo - Please open it and check its contents, unless you have already done
-  @echo - this previously for these exports
-  @echo - 
+  echo - 
+  echo - There are some files in the extracted_exports\Other folder
+  echo - 
+  echo - Please open it and check its contents, unless you have already done
+  echo - this previously for these exports
+  echo - 
   
 )
 
 if not defined warn (
-  @echo - No problems were found
+  echo - No problems were found
 )
 
 
@@ -211,20 +211,20 @@ if defined all_in_one (
   if defined warn (
 
     if defined other (
-      @echo - After that you can continue and leave the pc unattended
+      echo - After that you can continue and leave the pc unattended
     )
   
     if not %pause_when_wrong%==0 (
       
-      @echo - 
+      echo - 
       
       pause
       
     ) else (
     
-      @echo - Pause mode has been disabled
-      @echo - If you need to pause this countdown press Ctrl-C
-      @echo - You can then resume the script by pressing N, then Enter
+      echo - Pause mode has been disabled
+      echo - If you need to pause this countdown press Ctrl-C
+      echo - You can then resume the script by pressing N, then Enter
       timeout /t 20
     )
   
@@ -234,11 +234,11 @@ if defined all_in_one (
   
 ) else (
 
-  @echo - 
-  @echo - 
-  @echo - 4cc aet compiler by Shakes
-  @echo - 
-  @echo - 
+  echo - 
+  echo - 
+  echo - 4cc aet compiler by Shakes
+  echo - 
+  echo - 
   
   pause
   )

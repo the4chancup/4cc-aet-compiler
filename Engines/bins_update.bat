@@ -9,11 +9,11 @@ REM - Allow reading variables modified inside statements
 setlocal EnableDelayedExpansion
 
 
-@echo -
-@echo - Bins Updating is enabled
-@echo -
-@echo - Adding the color entries to the bin files
-@echo - Working on team:
+echo -
+echo - Bins Updating is enabled
+echo -
+echo - Adding the color entries to the bin files
+echo - Working on team:
 
 REM - For every export txt file
 for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do (
@@ -59,7 +59,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           )
         )
         
-        @echo - !team! (ID: !teamid!^)
+        echo - !team! (ID: !teamid!^)
         set team_printed=1
       )
       
@@ -380,16 +380,16 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
       
       if not "!kit_configs!"=="!kits!" (
       
-        @echo - Warning -
-        @echo -
+        echo - Warning -
+        echo -
         if defined team (
-          @echo - The amount of !team!'s kit color entries is not
+          echo - The amount of !team!'s kit color entries is not
         ) else (
-          @echo - The amount of !teamid!'s kit color entries is not
+          echo - The amount of !teamid!'s kit color entries is not
         )
-        @echo - equal to the amount of kit config files
-        @echo - Stopping the script and fixing it is recommended
-        @echo -
+        echo - equal to the amount of kit config files
+        echo - Stopping the script and fixing it is recommended
+        echo -
         
         if not %pause_when_wrong%==0 (
           pause
@@ -399,9 +399,9 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
     )
   )
   
-  @echo - Team colors: !colors! - Kits: !kits!
+  echo - Team colors: !colors! - Kits: !kits!
   
 )
 
-@echo - Done
-@echo - 
+echo - Done
+echo - 

@@ -1,6 +1,6 @@
 REM - Zlib any texture not in the storage, and replace all the unzlibbed textures with the zlibbed textures in the storage
 
-@echo - Zlibbing every texture
+echo - Zlibbing every texture
 
 REM - Create storage folder just in case
 md ".\stored_zlibbed" 2>nul
@@ -42,7 +42,7 @@ for  /f "tokens=*" %%A in ('dir /a:d /b /s ".\extracted_exports\!foldername!\"')
       if not exist ".\stored_zlibbed\!foldername!\!folder_short!\%%B" (
         
         REM - If there is none create it and store in the stored_zlibbed folder
-        @echo - !folder_short!\%%B
+        echo - !folder_short!\%%B
         
         .\Engines\zlibtool ".\extracted_exports\!foldername!\!folder_short!\%%B" >nul
         
@@ -66,6 +66,6 @@ for  /f "tokens=*" %%A in ('dir /a:d /b /s ".\extracted_exports\!foldername!\"')
   )
 )
 
-@echo - 
+echo - 
 
 

@@ -24,13 +24,13 @@ if %move_cpks%==1 (
   REM - Check the PES download folder
   if not exist %pes_download_folder_location%\ (
     
-    @echo - 
-    @echo - 
-    @echo - PES download folder not found.
-    @echo - Please set its correct path in the settings file.
-    @echo - The script will restart automatically after you close notepad.
-    @echo - 
-    @echo - 
+    echo - 
+    echo - 
+    echo - PES download folder not found.
+    echo - Please set its correct path in the settings file.
+    echo - The script will restart automatically after you close notepad.
+    echo - 
+    echo - 
     pause
     
     notepad .\settings.txt
@@ -58,11 +58,11 @@ if %move_cpks%==1 (
 )
 
 
-@echo - 
-@echo - 
-@echo - 4cc aet compiler - All-in-one mode
-@echo - 
-@echo - 
+echo - 
+echo - 
+echo - 4cc aet compiler - All-in-one mode
+echo - 
+echo - 
 
 REM - Invoke the export extractor
 call .\1_exports_to_extracted

@@ -49,14 +49,14 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
           REM - Level 1 - Just the hair_high fmdl
           if exist ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" (
-            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !face_id! >nul
+            call py -3 .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\hair_high.fmdl" !face_id! >nul
           )
         )
         if %fmdl_id_editing%==2 (
           
           REM - Level 2 - Every fmdl
-          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !face_id! >nul
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl" 2^>nul') do (
+            call py -3 .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !face_id! >nul
           )
         )
         
@@ -67,7 +67,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them
@@ -227,7 +227,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         
         REM - Convert the dds textures to ftex
         for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\%%B\*.dds"') do (
-          call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C" >nul
+          call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C" >nul
         )
         
         REM - And delete them
@@ -353,7 +353,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if not %fmdl_id_editing%==0 (
         
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !boots_id! >nul
+            call py -3 .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !boots_id! >nul
           )
         )
         
@@ -364,7 +364,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them
@@ -416,7 +416,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
         if not %fmdl_id_editing%==0 (
         
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.fmdl"') do (
-            call .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !gloves_id! >nul
+            call py -3 .\Engines\Python\fmdl_id_change.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" !gloves_id! >nul
           )
         )
         
@@ -427,7 +427,7 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
           
           REM - Convert the dds textures to ftex
           for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\%%C\*.dds"') do (
-            call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
+            call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\!foldername!\%%B\%%C\%%D" >nul
           )
           
           REM - And delete them

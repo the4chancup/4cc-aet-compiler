@@ -60,18 +60,18 @@ if not defined root_found (
   
   )
   
-  @echo - >> memelist.txt
-  @echo - !team!'s manager needs to get memed on (no files^) - Export discarded. >> memelist.txt
+  echo - >> memelist.txt
+  echo - !team!'s manager needs to get memed on (no files^) - Export discarded. >> memelist.txt
   set memelist=1
   
   if not %pause_when_wrong%==0 (
     
-    @echo - 
-    @echo - !team!'s manager needs to get memed on (no files^).
-    @echo - This export will be discarded.
-    @echo - 
-    @echo - Closing the script's window and fixing the export is recommended.
-    @echo - 
+    echo - 
+    echo - !team!'s manager needs to get memed on (no files^).
+    echo - This export will be discarded.
+    echo - 
+    echo - Closing the script's window and fixing the export is recommended.
+    echo - 
     
     pause
     
@@ -202,17 +202,17 @@ if not defined error (
       
     )
     
-    @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (unusable team name^) - Export discarded. >> memelist.txt
+    echo - >> memelist.txt
+    echo - !team!'s manager needs to get memed on (unusable team name^) - Export discarded. >> memelist.txt
     set memelist=1
     
-    @echo - 
-    @echo - !team!'s manager needs to get memed on (unusable team name^).
-    @echo - The team name was not found on the teams_list txt file.
-    @echo - This export will be discarded to prevent conflicts.
-    @echo - Adding the team name to the teams_list file and
-    @echo - restarting the script is recommended.
-    @echo - 
+    echo - 
+    echo - !team!'s manager needs to get memed on (unusable team name^).
+    echo - The team name was not found on the teams_list txt file.
+    echo - This export will be discarded to prevent conflicts.
+    echo - Adding the team name to the teams_list file and
+    echo - restarting the script is recommended.
+    echo - 
     
     if not %pause_when_wrong%==0 (
       pause
@@ -220,7 +220,7 @@ if not defined error (
     
   ) else (
   
-    @echo (ID: !teamid!^)
+    echo (ID: !teamid!^)
   )
   
 )

@@ -39,9 +39,9 @@ md ".\patches_contents\%faces_foldername%" 2>nul
 md ".\patches_contents\%uniform_foldername%" 2>nul
 
 
-@echo - 
-@echo - Preparing the patch folders
-@echo - 
+echo - 
+echo - Preparing the patch folders
+echo - 
 
 
 REM - If Bins Updating is enabled
@@ -62,7 +62,7 @@ if %bins_updating%==1 (
   REM - If there's a Kit Configs folder
   if exist ".\extracted_exports\Kit Configs" (
     
-    @echo - 
+    echo - 
     <nul set /p =- Compiling the kit config files into the UniformParameter bin
     
     REM - Set the filename depending on pes version
@@ -79,7 +79,7 @@ if %bins_updating%==1 (
     )
     
     REM - Compile the UniformParameter file
-    call .\Engines\Python\pes-file-tools\tools\uniparam\pes-uniparam-edit.py -a ".\Bin Files\!uniparam_filename!.bin" ".\extracted_exports\Kit Configs"
+    call py -3 .\Engines\Python\pes-file-tools\tools\uniparam\pes-uniparam-edit.py -a ".\Bin Files\!uniparam_filename!.bin" ".\extracted_exports\Kit Configs"
     
     REM - Delete the kit configs in the main configs folder
     del ".\extracted_exports\Kit Configs\*.bin" >nul
@@ -96,8 +96,8 @@ if %bins_updating%==1 (
     REM - And delete the temporary copy
     del ".\Engines\UniformParameter.bin" >nul
 
-    @echo.
-    @echo - 
+    echo.
+    echo - 
   )
 )
 
@@ -108,8 +108,8 @@ set other_message=
 REM - If there's a Faces folder, pack its folders
 if exist ".\extracted_exports\Faces" (
 
-  @echo - 
-  @echo - Packing the face folders
+  echo - 
+  echo - Packing the face folders
 
   call .\Engines\faces_pack
 )
@@ -118,8 +118,8 @@ if exist ".\extracted_exports\Faces" (
 REM - If there's a Kit Configs folder, move its stuff
 if exist ".\extracted_exports\Kit Configs" (
   
-  @echo - 
-  @echo - Moving the kit configs
+  echo - 
+  echo - Moving the kit configs
   
   REM - Create a "team" folder if needed
   if not exist ".\patches_contents\%uniform_foldername%\common\character0\model\character\uniform\team" (
@@ -145,8 +145,8 @@ if exist ".\extracted_exports\Kit Configs" (
 REM - If there's a Kit Textures folder, move its stuff
 if exist ".\extracted_exports\Kit Textures" (
 
-  @echo - 
-  @echo - Moving the kit textures
+  echo - 
+  echo - Moving the kit textures
   
   if %fox_mode%==0 (
     
@@ -185,13 +185,13 @@ if exist ".\extracted_exports\Boots" (
 
   if %fox_mode%==0 (
   
-    @echo - 
-    @echo - Moving the boots
+    echo - 
+    echo - Moving the boots
     
   ) else (
   
-    @echo - 
-    @echo - Packing the boots folders
+    echo - 
+    echo - Packing the boots folders
     
   )
   
@@ -204,13 +204,13 @@ if exist ".\extracted_exports\Gloves" (
   
   if %fox_mode%==0 (
   
-    @echo - 
-    @echo - Moving the gloves
+    echo - 
+    echo - Moving the gloves
     
   ) else (
   
-    @echo - 
-    @echo - Packing the gloves folders
+    echo - 
+    echo - Packing the gloves folders
     
   )
   
@@ -224,8 +224,8 @@ if exist ".\extracted_exports\Collars" (
   if not defined other_message (
     set other_message=1
     
-    @echo - 
-    @echo - Moving the other stuff
+    echo - 
+    echo - Moving the other stuff
   )
   
   if %fox_mode%==0 (
@@ -255,8 +255,8 @@ if exist ".\extracted_exports\Portraits" (
   if not defined other_message (
     set other_message=1
     
-    @echo - 
-    @echo - Moving the other stuff
+    echo - 
+    echo - Moving the other stuff
   )
   
   REM - Create a "player" folder if needed
@@ -281,8 +281,8 @@ if exist ".\extracted_exports\Logo" (
   if not defined other_message (
     set other_message=1
     
-    @echo - 
-    @echo - Moving the other stuff
+    echo - 
+    echo - Moving the other stuff
   )
   
   REM - Create a "flag" folder if needed
@@ -314,8 +314,8 @@ if exist ".\extracted_exports\Common" (
   if not defined other_message (
     set other_message=1
     
-    @echo - 
-    @echo - Moving the other stuff
+    echo - 
+    echo - Moving the other stuff
   )
   
   
@@ -344,7 +344,7 @@ if exist ".\extracted_exports\Common" (
         
         REM - Convert the dds textures to ftex
         for /f "tokens=*" %%B in ('dir /b ".\extracted_exports\Common\%%A\*.dds"') do (
-          call .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\Common\%%A\%%B" >nul
+          call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\Common\%%A\%%B" >nul
         )
         
         REM - And delete them
@@ -375,21 +375,21 @@ rd /S /Q ".\extracted_exports" 2>nul
 
 if defined all_in_one (
 
-  @echo - 
-  @echo - 
-  @echo - Patch contents folder prepared
-  @echo - 
+  echo - 
+  echo - 
+  echo - Patch contents folder prepared
+  echo - 
   
   
 ) else (
 
-  @echo - 
-  @echo - 
-  @echo - The patches contents folder has been prepared
-  @echo - 
-  @echo - 4cc aet compiler by Shakes
-  @echo - 
-  @echo - 
+  echo - 
+  echo - 
+  echo - The patches contents folder has been prepared
+  echo - 
+  echo - 4cc aet compiler by Shakes
+  echo - 
+  echo - 
 
   pause
   

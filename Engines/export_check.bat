@@ -46,15 +46,15 @@ for /f "tokens=*" %%D in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
 REM - If some folders were nested, warn about it
 if defined nestederror (
 
-  @echo - >> memelist.txt
-  @echo - !team!'s manager needs to get memed on (nested folders^) - Fix Attempted. >> memelist.txt
+  echo - >> memelist.txt
+  echo - !team!'s manager needs to get memed on (nested folders^) - Fix Attempted. >> memelist.txt
   set memelist=1
   
-  @echo -
-  @echo - !team!'s manager needs to get memed on (nested folders^).
-  @echo - An attempt to automatically fix those folders has just been done.
-  @echo - Nothing has been discarded, though problems may still arise.
-  @echo -
+  echo -
+  echo - !team!'s manager needs to get memed on (nested folders^).
+  echo - An attempt to automatically fix those folders has just been done.
+  echo - Nothing has been discarded, though problems may still arise.
+  echo -
   
   if not %pause_when_wrong%==0 (
     pause
@@ -69,47 +69,48 @@ REM - If a Faces folder exists and is not empty, check that the face folder name
 
 if defined checkfaces (
   
-  set faceserror=
+  set face_wrong_any=
   
   REM - For every face folder
   for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Faces"') do (
     
-    set facename=%%C
+    set face_name=%%C
     
-    set facewrong=
-    set facewrong_num=
-    set facewrong_id2=
-    set facewrong_noxml=
-    set facewrong_edithairxml=
-    set facewrong_badtex=
+    set face_wrong=
+    set face_wrong_num=
+    set face_wrong_id2=
+    set face_wrong_noxml=
+    set face_wrong_edithairxml=
+    set face_wrong_badtex=
     
     
     REM - Check that the player number is within the 01-23 range
-    if "!facename:~3,2!" LSS "01" (
-      set facewrong=1
-      set facewrong_num=1
+    if "!face_name:~3,2!" LSS "01" (
+      set face_wrong=1
+      set face_wrong_num=1
     )
-    if "!facename:~3,2!" GTR "23" (
-      set facewrong=1
-      set facewrong_num=1
+    if "!face_name:~3,2!" GTR "23" (
+      set face_wrong=1
+      set face_wrong_num=1
     )
     
     
-    if not defined facewrong (
+    if not defined face_wrong (
       
       if %fox_mode%==0 (
         
         REM - Check that the folder has the essential face.xml and not the unsupported face_edithair.xml file
-        if exist ".\extracted_exports\!foldername!\Faces\!facename!\face_edithair.xml" (
+        if exist ".\extracted_exports\!foldername!\Faces\!face_name!\face_edithair.xml" (
         
-          set facewrong=1
-          set facewrong_edithairxml=1
+          set face_wrong=1
+          set face_wrong_edithairxml=1
           
         ) else (
-          if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.xml" (
           
-            set facewrong=1
-            set facewrong_noxml=1
+          if not exist ".\extracted_exports\!foldername!\Faces\!face_name!\face.xml" (
+          
+            set face_wrong=1
+            set face_wrong_noxml=1
             
           )
         )
@@ -117,129 +118,89 @@ if defined checkfaces (
       ) else (
         
         REM - Check that the folder has the essential face.fpk.xml file
-        if not exist ".\extracted_exports\!foldername!\Faces\!facename!\face.fpk.xml" (
+        if not exist ".\extracted_exports\!foldername!\Faces\!face_name!\face.fpk.xml" (
         
-          set facewrong=1
-          set facewrong_nofpkxml=1
+          set face_wrong=1
+          set face_wrong_nofpkxml=1
           
         )
       )
       
-      REM - Check if any dds textures exist
-      >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\Faces\!facename!\*.dds" && (set dds_present=1) || (set dds_present=)
       
-      if defined dds_present (
+      set "tex_path=extracted_exports\!foldername!\Faces\!face_name!"
+      set tex_wrongformat_any=
+      
+      REM - For every dds texture
+      for /f "tokens=*" %%C in ('dir /b ".\!tex_path!\*.dds" 2^>nul') do (
         
-        REM - For every dds texture
-        for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\Faces\!facename!\*.dds"') do (
+        if not defined tex_wrongformat_any (
           
-          set tex_name=%%D
-          set tex_zlibbed=
+          set tex_name=%%C
           
-          REM - Check if it is zlibbed
-          for /f "tokens=1-6 usebackq" %%E in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\%%D" -d 3 5`) do (
-            
-            REM - If the file has the WESYS label it's zlibbed
-            if "%%F%%G%%H%%I%%J"=="5745535953" (
-              
-              set tex_zlibbed=1
-              
-              REM - Unzlib it
-              call .\Engines\zlibtool ".\extracted_exports\!foldername!\Faces\!facename!\%%D" -d >nul
-              
-              REM - Store the original filename and set the unzlibbed file as file to check
-              set tex_name_orig=!tex_name!
-              set tex_name=!tex_name!.unzlib
-            )
-          )
+          call .\Engines\texture_check "!tex_path!" !tex_name! "tex_wrongformat"
           
-          
-          REM - Check if it is a real dds
-          for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" -d 0 4`) do (
-            
-            if not "%%E%%F%%G"=="444453" (
-              set facewrong=1
-              set facewrong_badtex=1
-              set badtex=%%D
-            )
-          )
-          
-          
-          if defined tex_zlibbed (
-            
-            if %fox_mode%==0 (
-            
-              REM - Delete the extra unzlibbed file
-              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" >nul
-              
-            ) else (
-              
-              REM - Delete the orignal zlibbed file
-              del ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name_orig!" >nul
-              
-              REM - Rename the file
-              rename ".\extracted_exports\!foldername!\Faces\!facename!\!tex_name!" "!tex_name_orig!" >nul
-            )
+          if defined tex_wrongformat (
+            set tex_wrongformat_any=1
           )
           
         )
+      )
+      
+      REM - If the folder has a non-dds texture
+      if defined tex_wrongformat_any (
+
+        set face_wrong=1
+        set face_wrong_badtex=1
       )
       
     )
     
     
     REM - If the face folder has something wrong
-    if defined facewrong (
+    if defined face_wrong (
       
       REM - Warn about the team having bad face folders
-      if not defined faceserror (
+      if not defined face_wrong_any (
         
-        set faceserror=1
+        set face_wrong_any=1
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (bad face folders^). >> memelist.txt
+        echo - >> memelist.txt
+        echo - !team!'s manager needs to get memed on (bad face folders^). >> memelist.txt
         set memelist=1
         
-        @echo -
-        @echo - !team!'s manager needs to get memed on (bad face folders^).
+        echo -
+        echo - !team!'s manager needs to get memed on (bad face folders^).
       ) 
       
       REM - Give an error depending on the particular problem
-      if defined facewrong_num (
-        @echo - The face folder !facename! is bad. >> memelist.txt
-        @echo - The face folder !facename! is bad.
-        @echo - (player number !facename:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
-        @echo - (player number !facename:~3,2! out of the 01-23 range^)
+      echo - The face folder !face_name! is bad. >> memelist.txt
+      echo - The face folder !face_name! is bad.
+
+      if defined face_wrong_num (
+        echo - (player number !face_name:~3,2! out of the 01-23 range^) - Folder discarded >> memelist.txt
+        echo - (player number !face_name:~3,2! out of the 01-23 range^)
       )
-      if defined facewrong_nofpkxml (
-        @echo - The face folder !facename! is bad. >> memelist.txt
-        @echo - The face folder !facename! is bad.
-        @echo - (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
-        @echo - (no face.fpk.xml file inside^)
+      if defined face_wrong_nofpkxml (
+        echo - (no face.fpk.xml file inside^) - Folder discarded >> memelist.txt
+        echo - (no face.fpk.xml file inside^)
       )
-      if defined facewrong_noxml (
-        @echo - The face folder !facename! is bad. >> memelist.txt
-        @echo - The face folder !facename! is bad.
-        @echo - (no face.xml file inside^) - Folder discarded >> memelist.txt
-        @echo - (no face.xml file inside^)
+      if defined face_wrong_noxml (
+        echo - (no face.xml file inside^) - Folder discarded >> memelist.txt
+        echo - (no face.xml file inside^)
       )
-      if defined facewrong_edithairxml (
-        @echo - The face folder !facename! is bad. >> memelist.txt
-        @echo - The face folder !facename! is bad.
-        @echo - (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
-        @echo - (unsupported edithair face folder, needs updating^)
+      if defined face_wrong_edithairxml (
+        echo - (unsupported edithair face folder, needs updating^) - Folder discarded >> memelist.txt
+        echo - (unsupported edithair face folder, needs updating^)
       )
-      if defined facewrong_edithairxml (
-        @echo - The face folder !facename! is bad. >> memelist.txt
-        @echo - The face folder !facename! is bad.
-        @echo (!badtex! is not a real dds^) - Folder discarded >> memelist.txt
-        @echo (!badtex! is not a real dds^)
+      if defined face_wrong_badtex (
+        echo - (!tex_name! is not a real dds^) - Folder discarded >> memelist.txt
+        echo - (!tex_name! is not a real dds^)
       )
       
       
       REM - And skip it
       if %pass_through%==0 (
-        rd /S /Q ".\extracted_exports\!foldername!\Faces\!facename!"
+        rd /S /Q ".\extracted_exports\!foldername!\Faces\!face_name!"
       )
       
     )
@@ -247,11 +208,11 @@ if defined checkfaces (
   )
 
   REM - If the team has bad face folders close the previously opened message
-  if defined faceserror (
+  if defined face_wrong_any (
 
-    @echo - The face folders mentioned above will be discarded to avoid problems.
-    @echo - Closing the script's window and fixing them is recommended.
-    @echo -
+    echo - The face folders mentioned above will be discarded to avoid problems.
+    echo - Closing the script's window and fixing them is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -277,7 +238,7 @@ REM - If a Kit Configs folder exists and is not empty, check that the amount of 
 
 if defined checkconfig (
 
-  set configerror=
+  set config_error=
   
   REM - Check if the files are in an inner folder
   for /f "tokens=*" %%C in ('dir /b /a:d ".\extracted_exports\!foldername!\Kit Configs" 2^>nul') do (
@@ -292,24 +253,24 @@ if defined checkconfig (
     rd /S /Q ".\extracted_exports\!foldername!\Kit Configs\%%C"
   )
   
-  set configs=0
+  set config_amount=0
 
   REM - For every kit config file
   for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Configs"') do (
     
-    set /a configs+=1
+    set /a config_amount+=1
     
-    set configname=%%C
+    set config_name=%%C
     
     
     REM - Check the DEF part of the name
-    if /i not "!configname:~3,5!"=="_DEF_" set configerror=1
+    if /i not "!config_name:~3,5!"=="_DEF_" set config_error=1
     
     REM - Check the realUni part
-    if /i not "!configname:~-12!"=="_realUni.bin" set configerror=1
+    if /i not "!config_name:~-12!"=="_realUni.bin" set config_error=1
     
     
-    set kitconf_zlibbed=
+    set config_zlibbed=
   
     REM - Check if it is zlibbed
     for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Configs\%%C" -d 3 5`) do (
@@ -317,12 +278,12 @@ if defined checkconfig (
       REM - If the file has the WESYS label it's zlibbed
       if "%%E%%F%%G%%H%%I"=="5745535953" (
         
-        set kitconf_zlibbed=1
+        set config_zlibbed=1
       )
     )
     
     REM - If the file is zlibbed
-    if defined kitconf_zlibbed (
+    if defined config_zlibbed (
     
       REM - Unzlib it
       call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Configs\%%C" -d >nul
@@ -337,22 +298,22 @@ if defined checkconfig (
   )
   
   REM - If something's wrong
-  if defined configerror (
+  if defined config_error (
   
     REM - Skip the whole Kit Config folder
     if %pass_through%==0 (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Configs"
     )
     
-    @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (wrong kit config names^). - Kit Configs discarded >> memelist.txt
+    echo - >> memelist.txt
+    echo - !team!'s manager needs to get memed on (wrong kit config names^). - Kit Configs discarded >> memelist.txt
     set memelist=1
     
-    @echo -
-    @echo - !team!'s manager needs to get memed on (wrong kit config names^).
-    @echo - The Kit Configs folder will be discarded since it's unusable.
-    @echo - Closing the script's window and fixing it is recommended.
-    @echo -
+    echo -
+    echo - !team!'s manager needs to get memed on (wrong kit config names^).
+    echo - The Kit Configs folder will be discarded since it's unusable.
+    echo - Closing the script's window and fixing it is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -366,17 +327,17 @@ if defined checkconfig (
       call .\Engines\txtkits_count
       
       REM - Check that the amount of kit configs and kit color entries in the txt are the same
-      if not "!kits!"=="!configs!" (
+      if not "!kits!"=="!config_amount!" (
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (missing kit configs or txt kit color entries^). - Warning >> memelist.txt
+        echo - >> memelist.txt
+        echo - !team!'s manager needs to get memed on (missing kit configs or txt kit color entries^). - Warning >> memelist.txt
         set memelist=1
         
-        @echo - 
-        @echo - The amount of !team!'s kit color entries is not equal to
-        @echo - the amount of kit config files in the Note txt file.
-        @echo - Closing the script's window and fixing this is recommended.
-        @echo - 
+        echo - 
+        echo - The amount of !team!'s kit color entries is not equal to
+        echo - the amount of kit config files in the Note txt file.
+        echo - Closing the script's window and fixing this is recommended.
+        echo - 
         
         if not %pause_when_wrong%==0 (
           pause
@@ -390,8 +351,8 @@ if defined checkconfig (
 ) else (
   
   REM - If it doesn't exist or is empty, warn about it
-  @echo - >> memelist.txt
-  @echo - !team!'s export doesn't have any Kit Configs - Warning. >> memelist.txt
+  echo - >> memelist.txt
+  echo - !team!'s export doesn't have any Kit Configs - Warning >> memelist.txt
   set memelist=1
   
   REM - If the folder exists but is empty, delete it
@@ -406,107 +367,17 @@ REM - If a Kit Textures folder exists and is not empty, check that the kit textu
 
 if defined checktexture (
   
+  set "tex_path=extracted_exports\!foldername!\Kit Textures"
   set tex_wrongformat_any=
   
   REM - For every texture
-  for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Kit Textures"') do (
+  for /f "tokens=*" %%C in ('dir /b ".\!tex_path!"') do (
     
     if not defined tex_wrongformat_any (
-    
-      set tex_wrongformat=1
       
       set tex_name=%%C
       
-      set tex_zlibbed=
-      set tex_type_dds=
-      set tex_type_ftex=
-      
-      set tex_resave=
-      
-      
-      REM - Check if it is zlibbed
-      for /f "tokens=1-6 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d 3 5`) do (
-        
-        REM - If the file has the WESYS label it's zlibbed
-        if "%%E%%F%%G%%H%%I"=="5745535953" (
-          
-          set tex_zlibbed=1
-          
-          REM - Unzlib it
-          call .\Engines\zlibtool ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d >nul
-          
-          REM - Store the original filename and set the unzlibbed file as file to check
-          set tex_name_orig=!tex_name!
-          set tex_name=!tex_name!.unzlib
-          
-        )
-      )
-      
-      
-      REM - Check if it is a dds, ftex, or none
-      for /f "tokens=1-5 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -d 0 4`) do (
-        
-        REM - DDS
-        if "%%E%%F%%G"=="444453" (
-          set tex_type_dds=1
-          set tex_wrongformat=
-        )
-        
-        REM - FTEX
-        if "%%E%%F%%G%%H"=="46544558" (
-          if %fox_mode%==1 (
-            set tex_type_ftex=1
-            set tex_wrongformat=
-          )
-        )
-      )
-      
-      
-      REM - If it's an ftex and fox mode is enabled
-      if defined tex_type_ftex (
-        if %fox_mode%==1 (
-          
-          REM - Check if it has mipmaps
-          set line=0
-          
-          for /f "tokens=1-2 usebackq" %%D in (`call .\Engines\hexed ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" -w 1 -d 10 1`) do (
-            
-            REM - Mipmaps count byte different from 0
-            set byte=%%E
-            
-            if !byte!==00 (
-              set tex_resave=1
-            )
-            
-          )
-          
-          if defined tex_resave (
-            set tex_wrongformat=1
-          )
-          
-        )
-      )
-      
-      
-      REM - If it was zlibbed
-      if defined tex_zlibbed (
-        
-        if %fox_mode%==0 (
-        
-          REM - Delete the extra unzlibbed file
-          del ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" >nul
-          
-        ) else (
-          
-          REM - Delete the orignal zlibbed file
-          del ".\extracted_exports\!foldername!\Kit Textures\!tex_name_orig!" >nul
-          
-          REM - Rename the file
-          rename ".\extracted_exports\!foldername!\Kit Textures\!tex_name!" "!tex_name_orig!" >nul
-        )
-        
-      )
-      
+      call .\Engines\texture_check "!tex_path!" !tex_name! "tex_wrongformat"
       
       if defined tex_wrongformat (
         set tex_wrongformat_any=1
@@ -523,21 +394,21 @@ if defined checktexture (
       rd /S /Q ".\extracted_exports\!foldername!\Kit Textures"
     )
     
-    @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (wrong format kit textures^) - Kit Textures discarded. >> memelist.txt
+    echo - >> memelist.txt
+    echo - !team!'s manager needs to get memed on (wrong format kit textures^) - Kit Textures discarded. >> memelist.txt
     set memelist=1
     
-    @echo -
-    @echo - !team!'s manager needs to get memed on (wrong format kit textures^).
+    echo -
+    echo - !team!'s manager needs to get memed on (wrong format kit textures^).
     if %fox_mode%==0 (
-      @echo - This is usually caused by png textures renamed to dds instead of saved as dds.
+      echo - This is usually caused by png textures renamed to dds instead of saved as dds.
     ) else (
-      @echo - This is usually caused by missing mipmaps.
+      echo - This is usually caused by missing mipmaps.
     )
-    @echo - First game-crashing texture found: !tex_name!
-    @echo - The Kit Textures folder will be discarded since it's unusable.
-    @echo - Closing the script's window and fixing it is recommended.
-    @echo -
+    echo - First game-crashing texture found: !tex_name!
+    echo - The Kit Textures folder will be discarded since it's unusable.
+    echo - Closing the script's window and fixing it is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -576,12 +447,12 @@ if defined checktexture (
           
           set textureerror=1
           
-          @echo - >> memelist.txt
-          @echo - !team!'s manager needs to get memed on (wrong kit texture names^). >> memelist.txt
+          echo - >> memelist.txt
+          echo - !team!'s manager needs to get memed on (wrong kit texture names^). >> memelist.txt
           set memelist=1
           
-          @echo -
-          @echo - !team!'s manager needs to get memed on (wrong kit texture names^).
+          echo -
+          echo - !team!'s manager needs to get memed on (wrong kit texture names^).
         ) 
         
         REM - And skip it
@@ -589,9 +460,9 @@ if defined checktexture (
           del /F /Q ".\extracted_exports\!foldername!\Kit Textures\!tex_name!"
         )
         
-        @echo - The kit texture !tex_name! is wrong - File discarded. >> memelist.txt
+        echo - The kit texture !tex_name! is wrong - File discarded. >> memelist.txt
         
-        @echo - The kit texture !tex_name! is wrong.
+        echo - The kit texture !tex_name! is wrong.
       )
     
     )
@@ -599,9 +470,9 @@ if defined checktexture (
     REM - If the team has bad kit textures close the previously opened message
     if defined textureerror (
 
-      @echo - The kit textures mentioned above will be discarded since they're unusable.
-      @echo - Closing the script's window and fixing them is recommended.
-      @echo -
+      echo - The kit textures mentioned above will be discarded since they're unusable.
+      echo - Closing the script's window and fixing them is recommended.
+      echo -
       
       if not %pause_when_wrong%==0 (
         pause
@@ -613,8 +484,8 @@ if defined checktexture (
 ) else (
 
   REM - If the Kit Textures folder doesn't exist or is empty, warn about it
-  @echo - >> memelist.txt
-  @echo - !team!'s export doesn't have any Kit Textures - Warning. >> memelist.txt
+  echo - >> memelist.txt
+  echo - !team!'s export doesn't have any Kit Textures - Warning >> memelist.txt
   set memelist=1
   
   REM - If the folder exists but is empty, delete it
@@ -630,61 +501,61 @@ REM - If a Logo folder exists and is not empty, check that the three logo images
 
 if defined checklogo (
   
-  set logoerror=
+  set logo_wrong_any=
   
-  set logocount=0
-  set logocountplus=0
+  set logo_amount=0
+  set logo_amount_good=0
 
   REM - For every image
   for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Logo"') do (
     
-    set logowrong=
-    set logoname=%%C
-    set /a logocount+=1
+    set logo_wrong=
+    set logo_name=%%C
+    set /a logo_amount+=1
     
     
     REM - Check that its name starts with emblem_
-    if /i not "!logoname:~0,7!"=="emblem_" set logowrong=1
+    if /i not "!logo_name:~0,7!"=="emblem_" set logo_wrong=1
     
     
     REM - Check the suffix and increase the plus counter if present and correct
     REM - Real teams
-    if /i "!logoname:~11!"=="_r.png" set /a logocountplus+=1
-    if /i "!logoname:~11!"=="_r_l.png" set /a logocountplus+=1
-    if /i "!logoname:~11!"=="_r_ll.png" set /a logocountplus+=1
+    if /i "!logo_name:~11!"=="_r.png" set /a logo_amount_good+=1
+    if /i "!logo_name:~11!"=="_r_l.png" set /a logo_amount_good+=1
+    if /i "!logo_name:~11!"=="_r_ll.png" set /a logo_amount_good+=1
     REM - Fake teams
-    if /i "!logoname:~11!"=="_f.png" set /a logocountplus+=1
-    if /i "!logoname:~11!"=="_f_l.png" set /a logocountplus+=1
-    if /i "!logoname:~11!"=="_f_ll.png" set /a logocountplus+=1
+    if /i "!logo_name:~11!"=="_f.png" set /a logo_amount_good+=1
+    if /i "!logo_name:~11!"=="_f_l.png" set /a logo_amount_good+=1
+    if /i "!logo_name:~11!"=="_f_ll.png" set /a logo_amount_good+=1
     
     
-    if defined logowrong (
-      set logoerror=1
+    if defined logo_wrong (
+      set logo_wrong_any=1
     )
   
   )
   
   REM - Check that there are three total images, each with a correct suffix
-  if not "!logocount!"=="3" set logoerror=1
-  if not "!logocountplus!"=="3" set logoerror=1
+  if not "!logo_amount!"=="3" set logo_wrong_any=1
+  if not "!logo_amount_good!"=="3" set logo_wrong_any=1
   
   REM - If something's wrong
-  if defined logoerror (
+  if defined logo_wrong_any (
   
     REM - Skip the whole Logo folder
     if %pass_through%==0 (
       rd /S /Q ".\extracted_exports\!foldername!\Logo"
     )
     
-    @echo - >> memelist.txt
-    @echo - !team!'s manager needs to get memed on (wrong logo filenames^). - Logo folder discarded >> memelist.txt
+    echo - >> memelist.txt
+    echo - !team!'s manager needs to get memed on (wrong logo filenames^). - Logo folder discarded >> memelist.txt
     set memelist=1
     
-    @echo -
-    @echo - !team!'s manager needs to get memed on (wrong logo filenames^).
-    @echo - The Logo folder will be discarded since it's unusable.
-    @echo - Closing the script's window and fixing it is recommended.
-    @echo -
+    echo -
+    echo - !team!'s manager needs to get memed on (wrong logo filenames^).
+    echo - The Logo folder will be discarded since it's unusable.
+    echo - Closing the script's window and fixing it is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -705,58 +576,75 @@ REM - If a Portraits folder exists and is not empty, check that the portraits' f
 
 if defined checkportraits (
   
-  set portraiterror=
+  set "portrait_path=extracted_exports\!foldername!\Portraits"
+  set portrait_wrong_any=
 
   REM - For every portrait
-  for /f "tokens=*" %%C in ('dir /b ".\extracted_exports\!foldername!\Portraits"') do (
+  for /f "tokens=*" %%C in ('dir /b ".\!portrait_path!"') do (
     
-    set portraitwrong=1
-    set portraitname=%%C
+    set portrait_name=%%C
+    set portrait_wrong=
+    set portrait_id_bad=1
     
     REM - Check that the player number is within the 01-23 range
-    set portrait_id_temp=!portraitname:~3,2!
+    set portrait_id_temp=!portrait_name:~3,2!
     if "!portrait_id_temp!" GEQ "01" (
-      if "!portrait_id_temp!" LEQ "23" set portraitwrong=
+      if "!portrait_id_temp!" LEQ "23" set portrait_id_bad=
     )
-    set portrait_id_temp=!portraitname:~-6,2!
+    set portrait_id_temp=!portrait_name:~-6,2!
     if "!portrait_id_temp!" GEQ "01" (
-      if "!portrait_id_temp!" LEQ "23" set portraitwrong=
+      if "!portrait_id_temp!" LEQ "23" set portrait_id_bad=
     )
-  
+    
+    if defined portrait_id_bad set portrait_wrong=1
+    
+    call .\Engines\texture_check "!portrait_path!" !portrait_name! "portrait_wrong"
+    
+    
     REM - If the portrait is named wrongly
-    if defined portraitwrong (
+    if defined portrait_wrong (
       
       REM - Warn about the team having bad portrait names
-      if not defined portraiterror (
+      if not defined portrait_wrong_any (
         
-        set portraiterror=1
+        set portrait_wrong_any=1
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on (wrong portrait names^). >> memelist.txt
+        echo - >> memelist.txt
+        echo - !team!'s manager needs to get memed on (bad portraits^). >> memelist.txt
         set memelist=1
         
-        @echo -
-        @echo - !team!'s manager needs to get memed on (wrong portrait names^).
+        echo -
+        echo - !team!'s manager needs to get memed on (bad portraits^).
       ) 
       
       REM - And skip it
       if %pass_through%==0 (
-        del /F /Q ".\extracted_exports\!foldername!\Portraits\!portraitname!"
+        del /F /Q ".\extracted_exports\!foldername!\Portraits\!portrait_name!"
       )
       
-      @echo - The portrait !portraitname! is wrong - File discarded. >> memelist.txt
+      REM - Give an error depending on the particular problem
+      echo - The portrait !portrait_name! is bad. >> memelist.txt
+      echo - The portrait !portrait_name! is bad.
+
+      if defined portrait_id_bad (
+        echo - (player number !portrait_name:~-6,2! out of the 01-23 range^) - File discarded >> memelist.txt
+        echo - (player number !portrait_name:~-6,2! out of the 01-23 range^)
+      )
+      if defined portrait_wrongformat (
+        echo - (not a real dds^) - File discarded >> memelist.txt
+        echo - (not a real dds^)
+      )
       
-      @echo - The portrait !portraitname! is wrong.
     )
   
   )
   
   REM - If the team has bad portraits close the previously opened message
-  if defined portraiterror (
+  if defined portrait_wrong_any (
 
-    @echo - The portraits mentioned above will be discarded since they're unusable.
-    @echo - Closing the script's window and fixing them is recommended.
-    @echo -
+    echo - The portraits mentioned above will be discarded since they're unusable.
+    echo - Closing the script's window and fixing them is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -788,13 +676,11 @@ if defined checkboots (
     set boots_wrong_name=
     set boots_wrong_nofpkxml=
     
-    
     REM - Check that its name starts with a k
     if /i not "!boots_name:~0,1!"=="k" (
       
       set boots_wrong=1
       set boots_wrong_name=1
-      
     )
     
     if %fox_mode%==1 (
@@ -804,7 +690,6 @@ if defined checkboots (
       
         set boots_wrong=1
         set boots_wrong_nofpkxml=1
-        
       )
     )
     
@@ -816,27 +701,26 @@ if defined checkboots (
         
         set boots_wrong_any=1
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on. >> memelist.txt
+        echo - >> memelist.txt
+        echo - !team!'s manager needs to get memed on. >> memelist.txt
         set memelist=1
         
-        @echo -
-        @echo - !team!'s manager needs to get memed on.
+        echo -
+        echo - !team!'s manager needs to get memed on.
       )
       
       REM - Give an error depending on the particular problem
+      echo - The boots folder !boots_name! is bad. >> memelist.txt
+      echo - The boots folder !boots_name! is bad.
+      
       if defined boots_wrong_name (
-        @echo - The boots folder !boots_name! is bad. >> memelist.txt
-        @echo - The boots folder !boots_name! is bad.
-        @echo (wrong boots folder name^) - Folder discarded >> memelist.txt
-        @echo (wrong boots folder name^)
+        echo - (wrong boots folder name^) - Folder discarded >> memelist.txt
+        echo - (wrong boots folder name^)
       )
       
       if defined boots_wrong_nofpkxml (
-        @echo - The boots folder !boots_name! is bad. >> memelist.txt
-        @echo - The boots folder !boots_name! is bad.
-        @echo (no boots.fpk.xml file inside^) - Folder discarded >> memelist.txt
-        @echo (no boots.fpk.xml file inside^)
+        echo - (no boots.fpk.xml file inside^) - Folder discarded >> memelist.txt
+        echo - (no boots.fpk.xml file inside^)
       )
       
       
@@ -852,9 +736,9 @@ if defined checkboots (
   REM - If the team has bad boots folders close the previously opened message
   if defined boots_wrong_any (
 
-    @echo - The boots folders mentioned above will be discarded since they're unusable.
-    @echo - Closing the script's window and fixing them is recommended.
-    @echo -
+    echo - The boots folders mentioned above will be discarded since they're unusable.
+    echo - Closing the script's window and fixing them is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause
@@ -888,7 +772,6 @@ if defined checkgloves (
       
       set glove_wrong=1
       set glove_wrong_name=1
-      
     )
     
     if %fox_mode%==1 (
@@ -910,27 +793,26 @@ if defined checkgloves (
         
         set glove_wrong_any=1
         
-        @echo - >> memelist.txt
-        @echo - !team!'s manager needs to get memed on. >> memelist.txt
+        echo - >> memelist.txt
+        echo - !team!'s manager needs to get memed on. >> memelist.txt
         set memelist=1
         
-        @echo -
-        @echo - !team!'s manager needs to get memed on.
+        echo -
+        echo - !team!'s manager needs to get memed on.
       ) 
       
       REM - Give an error depending on the particular problem
+      echo - The glove folder !glove_name! is bad. >> memelist.txt
+      echo - The glove folder !glove_name! is bad.
+
       if defined glove_wrong_name (
-        @echo - The glove folder !glove_name! is bad. >> memelist.txt
-        @echo - The glove folder !glove_name! is bad.
-        @echo (wrong glove folder name^) - Folder discarded >> memelist.txt
-        @echo (wrong glove folder name^)
+        echo - (wrong glove folder name^) - Folder discarded >> memelist.txt
+        echo - (wrong glove folder name^)
       )
       
       if defined glove_wrong_nofpkxml (
-        @echo - The glove folder !glove_name! is bad. >> memelist.txt
-        @echo - The glove folder !glove_name! is bad.
-        @echo (no glove.fpk.xml file inside^) - Folder discarded >> memelist.txt
-        @echo (no glove.fpk.xml file inside^)
+        echo - (no glove.fpk.xml file inside^) - Folder discarded >> memelist.txt
+        echo - (no glove.fpk.xml file inside^)
       )
       
 
@@ -946,9 +828,9 @@ if defined checkgloves (
   REM - If the team has bad gloves folders close the previously opened message
   if defined glove_wrong_any (
 
-    @echo - The glove folders mentioned above will be discarded since they're unusable.
-    @echo - Closing the script's window and fixing them is recommended.
-    @echo -
+    echo - The glove folders mentioned above will be discarded since they're unusable.
+    echo - Closing the script's window and fixing them is recommended.
+    echo -
     
     if not %pause_when_wrong%==0 (
       pause

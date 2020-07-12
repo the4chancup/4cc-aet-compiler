@@ -97,7 +97,7 @@ for /l %%Z in (0,1,59) do (
 REM - If appending is not needed get out
 if defined ok (
    
-  @echo Not needed
+  echo Not needed
   
   exit /b 1
 )
@@ -137,5 +137,5 @@ set /a position=16+%entries%*48
 .\Engines\hexed .\Engines\DpFileList.bin -e !position_hex! !name_hexspc! 00
 
 
-@echo Done
+echo Done
 

@@ -32,7 +32,7 @@ if %fox_mode%==0 (
       set object_id=!object_name:~0,5!
     )
     
-    @echo - !object_name!
+    echo - !object_name!
     
     REM - Rename it with the proper id
     rename ".\extracted_exports\!object_source_folder!\%%A" "!object_id!" >nul
@@ -74,7 +74,7 @@ if %fox_mode%==0 (
       set object_id=!object_name:~0,5!
     )
     
-    @echo - !object_name!
+    echo - !object_name!
     
     
     REM - Rename it to the id

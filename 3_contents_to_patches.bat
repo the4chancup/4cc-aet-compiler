@@ -53,13 +53,13 @@ if not defined all_in_one (
     REM - Check the PES download folder
     if not exist %pes_download_folder_location%\ (
       
-      @echo - 
-      @echo - 
-      @echo - PES download folder not found.
-      @echo - Please set its correct path in the settings file.
-      @echo - The script will restart automatically after you close notepad.
-      @echo - 
-      @echo - 
+      echo - 
+      echo - 
+      echo - PES download folder not found.
+      echo - Please set its correct path in the settings file.
+      echo - The script will restart automatically after you close notepad.
+      echo - 
+      echo - 
       pause
       
       notepad .\settings.txt
@@ -100,15 +100,15 @@ if %multicpk_mode%==1 (
 
 
   REM - Make the Faces patch (faces, portraits)
-  @echo - 
-  @echo - Packing the Faces patch
+  echo - 
+  echo - Packing the Faces patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\%faces_foldername%" ".\patches_output\%faces_cpk_name%.cpk" %cpkmaker_args%
   
   
   REM - Make the Uniform patch (kits, logos, boots, gloves, etc.)
-  @echo - 
-  @echo - Packing the Uniform patch
+  echo - 
+  echo - Packing the Uniform patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\%uniform_foldername%" ".\patches_output\%uniform_cpk_name%.cpk" %cpkmaker_args%
   
@@ -116,8 +116,8 @@ if %multicpk_mode%==1 (
   if %bins_updating%==1 (
   
     REM - Make the Bins patch (unicolor, teamcolor)
-    @echo - 
-    @echo - Packing the Bins patch
+    echo - 
+    echo - Packing the Bins patch
 
     .\Engines\CpkMaker\cpkmakec ".\patches_contents\%bins_foldername%" ".\patches_output\%bins_cpk_name%.cpk" %cpkmaker_args%
     
@@ -132,8 +132,8 @@ if %multicpk_mode%==0 (
 
 
   REM - Make the single cpk patch
-  @echo - 
-  @echo - Packing the patch
+  echo - 
+  echo - Packing the patch
 
   .\Engines\CpkMaker\cpkmakec ".\patches_contents\Singlecpk" ".\patches_output\%cpk_name%.cpk" %cpkmaker_args%
   
@@ -145,11 +145,11 @@ del cpkmaker.out.csv 2>nul
 REM - If Move Cpks mode is enabled
 if %move_cpks%==1 (
 
-  @echo -
-  @echo - Move Cpks mode is enabled
-  @echo -
-  @echo - Moving the cpks to the download folder
-  @echo -
+  echo -
+  echo - Move Cpks mode is enabled
+  echo -
+  echo - Moving the cpks to the download folder
+  echo -
 
   if %multicpk_mode%==1 (
 
@@ -191,9 +191,9 @@ if %move_cpks%==1 (
   REM - If DpFileList Updating is enabled
   if %dpfl_updating%==1 (
   
-    @echo -
-    @echo - DpFileList editing is enabled
-    @echo -
+    echo -
+    echo - DpFileList editing is enabled
+    echo -
     
     REM - Get a temporary copy of the dpfl from the downloads folder
     copy %pes_download_folder_location%\DpFileList.bin .\Engines >nul
@@ -228,13 +228,13 @@ if %move_cpks%==1 (
 )
 
 
-@echo -
-@echo -
-@echo - The patches have been created
-@echo -
-@echo - 4cc aet compiler by Shakes
-@echo -
-@echo -
+echo -
+echo -
+echo - The patches have been created
+echo -
+echo - 4cc aet compiler by Shakes
+echo -
+echo -
 
 
 if defined all_in_one (

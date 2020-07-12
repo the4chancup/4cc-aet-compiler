@@ -25,7 +25,7 @@ if %fox_mode%==0 (
     
     set facename=%%A
     set faceid=!facename:~0,5!
-    @echo - !facename!
+    echo - !facename!
     
     
     REM - Rename it to the player id
@@ -60,7 +60,7 @@ if %fox_mode%==0 (
     
     set facename=%%A
     set faceid=!facename:~0,5!
-    @echo - !facename!
+    echo - !facename!
     
     
     REM - Rename it to the player id

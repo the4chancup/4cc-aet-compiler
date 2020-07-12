@@ -1,3 +1,10 @@
+12/07/20 - Version 5.03
+- Added checks for portraits in the face and portraits folders
+- Used py -3 to call the python scripts, this makes them work regardless of your
+  file association settings
+- Removed an error when compiling face folders with no fmdl files
+
+
 11/07/20 - Version 5.02
 - Fixed a bug with glove xml checking
 - Updated the python ftex engine with a fixed version which converts non-square
