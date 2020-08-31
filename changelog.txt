@@ -1,3 +1,13 @@
+31/08/20 - Version 5.04
+- Made dds textures have priority over ftex textures present with the same name
+  in the same folder, as it used to be until 5.00
+- Updated the included uniparam19 with the stuff from summer 20
+- Changed the folder name used for common folders from the team name to the team
+  ID, only when Fox Mode is active
+- Implemented replacing inside fmdls of the team ID on texture paths that use
+  the common folder
+
+
 12/07/20 - Version 5.03
 - Added checks for portraits in the face and portraits folders
 - Used py -3 to call the python scripts, this makes them work regardless of your

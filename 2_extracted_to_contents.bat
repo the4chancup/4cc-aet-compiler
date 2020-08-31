@@ -344,7 +344,7 @@ if exist ".\extracted_exports\Common" (
         
         REM - Convert the dds textures to ftex
         for /f "tokens=*" %%B in ('dir /b ".\extracted_exports\Common\%%A\*.dds"') do (
-          call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py ".\extracted_exports\Common\%%A\%%B" >nul
+          call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py -r ".\extracted_exports\Common\%%A\%%B" >nul
         )
         
         REM - And delete them

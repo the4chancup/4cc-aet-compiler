@@ -66,7 +66,7 @@ and pauses at every error unless the pause_when_wrong setting has been disabled
 in the settings file.
 
 Here's a list of the stuff that the script checks after extracting an export,
-before moving its content into three common folders:
+before moving its content into folders shared by all the teams:
 - Checks that the team name is in the teams_list file (if there's none, it uses
   the first word on the export's folder name as team name), and looks for the
   team name on the teams_list txt, to find the corresponding team ID.
@@ -127,6 +127,10 @@ inside the patches_contents folder.
 It also moves the content from the other Kits, Boots, Gloves, Collars, Logo,
 Portraits and Common folders to the proper folders in the Singlecpk, Facescpk or
 Uniformcpk folder inside the patches_contents folder.
+If Fox Mode is disabled, the contents of the Common folder will be moved to
+  model/character/uniform/common/---/ (where --- is the team name),
+otherwise they will be moved to 
+  Assets/model/character/common/XXX/ (where XXX is the team ID).
 
 Also, if Bins Update is enabled, the team color and kit color entries from the
 txt files are added to the UniColor and TeamColor bin files in other_stuff, plus

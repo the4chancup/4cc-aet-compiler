@@ -4,7 +4,7 @@ import sys
 import fnmatch
 import re
 
-def transfer(fn, id):
+def transfer(fn, id, teamid = "000"):
     fs = os.stat(fn).st_size
     b = open(fn, 'rb')
     
@@ -89,7 +89,9 @@ def transfer(fn, id):
         #Process the paths
         for path in paths:
             spath = strs[path-1].split("/") #Split path to individual pieces
+            
             #Make sure our magic piece is the player ID and the path is the correct path
+            #Faces path
             if(len(spath) == 10 and re.fullmatch("[0-9]{5}", spath[7])):
                 if(id.isdigit() and len(id) == 5):
                     print("[MTLTools] Successfully changed ID for path " + strs[path-1])
@@ -99,6 +101,18 @@ def transfer(fn, id):
                     tpc = tpc + 1
                 else:
                     print("[MTLTools] Incorrect player ID " + id + ", please make sure the ID is exactly 5 digits long", file=sys.stderr)
+            
+            #Refs path
+            if(len(spath) == 10 and re.fullmatch("referee[0-9]{3}", spath[7])):
+                if(re.fullmatch("referee[0-9]{3}", id)):
+                    print("[MTLTools] Successfully changed ID for path " + strs[path-1])
+                    spath[7] = str(id) #Change the ID
+                    npath = "/".join(spath) #Combine the path
+                    strs[path-1] = npath #Overwrite old path in string list
+                    tpc = tpc + 1
+                else:
+                    print("[MTLTools] Incorrect referee name " + id, file=sys.stderr)
+
             #Boots path
             elif(len(spath) == 8 and re.fullmatch("k[0-9]{4}", spath[6])):
                 if(re.fullmatch("k[0-9]{4}", id)):
@@ -109,6 +123,8 @@ def transfer(fn, id):
                     tpc = tpc + 1
                 else:
                     print("[MTLTools] Incorrect boots ID " + id + ", please make sure the ID is exactly 5 characters long and follows the 'kXXXX' format", file=sys.stderr)
+            
+            #Gloves path
             elif(len(spath) == 8 and re.fullmatch("g[0-9]{4}", spath[6])):
                 if(re.fullmatch("g[0-9]{4}", id)):
                     print("[MTLTools] Successfully changed ID for path " + strs[path-1])
@@ -118,9 +134,32 @@ def transfer(fn, id):
                     tpc = tpc + 1
                 else:
                     print("[MTLTools] Incorrect gloves ID " + id + ", please make sure the ID is exactly 5 characters long and follows the 'gXXXX' format", file=sys.stderr)
+                
+            #Balls path
+            elif(len(spath) == 7 and re.fullmatch("ball[0-9]{3}", spath[5])):
+                if(re.fullmatch("ball[0-9]{3}", id)):
+                    print("[MTLTools] Successfully changed ID for path " + strs[path-1])
+                    spath[5] = id #Change the ID
+                    npath = "/".join(spath) #Combine the path
+                    strs[path-1] = npath #Overwrite old path in string list
+                    tpc = tpc + 1
+                else:
+                    print("[MTLTools] Incorrect ball ID " + id + ", please make sure the ID is exactly 7 characters long and follows the 'ballXXX' format", file=sys.stderr)
+            
+            #Common path
+            elif(len(spath) == 9 and re.fullmatch("[0-9]{3}", spath[6])):
+                if(re.fullmatch("[0-9]{3}", teamid)):
+                    print("[MTLTools] Successfully changed ID for path " + strs[path-1])
+                    spath[6] = teamid #Change the ID
+                    npath = "/".join(spath) #Combine the path
+                    strs[path-1] = npath #Overwrite old path in string list
+                    tpc = tpc + 1
+                else:
+                    print("[MTLTools] Incorrect Team ID " + teamid + ", please make sure the ID is exactly 3 characters long and follows the 'XXX' format", file=sys.stderr)
+            
             else:
                 print("[MTLTools] No ID found in path " + strs[path-1])
-                
+            
         #Yell if there were no paths with IDs at all
         if(tpc == 0):
             print("[MTLTools] No paths with IDs found in file " + fn, file=sys.stderr)        
@@ -143,15 +182,15 @@ def transfer(fn, id):
         b.close()
 
 def main():
-    if(len(sys.argv) != 3):
-        print("[MTLTools] Error: Invalid arguments.\nUsage: id.exe <.fmdl file> <new ID>", file=sys.stderr)
+    if not((len(sys.argv) >= 3) and (len(sys.argv) <= 4)):
+        print("[MTLTools] Error: Invalid arguments.\nUsage: id.exe <.fmdl file> <new ID> [team ID]", file=sys.stderr)
     elif not(os.path.isfile(sys.argv[1])):
         print("[MTLTools] Error: Provided file " + sys.argv[1] + " doesn't exist or is not a valid file", file=sys.stderr)
     elif not(fnmatch.fnmatch(sys.argv[1], '*.fmdl')):
         print("[MTLTools] Error: Provided file " + sys.argv[1] + " doesn't appear to be a .fmdl file", file=sys.stderr)
         print("[MTLTools] Please make sure the file ends in \".fmdl\"", file=sys.stderr)
     else:
-        transfer(sys.argv[1], sys.argv[2])
+        transfer(sys.argv[1], sys.argv[2], sys.argv[3])
                 
 if __name__ == '__main__':
     main()
