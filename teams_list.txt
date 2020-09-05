@@ -69,57 +69,57 @@ ID Name
 768 Backup 4
 769 Backup 5
 770 Backup 6
-771 VGL 1
-772 VGL 2
-773 VGL 3
-774 VGL 4
-775 VGL 5
-776 VGL 6
-777 VGL 7
-778 VGL 8
-779 VGL 9
-780 VGL 10
-781 VGL 11
-782 VGL 12
-783 VGL 13
-784 VGL 14
-785 VGL 15
-786 VGL 16
-787 VGL 17
-788 VGL 18
-789 VGL 19
-790 VGL 20
-791 VGL 21
-792 VGL 22
-793 VGL 23
-794 VGL 24
-795 VGL 25
-796 VGL 26
-797 VGL 27
-798 VGL 28
-799 VGL 29
-800 VGL 30
-801 VGL 31
-802 VGL 32
-803 VGL 33
-804 VGL 34
-805 VGL 35
-806 VGL 36
-807 VGL 37
-808 VGL 38
-809 VGL 39
-810 VGL 40
-811 VGL 41
-812 VGL 42
-813 VGL 43
-814 VGL 44
-815 VGL 45
-816 VGL 46
-817 VGL 47
-818 VGL 48
-819 VGL 49
-820 VGL 50
-821 VGL 51
+771 /2hug/
+772 /aceg/
+773 /alg/
+774 /akg/
+775 /civ4xg/
+776 /d2g/
+777 /dbg/
+778 /ddlc/
+779 /digi/
+780 /dng/
+781 /domg/
+782 /drag/
+783 /drg/
+784 /egg/
+785 /feg/
+786 /fg/
+787 /fgoalter/
+788 /fgog/
+789 /gbfg/
+790 /gbpen/
+791 /gfg/
+792 /hanny/
+793 /indie/
+794 /ink/
+795 /kfg/
+796 /llsifg/
+797 /lzg/
+798 /mbg/
+799 /mcg/
+800 /mggg/
+801 /mjg/
+802 /nepgen/
+803 /osg/
+804 /PMMM/
+805 /r6g/
+806 /revue/
+807 /rsg/
+808 /skg/
+809 /ssbg/
+810 /tf2g/
+811 /tnm/
+812 /trg/
+813 /twg/
+814 /vitagen/
+815 /vn/
+816 /vrg/
+817 /wtg/
+818 /きらら/
+819 /acg/
+820 /assg/
+821 /xcg/
 822 VGL 52
 823 VGL 53
 824 VGL 54
