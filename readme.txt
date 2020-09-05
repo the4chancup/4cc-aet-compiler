@@ -130,7 +130,8 @@ Uniformcpk folder inside the patches_contents folder.
 If Fox Mode is disabled, the contents of the Common folder will be moved to
   model/character/uniform/common/---/ (where --- is the team name),
 otherwise they will be moved to 
-  Assets/model/character/common/XXX/ (where XXX is the team ID).
+  Assets/model/character/common/XXX/sourceimages/#windx11 (where XXX is the
+  team ID).
 
 Also, if Bins Update is enabled, the team color and kit color entries from the
 txt files are added to the UniColor and TeamColor bin files in other_stuff, plus
@@ -255,6 +256,7 @@ Q: I've got some other problem/question.
 
 A: Feel free to contact me, preferably on the thread or the /aesco/ discord so
 that if someone else has the same problem they can also have it solved.
+
 
 
 Tool by Shakes
