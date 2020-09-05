@@ -241,7 +241,6 @@ if defined all_in_one (
   echo - 
   
   pause
-  )
 
 )
 
