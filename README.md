@@ -188,22 +188,23 @@ the exports_to_add folder when they need to be updated.
 ## About the export format
 
 ### The contents need to follow these names:
-___ Note.txt                  (recommended)
-Faces                         (recommended)
-Faces\XXXxx - Player names    (names required, no symbols allowed)
-Kit Configs                   (required)
-Kit Textures                  (required)
-Logo                          (required unless the team is a 4cc team, in which
-                              case it's recommended)
-Portraits                     (optional, putting them in the player face folders
-                              instead is recommended)
-Boots                         (optional)
-Boots\k++++ - Player names    (names recommended, no symbols allowed)
-Gloves                        (optional)
-Gloves\g++++ - Player names   (names recommended, no symbols allowed)
-Collars                       (optional)
-Common                        (optional)
-Other                         (optional)
+
+| Name                          | Notes |
+| :---                          | :--- |
+| ___ Note.txt                  | (recommended) |
+| Faces                         | (recommended) |
+| Faces\XXXxx - Player names    | (names required, no symbols allowed) |
+| Kit Configs                   | (required) |
+| Kit Textures                  | (required) |
+| Logo                          | (required unless the team is a 4cc team, in which case it's recommended) |
+| Portraits                     | (optional, putting them in the player face folders instead is recommended) |
+| Boots                         | (optional) |
+| Boots\k++++ - Player names    | (names recommended, no symbols allowed) |
+| Gloves                        | (optional) |
+| Gloves\g++++ - Player names   | (names recommended, no symbols allowed) |
+| Collars                       | (optional) |
+| Common                        | (optional) |
+| Other                         | (optional) |
 
 ___ is your team's name
 xx are the player numbers in the 01-23 range
