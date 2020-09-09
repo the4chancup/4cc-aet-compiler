@@ -489,7 +489,28 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\%%B\*" && (set movecommon=1) || (echo ->nul)
     
     if defined movecommon (
-    
+      
+      REM - If fox mode is enabled
+      if %fox_mode%==1 (
+        
+        REM - Check if any dds textures exist
+        >nul 2>nul dir /a-d /s ".\extracted_exports\!foldername!\%%B\*.dds" && (set dds_present=1) || (set dds_present=)
+        
+        if defined dds_present (
+          
+          REM - Convert the dds textures to ftex
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\*.dds"') do (
+            call py -3 .\Engines\Python\pes-file-tools\tools\ftex\pes-dds-to-ftex.py -r ".\extracted_exports\!foldername!\%%B\%%D" >nul
+          )
+          
+          REM - And delete them
+          for /f "tokens=*" %%D in ('dir /b ".\extracted_exports\!foldername!\%%B\*.dds"') do (
+            del ".\extracted_exports\!foldername!\%%B\%%D" >nul
+          )
+        )
+        
+      )
+      
       REM - Prepare the label to use depending on version
       if not %fox_mode%==1 (
         set commonname=!team_clean!
