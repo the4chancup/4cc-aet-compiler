@@ -100,7 +100,7 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
   REM - If the ID was found
   if not defined error (
     
-    REM - Move the portraits out of the face folders
+    REM - Move the portraits from the face folders to the portraits folder
     call .\Engines\portraits_move
     
     if not %pass_through%==2 (
@@ -141,6 +141,13 @@ for /f "tokens=*" %%A in ('dir /b ".\exports_to_add"') do (
     
     REM - Move the contents of the export to the root of extracted_exports
     call .\Engines\export_move
+    
+    REM - If fox mode is enabled and the team has a common folder replace the dummy textures with the kit 1 textures
+    if %fox_mode%==1 (
+      if exist ".\extracted_exports\Common\!teamid!" (
+        call .\Engines\dummy_kit_replace
+      )
+    )
     
     
     REM - Delete the now empty export folder
