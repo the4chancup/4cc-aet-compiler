@@ -66,8 +66,8 @@ ID Name
 765 Backup 1
 766 Backup 2
 767 Backup 3
-768 Backup 4
-769 Backup 5
+768 /vrpg/
+769 /vst/
 770 Backup 6
 771 /2hug/
 772 /aceg/
