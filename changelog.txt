@@ -1,7 +1,15 @@
+11/09/20 - Version 5.05
+- Updated the teams_list with IDs for the VGL15 teams
+- Added replacing of dummy textures in the common folder with kit 1 textures, to
+  allow using teams with FBM kits without running sider
+- Updated the bin files with the final exports from Summer 20
+- Removed an error message when packing fmdls without textures
+
+
 31/08/20 - Version 5.04
 - Made dds textures have priority over ftex textures present with the same name
   in the same folder, as it used to be until 5.00
-- Updated the included uniparam19 with the stuff from summer 20
+- Updated the included uniparam19 with the stuff from Summer 20
 - Changed the folder name used for common folders from the team name to the team
   ID, only when Fox Mode is active
 - Implemented replacing inside fmdls of the team ID on texture paths that use
