@@ -66,7 +66,7 @@ if %fox_mode%==0 (
     
     if !object_type!==gloves (
        if %fox_19%==0 (
-          set object_id=!object_name:~0,4!
+         set object_id=!object_name:~0,4!
        ) else (
          set object_id=!object_name:~0,5!
        )
@@ -91,8 +91,11 @@ if %fox_mode%==0 (
     REM - Move the folder to the temp folder
     move ".\extracted_exports\!object_source_folder!\!object_id!" ".\temp\!object_id!" >nul
     
-    REM - Move the textures to a separate folder
-    move ".\temp\!object_id!\!object_id!\*.ftex" ".\temp\!object_id!\#windx11" >nul
+    if exist ".\temp\!object_id!\!object_id!\*.ftex" (
+      
+      REM - Move the textures to a separate folder
+      move ".\temp\!object_id!\!object_id!\*.ftex" ".\temp\!object_id!\#windx11" >nul
+    )
     
     REM - Move the xml
     move ".\temp\!object_id!\!object_id!\!object_type!.fpk.xml" ".\temp\!object_id!" >nul
@@ -116,13 +119,13 @@ if %fox_mode%==0 (
     REM - Move the textures
     if !object_type!==face (
       
-      md ".\!object_destination_path!\!object_id!\sourceimages" 2>nul
+      md ".\!object_destination_path!\!object_id!\sourceimages" >nul
       move ".\temp\!object_id!\#windx11" ".\!object_destination_path!\!object_id!\sourceimages" >nul
       
     ) else (
-    
+      
       move ".\temp\!object_id!\#windx11" ".\!object_destination_path!\!object_id!" >nul
-    
+      
     )
     
     REM - Delete the temp folder
