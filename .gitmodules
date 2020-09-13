@@ -1,0 +1,3 @@
+[submodule "Engines/Python/pes-file-tools"]
+	path = Engines/Python/pes-file-tools
+	url = https://github.com/the4chancup/pes-file-tools
