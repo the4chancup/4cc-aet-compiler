@@ -63,7 +63,7 @@ if %bins_updating%==1 (
   if exist ".\extracted_exports\Kit Configs" (
     
     echo - 
-    <nul set /p =- Compiling the kit config files into the UniformParameter bin
+    echo - Compiling the kit config files into the UniformParameter bin
     
     REM - Set the filename depending on pes version
     if %fox_19%==1 (
@@ -95,8 +95,7 @@ if %bins_updating%==1 (
     
     REM - And delete the temporary copy
     del ".\Engines\UniformParameter.bin" >nul
-
-    echo.
+    
     echo - 
   )
 )
