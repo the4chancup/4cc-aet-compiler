@@ -60,8 +60,6 @@ if defined nestederror (
     pause
   )
 )
-  
-)
 
 
 REM - If a Faces folder exists and is not empty, check that the face folder names are correct
@@ -834,7 +832,7 @@ if defined checkgloves (
     
     if not %pause_when_wrong%==0 (
       pause
-    )      
+    )
   )
   
 ) else (
