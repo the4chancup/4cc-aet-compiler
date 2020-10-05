@@ -26,11 +26,13 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
   set kits_found=
   
   set id=
-  set kits=0
-  set colors=0
+  set kit_amount=0
+  set team_colors=0
   set player=0
   set gk=0
   
+  set team_hex=
+  set kit_hex=
   
   REM - For every line
   for /f "tokens=1-12 usebackq" %%A in (".\extracted_exports\%%Z") do (
@@ -75,14 +77,11 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           set team_found=1
           set kits_found=
           
-          REM - Clear the buffer
-          set hex=
-          
           REM - Set the position in the TeamColor file to write to
-          %macro_Call% ("id position") %macro.Num2Hex%
-          set position=!position!4
+          %macro_Call% ("id team_position") %macro.Num2Hex%
+          set team_position=!team_position!4
         )
-      
+        
         REM - If we've reached the kit color section
         if /i "!test:~0,6!"=="KitCol" (
           
@@ -90,44 +89,24 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
           set kits_found=1
           set team_found=
           
-          REM - Write the team color entries to the TeamColor file
-          .\Engines\hexed ".\Bin Files\TeamColor.bin" -e !position! !hex!
-          
-          REM - Clear the buffer
-          set hex=
-          
           REM - Set the positions in the UniColor file to write to
-          set /a position=!id!*85
-          set /a position=!position!+4
-          set /a position_kit=!position!+1
+          set /a kit_position=!id!*85
+          set /a kit_position=!kit_position!+4
+          set /a kit_position_entry=!kit_position!+1
           
-          %macro_Call% ("position position") %macro.Num2Hex%
-          %macro_Call% ("position_kit position_kit") %macro.Num2Hex%
+          %macro_Call% ("kit_position kit_position") %macro.Num2Hex%
+          %macro_Call% ("kit_position_entry kit_position_entry") %macro.Num2Hex%
         )
         
-        REM - If we've reached the end
+        REM - If we've reached the Player section
         if /i "!test:~0,6!"=="Player" (
           
           REM - Stop looking for stuff in the file
           set stop=1
         )
         
-        REM - If we've reached the end
+        REM - If we've reached the Other section
         if /i "!test:~0,5!"=="Other" (
-          
-          REM - Check how many kit entries must be left blank
-          set /a kits_blank=10-!kits!
-          set hex=FF 00 00 00 00 00 00 00
-          
-          for /l %%T in (1,1,!kits_blank!) do (
-          
-            REM - Write a blank kit color entry to the UniColor file  
-            .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position_kit! !hex!
-            
-            REM - Set the position of the next kit
-            set /a position_kit=0x!position_kit!+8
-            %macro_Call% ("position_kit position_kit") %macro.Num2Hex%
-          )
           
           REM - Stop looking for stuff in the file
           set stop=1
@@ -200,14 +179,14 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
             )
 
             REM - Add the entry to the buffer
-            if not defined hex (
-              set hex=!team_r! !team_g! !team_b!
+            if not defined team_hex (
+              set team_hex=!team_r! !team_g! !team_b!
             ) else (
-              set hex=!hex! !team_r! !team_g! !team_b!
+              set team_hex=!team_hex! !team_r! !team_g! !team_b!
             )
             
             REM - Raise the colors counter
-            set /a colors+=1
+            set /a team_colors+=1
           )
         )
         
@@ -338,16 +317,15 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
             
             
             REM - Write the kit color entry to the UniColor file
-            set hex=!type! !icon! !kits_r1! !kits_g1! !kits_b1! !kits_r2! !kits_g2! !kits_b2!
-            .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position_kit! !hex!
+            set kit_hex=!type! !icon! !kits_r1! !kits_g1! !kits_b1! !kits_r2! !kits_g2! !kits_b2!
+            .\Engines\hexed ".\Bin Files\UniColor.bin" -e !kit_position_entry! !kit_hex!
             
-
             REM - Raise the kits counter
-            set /a kits+=1
+            set /a kit_amount+=1
             
             REM - Set the position of the next kit
-            set /a position_kit=0x!position_kit!+8
-            %macro_Call% ("position_kit position_kit") %macro.Num2Hex%
+            set /a kit_position_entry=0x!kit_position_entry!+8
+            %macro_Call% ("kit_position_entry kit_position_entry") %macro.Num2Hex%
           )
         )
         
@@ -355,17 +333,38 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
     )
   )
   
-  REM - When the file is over, if there were kit entries
+  REM - When the file is over, if there were team color entries
+  if not !team_colors!==0 (
+    
+    REM - Write the team color entries to the TeamColor file
+    .\Engines\hexed ".\Bin Files\TeamColor.bin" -e !team_position! !team_hex!
+  )
+  
+  REM - When the file is over, if there were kit color entries
   if defined kits_found (
     
-    if !kits! GEQ 10 (
-      set kits_hex=a
+    REM - Check how many kit entries must be left blank
+    set /a kits_blank=10-!kit_amount!
+    set kit_hex=FF 00 00 00 00 00 00 00
+    
+    for /l %%T in (1,1,!kits_blank!) do (
+    
+      REM - Write a blank kit color entry to the UniColor file
+      .\Engines\hexed ".\Bin Files\UniColor.bin" -e !kit_position_entry! !kit_hex!
+      
+      REM - Set the position of the next kit
+      set /a kit_position_entry=0x!kit_position_entry!+8
+      %macro_Call% ("kit_position_entry kit_position_entry") %macro.Num2Hex%
+    )
+    
+    if !kit_amount! GEQ 10 (
+      set kit_amount_hex=a
     ) else (
-      set kits_hex=!kits!
+      set kit_amount_hex=!kit_amount!
     )
     
     REM - Write the number of kits to the UniColor file
-    .\Engines\hexed ".\Bin Files\UniColor.bin" -e !position! 0!kits_hex!
+    .\Engines\hexed ".\Bin Files\UniColor.bin" -e !kit_position! 0!kit_amount_hex!
     
     
     if exist ".\extracted_exports\Kit Configs\!teamid!\" (
@@ -378,7 +377,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
         set /a kit_configs+=1
       )
       
-      if not "!kit_configs!"=="!kits!" (
+      if not "!kit_configs!"=="!kit_amount!" (
       
         echo - Warning -
         echo -
@@ -399,7 +398,7 @@ for /f "tokens=*" %%Z in ('dir /a:-d /b ".\extracted_exports\*.txt" 2^>nul') do 
     )
   )
   
-  echo - Team colors: !colors! - Kits: !kits!
+  echo - Team colors: !team_colors! - Kits: !kit_amount!
   
 )
 
