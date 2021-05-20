@@ -27,6 +27,9 @@ if not defined settings_default_init (
     if not defined fox_19 (
       set settings_missing=1
     )
+    if not defined fox_21 (
+      set settings_missing=1
+    )
     if not defined cpk_name (
       set settings_missing=1
     )
@@ -80,6 +83,7 @@ if defined settings_default_init (
   
   set fox_mode=1
   set fox_19=1
+  set fox_21=1
   set cpk_name=4cc_90_test
   set move_cpks=1
   set pes_download_folder_location="C:\Program Files (x86)\Pro Evolution Soccer 2018\download"

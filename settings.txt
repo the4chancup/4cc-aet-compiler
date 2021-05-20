@@ -9,6 +9,7 @@
 :: Fox 19 will set a few behaviours required by PES19
 set fox_mode=1
 set fox_19=1
+set fox_21=1
 :: 
 :: 
 :: - Cpk Name -

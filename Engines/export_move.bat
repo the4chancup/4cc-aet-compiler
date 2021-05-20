@@ -278,7 +278,11 @@ for /f "tokens=*" %%B in ('dir /a:d /b ".\extracted_exports\!foldername!" 2^>nul
     
       REM - Replace the dummy team ID in the filename with the actual one
       set object_name=%%C
-      set object_name=emblem_0!teamid!!object_name:~11!
+      if %fox_21%==1 ( 
+  			set object_name=e_000!teamid!!object_name:~11!
+			) else (
+  			set object_name=emblem_0!teamid!!object_name:~11!
+			)
       
       rename ".\extracted_exports\!foldername!\%%B\%%C" "!object_name!"
       
