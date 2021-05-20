@@ -63,63 +63,63 @@ ID Name
 762 /wsg/
 763 /x/
 764 /y/
-765 Backup 1
-766 Backup 2
-767 Backup 3
-768 /vrpg/
-769 /vst/
+765 /vm/
+766 /vrpg/
+767 /vst/
+768 /vt/
+769 Backup 5
 770 Backup 6
-771 /2hug/
-772 /aceg/
-773 /alg/
-774 /akg/
-775 /civ4xg/
-776 /d2g/
-777 /dbg/
-778 /ddlc/
-779 /digi/
-780 /dng/
-781 /domg/
-782 /drag/
-783 /drg/
-784 /egg/
-785 /feg/
-786 /fg/
-787 /fgoalter/
-788 /fgog/
-789 /gbfg/
-790 /gbpen/
-791 /gfg/
-792 /hanny/
-793 /indie/
-794 /ink/
-795 /kfg/
-796 /llsifg/
-797 /lzg/
-798 /mbg/
-799 /mcg/
-800 /mggg/
-801 /mjg/
-802 /nepgen/
-803 /osg/
-804 /PMMM/
-805 /r6g/
-806 /revue/
-807 /rsg/
-808 /skg/
-809 /ssbg/
-810 /tf2g/
-811 /tnm/
-812 /trg/
-813 /twg/
-814 /vitagen/
-815 /vn/
-816 /vrg/
-817 /wtg/
-818 /きらら/
-819 /acg/
-820 /assg/
-821 /xcg/
+771	/@/
+772	/2hug/
+773	/aceg/
+774	/akg/
+775	/assg/
+776	/dbg/
+777	/ddlc/
+778	/digi/
+779	/dlg/
+780	/domg/
+781	/dng/
+782	/drag/
+783	/drg/
+784	/eftg/
+785	/egg/
+786	/feg/
+787	/fg/
+788	/fgoalter/
+789	/fgog/
+790	/gbfg/
+791	/gbpen/
+792	/gfg/
+793	/gig/
+794	/hanny/
+795	/hgg2d/
+796	/indie/
+797	/ink/
+798	/kfg/
+799	/llsifg/
+800	/lolg/
+801	/mbg/
+802	/mjg/
+803	/mmg/
+804	/nepgen/
+805	/pmmm/
+806	/r6g/
+807	/revue/
+808	/ssbg/
+809	/sgg/
+810	/skg/
+811	/tf2g/
+812	/tnm/
+813	/twg/
+814	/vitagen/
+815	/vn/
+816	/vrg/
+817	/wtg/
+818	/kirara/
+819	VGL 49
+820	VGL 50
+821	VGL 51
 822 VGL 52
 823 VGL 53
 824 VGL 54
