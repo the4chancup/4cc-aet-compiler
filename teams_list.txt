@@ -77,50 +77,50 @@ ID Name
 776 /alg/
 777 /assg/
 778 /bag/
-779 /d2g/
-780 /dbg/
-781 /ddlc/
-782 /digi/
-783 /dng/
-784 /drag/
-785 /drg/
-786 /egg/
-787 /feg/
-788 /fg/
-789 /fgoalter/
-790 /fgog/
-791 /forza/
-792 /gbfg/
-793 /gbpen/
-794 /gfg/
-795 /ggg/
-796 /gig/
-797 /hanny/
-798 /hgg2d/
-799 /indie/
-800 /ink/
-801 /kfg/
-802 /llsifg/
-803 /mbg/
-804 /mjg/
-805 /mmg/
-806 /nepgen/
-807 /osg/
-808 /pmmm/
-809 /psg/
-810 /revue/
-811 /sgg/
-812 /skg/
-813 /smtg/
-814 /ss13g/
-815 /tf2g/
-816 /twg/
-817 /uma/
-818 /utg/
-819 /vn/
-820 /vrg/
-821 /wtg/
-822 /きらら/
+779 /dbg/
+780 /ddlc/
+781 /digi/
+782 /dng/
+783 /drg/
+784 /egg/
+785 /feg/
+786 /fg/
+787 /fgoalter/
+788 /fgog/
+789 /forza/
+790 /gbfg/
+791 /gbpen/
+792 /gfg/
+793 /ggg/
+794 /gig/
+795 /hanny/
+796 /hgg2d/
+797 /indie/
+798 /ink/
+799 /kfg/
+800 /llsifg/
+801 /mjg/
+802 /mmg/
+803 /nepgen/
+804 /pcrg/
+805 /pmmm/
+806 /revue/
+807 /sgg/
+808 /skg/
+809 /smtg/
+810 /ss13g/
+811 /twg/
+812 /uma/
+813 /utg/
+814 /vgt/
+815 /vitagen/
+816 /vn/
+817 /vrg/
+818 /kirara/
+819 VGL 49
+820 VGL 50
+821 VGL 51
+822 VGL 52
 823 VGL 53
 824 VGL 54
 825 VGL 55
@@ -138,7 +138,7 @@ ID Name
 837 VGL 67
 838 VGL 68
 839 VGL 69
-840 VGL 70
+840 /vglboss/
 841 Invitational 1
 842 Invitational 2
 843 Invitational 3
