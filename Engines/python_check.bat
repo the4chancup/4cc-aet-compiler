@@ -2,11 +2,11 @@ REM - Script to check if python is in the PATH and that its version is 3
 
 setlocal EnableDelayedExpansion
 
-for /f "tokens=*" %%A in ('py -0 2^>nul') do (
+for /f "tokens=*" %%A in ('py -V 2^>nul') do (
   
   set python_version_line=%%A
   
-  if "!python_version_line:~1,1!"=="3" set python_version_3_found=1
+  if "!python_version_line:~7,1!"=="3" set python_version_3_found=1
 )
 
 if not defined python_version_3_found (
