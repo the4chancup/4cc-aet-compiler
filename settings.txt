@@ -5,15 +5,15 @@
 :: 
 :: 
 :: - Fox Mode -
-:: Enable this to make the compiler accept exports with files for PES18/19 instead of PES16/17
-:: Fox 19 will set a few behaviours required by PES19
+:: Enable fox mode to make the compiler accept exports with files for PES18/19 instead of PES16/17
+:: The fox 19 and 21 flags will set a few behaviours required by those PES versions
 set fox_mode=1
 set fox_19=1
-set fox_21=1
+set fox_21=0
 :: 
 :: 
 :: - Cpk Name -
-:: Write the package names you want without quotes (e.g. 4cc, vg lel)
+:: Write the package names you want without quotes (e.g. 4cc_69_nicecpk)
 :: The maximum filename length you can set here is 28 characters. Spaces are fine.
 set cpk_name=4cc_90_test
 ::
