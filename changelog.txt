@@ -1,3 +1,17 @@
+14/05/23 - Version 6.01
+- Fixed the python_check module to include support for Python 3.10+ 
+- Updated the default bin files with the stuff from Spring 23
+- Updated the teams_list.txt with the new 4cc and vgl teams
+
+
+31/05/21 - Version 6.00
+- Added the initial exports from the 2020 4cc autumn friendlies to the
+  contents of the bin files
+- Improved the message when packing kit bins into uniparam
+- Added support for PES21 logo filenames
+- Updated the teams_list.txt with the new 4cc and vgl teams
+
+
 11/09/20 - Version 5.05
 - Updated the teams_list with IDs for the VGL15 teams
 - Added replacing of dummy textures in the common folder with kit 1 textures, to
